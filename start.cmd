@@ -1,0 +1,3 @@
+@echo off
+gulp
+cmd

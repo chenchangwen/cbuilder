@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>ccweditor 预览</title>
+    <link href="../../vendor/uikit/css/uikit.docs.min.css" rel="stylesheet" />
+    <script src="../../vendor/tangram.js"></script>
+    <script src="../../vendor/jquery.min.js"></script>
+    <link href="../../docs/ccweditor.css" rel="stylesheet" />
+    <script src="../../vendor/spin.min.js"></script>
+    <script type="text/javascript">
+        var $content;
+        $(document).ready(function () {
+            try {
+                var editor = opener.tinymce.activeEditor;
+                var content = editor.getContent().replace(/\.\//ig, '\/');
+                var opts = {
+                    lines: 13, // The number of lines to draw
+                    length: 20, // The length of each line
+                    width: 10, // The line thickness
+                    radius: 30, // The radius of the inner circle
+                    corners: 1, // Corner roundness (0..1)
+                    rotate: 0, // The rotation offset
+                    direction: 1, // 1: clockwise, -1: counterclockwise
+                    color: '#000', // #rgb or #rrggbb or array of colors
+                    speed: 1, // Rounds per second
+                    trail: 60, // Afterglow percentage
+                    shadow: false, // Whether to render a shadow
+                    hwaccel: false, // Whether to use hardware acceleration
+                    className: 'spinner', // The CSS class to assign to the spinner
+                    zIndex: 2e9, // The z-index (defaults to 2000000000)
+                    top: '50%', // Top position relative to parent
+                    left: '50%' // Left position relative to parent
+                };
+                spinner = new Spinner(opts).spin(document.body);
+                $content = $('#content');
+                $content.html(content);
+            } catch (ex) {
+            }
+            //fixArea(true);
+            $('.imgpos').css('border',0);
+            var date = baidu.date.format(new Date(),'yyyy-MM-dd hh:mm:ss');
+            $("#marktime").text(date);
+            $('img').load(function () {
+                $content.show();
+                spinner.stop();
+            });
+        });
+
+        function fixArea(isfix) {
+            var selector = $("area[linktype='countdown']");
+            if (isfix) {
+                selector.each(function () {
+                    var $this = $(this);
+                    var href = $this.attr('href');
+                    var target = $this.attr('linktarget');
+                    if (typeof (target) != "undefined") {
+                        href = '#' + target.replace(/#/ig, "");
+                    }
+                    $this.removeAttr('href');
+                    $this.attr('ahref', href);
+                });
+            } else {
+                selector.each(function () {
+                    var $this = $(this);
+                    var href = $this.attr('ahref');
+                    if (typeof (target) != "undefined") {
+                        href = '#' + target.replace(/#/ig, "");
+                    }
+                    $this.removeAttr('ahref');
+                    $this.attr('href', href);
+                });
+            }
+        }
+    </script>
+    <script src="../../dist/ccweditor.js"></script>
+    <link href="../../dist/ccweditor.css" rel="stylesheet" />
+</head>
+<body>
+    <div>
+        <div class="tm-middle">
+            <div class="uk-container uk-container-center">
+                <article class="uk-article">
+                    <h1 class="uk-article-title"><span class="uk-badge">注意</span>当前时间:<span id="marktime"></span></h1>
+                    <div class="uk-grid">
+                        <div class="uk-width-1-1" id="content" style="display: none">
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

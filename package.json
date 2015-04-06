@@ -1,0 +1,27 @@
+{
+  "name": "cbuilder",
+  "version": "1.0.0",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.8.10",
+    "gulp-changed": "^1.1.0",
+    "gulp-clean": "^0.3.1",
+    "gulp-concat": "^2.4.2",
+    "gulp-imagemin": "^2.0.0",
+    "gulp-jshint": "^1.9.0",
+    "gulp-minify-css": "^1.0.0",
+    "gulp-minify-html": "^0.1.7",
+    "gulp-notify": "^2.2.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-strip-debug": "^1.0.2",
+    "gulp-uglify": "^1.0.2"
+  },
+  "devDependencies": {
+    "gulp-less": "^3.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
