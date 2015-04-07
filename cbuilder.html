@@ -1,23 +1,22 @@
 ﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <script src="vendor/jquery/dist/jquery.min.js"></script>
     <script src="src/js/jquery.cbuilder.js"></script>
-    <script src="vendor/fancybox/source/jquery.fancybox.js"></script>
+    <link href="src/css/cbuilder.css" rel="stylesheet" />
     <title>jquery.cbuilder demo</title>
-    <script>
-        $(document).ready(function() {
-
-           $("#test").on('click',function(){
-                $('#dd').cbuilder('show',1);
-           });
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var options = {
+                width: '200px'
+            };
+            $('#test').cbuilder(options);
         });
     </script>
 </head>
 <body>
-    <div id="dd" style="background:red; height: 200px;widht:200px"></div>
-    <div id="ff" style="background:blue; height: 200px;widht:200px"></div>
-    <button id="test">test</button>
+    <div id="test"></div>
+ 
 </body>
 </html>

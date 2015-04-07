@@ -23,6 +23,8 @@
     "dropzone": "~4.0.1",
     "jcrop": "~0.9.12",
     "tangram": "*",
-    "fancybox": "~2.1.5"
+    "fancybox": "~2.1.5",
+    "uikit": "~2.18.0",
+    "domready": "~1.0.7"
   }
 }
