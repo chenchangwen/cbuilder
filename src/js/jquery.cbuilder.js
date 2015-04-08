@@ -1,4 +1,4 @@
-﻿/// *
+﻿// *
 //    jQuery cbuilder v1.0 - 2015-4-4 
 //    (c) Kevin 21108589@qq.com
 //	license: http://www.opensource.org/licenses/mit-license.php
@@ -14,17 +14,18 @@
 }(function($) {
     var defaults = {
         height: "100%",
-        plugins: ["upload", "preview"],
+        plugins: ["upload"],
         prefix: "cbuilder",
         clsToolbar: ".cb-toolbar",
         clsBody: ".cb-body",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
-            toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-button\">111</button></div>",
+            toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-button\">{name}</button></div>",
             body: "<div class=\"cb-body\"></div>"
         },
         onComplete: false
     };
+
 
     var cbuilder = function(element, options) {
         this.options = $.extend({}, defaults, options);
@@ -42,6 +43,7 @@
             }
         };
     }
+    
 
     cbuilder.prototype = {
         strucView: function() {
@@ -52,21 +54,34 @@
                         .wrap(that.options.tpl.container)
                         .append(that.options.tpl.toolbar + that.options.tpl.body);
                 },
-                //加载vendor
-                loadVendors: function() {
-                    
+                //加载vendors
+                loadVendors: function () {
+                    var vendors = [
+                        '../../vendor/fancybox/source/jquery.fancybox.pack.js',
+                        '../../vendor/fancybox/source/jquery.fancybox.css',
+                        '../../vendor/dropzone/dist/dropzone.js'
+                    ];
+                    for (var i = 0; i < vendors.length; i++) {
+                        $.getScript(vendors[i]);
+                    }
                 },
                 //加载插件
                 loadPlugins: function () {
                     var len = that.options.plugins.length;
                     for (var i = 0; i < len; i++) {
+                        var name = that.options.plugins[i];
+                        $.getScript('src/js/plugins/' + name + '/' + 'plugin' + '.js', function () {
+                            var plugin = cbuilderPluginObj();
+                            that.$element.find(that.options.clsToolbar).append(that.options.tpl.toolbar_button.replace(/\{name\}/, plugin.name));
+                        });
                         //按需加载插件
-                        that.$element.find(that.options.clsToolbar).append(that.options.tpl.toolbar_button);
+                        //that.$element.find(that.options.clsToolbar).append(that.options.tpl.toolbar_button.replace(/\{name\}/,'asdf'));
                     }
                 },
                 bindEvents: function() {
-                    that.$element.on("click", function() {
-                        //alert('123');
+                    that.$element.find('.cb-button').on("click", function () {
+                        alert('123');
+                        //alert('123213');
                     });
                 },
                 struc: function() {
@@ -82,10 +97,8 @@
             strucPrivateEvents.call(this);
         },
         show: function() {
-            //            this._trigger('_myclick',function(){
-            //                alert('after')
-            //            });
-        }
+
+        } 
     };
 
     $.fn.cbuilder = function(option) {
