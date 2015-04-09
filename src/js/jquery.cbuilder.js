@@ -14,7 +14,7 @@
 }(function($) {
     var defaults = {
         height: "100%",
-        plugins: ["upload"],
+        plugins: ["upload",'test'],
         prefix: "cbuilder",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
@@ -78,45 +78,58 @@
                     var len = that.options.plugins.length;
                     for (var i = 0; i < len; i++) {
                         var name = that.options.plugins[i];
-                        $.get('src/js/plugins/' + name + '/' + 'plugin' + '.js', function () {
-                            //执行动态函数,并获取plugin对象
-                            var plugin = getCbuilderPlugin();
-                            //替换为plugin名字
-                            that.$element.find(clsToolbar).
-                                append(that.options.tpl.toolbar_button.
-                                    replace(/\{name\}/, plugin.name).
-                                    replace(/\{clsname\}/, plugin.className)
-                                );
-                            var pluginbtn = that.$element.find('.' + plugin.className);
-                            that._trigger('', plugin.onDomReady);
+                        var src = 'src/js/plugins/' + name + '/' + 'plugin' + '.js';
+                        $.ajax({
+                            async: false,
+                            type: "get",
+                            url: src,
+                            success: function () {
+                                //执行动态函数,并获取plugin对象
+                                var plugin = getCbuilderPlugin();
+                                //替换为plugin名字
+                                var clsname = 'cb-' + plugin.name;
+                                that.$element.find(clsToolbar).
+                                    append(that.options.tpl.toolbar_button.
+                                        replace(/\{name\}/, plugin.text).
+                                        replace(/\{clsname\}/, clsname)
+                                    );
 
-                            pluginbtn.on('click', function () {
-                                if (plugin.type === 'iframe') {
-                                    $.fancybox.open({
-                                        href: basePath + 'plugins/' + name + '/plugin.html',
-                                        type: 'iframe',
-                                        padding: 5,
-                                        scrolling: 'no',
-                                        fitToView: true,
-                                        width: plugin.width || 610,
-                                        height: plugin.height || 300,
-                                        autoSize: false,
-                                        closeClick: false
-                                    });
+                                var pluginbtn = that.$element.find('.' + clsname);
+                                that._trigger('', plugin.onDomReady);
+
+                                pluginbtn.on('click', function () {
+                                    if (plugin.type === 'iframe') {
+                                        $.fancybox.open({
+                                            href: basePath + 'plugins/' + plugin.name + '/plugin.html',
+                                            type: 'iframe',
+                                            padding: 5,
+                                            scrolling: 'no',
+                                            fitToView: true,
+                                            width: plugin.width || 610,
+                                            height: plugin.height || 300,
+                                            autoSize: false,
+                                            closeClick: false
+                                        });
+
+                                    } else {
+
+                                    }
                                     that._trigger('', plugin.onClicked);
-                                }
-                            });
+                                });
+                            }
                         });
                     }
                 },
                 bindEvents: function () {
-//                    $(clsContainer).delegate(clsButton, 'click', function () {
-//                        $.fancybox.open({
-//                            href: 'iframe.html',
-//                            type: 'iframe',
-//                            padding: 5
-//                        });
-//                    });
+                    $(clsBody).on('DOMNodeInserted', function (e) {
+//                        debugger;
+//                        var $target = $(e.target);
+//                        if (!$target.hasClass('cb-block')) {
+//                            $target.wrap("<div class='cb-block'></div>");
+//                        }
+                        //if($(e.target).prop('outerHTML'))
+                        //console.log($(e.target).html());
+                    });
                 },
                 struc: function() {
                     this.appendHtml();

@@ -8,12 +8,18 @@
 }
 
 .cb-body {
-    border: 3px solid #8b0000;
     height: 300px;
+    overflow: auto;
+    padding: 5px;
+    text-align: center;
+}
+
+.cb-block  {
+    margin-bottom: 10px;
 }
 
 .cb-toolbar {
-    border: 3px solid #f0e68c;
+    border: 2px solid #f0e68c;
 }
 
 .cb-button-wrap{
@@ -25,5 +31,10 @@
     color: #c71585;
 }
 
+
+.cb-textarea {
+    width: 98%;
+    height: 200px;
+}
 
 

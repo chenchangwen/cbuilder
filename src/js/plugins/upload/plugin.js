@@ -1,7 +1,7 @@
 ﻿function getCbuilderPlugin() {
     var exports = {
-        name: "上传图片",
-        className: 'cb-upload',
+        name: "upload",
+        text:'上传图片',
         onDomReady: function() {
             //alert('上传图片callback');
         },
