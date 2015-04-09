@@ -4,17 +4,16 @@
   font-weight: 400;
   line-height: 1.6;
   color: #333;
-  border: 3px solid gray;
+  border: 2px solid blue;
+  overflow: auto;
 }
 
 .cb-body {
-    height: 300px;
-    overflow: auto;
     padding: 5px;
     text-align: center;
 }
 
-.cb-block  {
+.cb-wrap  {
     margin-bottom: 10px;
 }
 
@@ -23,7 +22,6 @@
 }
 
 .cb-button-wrap{
-    border: 2px solid red;
     display:inline-block;
     margin: 5px;
 }

@@ -5,7 +5,7 @@
         onDomReady: function() {
             //alert('上传图片callback');
         },
-        onClicked: function () {
+        onClick: function () {
 //            alert('onClicked');
         },
         width: 600,

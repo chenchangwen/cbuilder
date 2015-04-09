@@ -5,7 +5,7 @@
         onDomReady: function () {
 //            alert('test onDomReady');
         },
-        onClicked: function () {
+        onClick: function () {
             $('.cb-body').append('<textarea class="cb-textarea"></textarea>');
         }
     }

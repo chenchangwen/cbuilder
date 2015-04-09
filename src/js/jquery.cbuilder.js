@@ -14,7 +14,8 @@
 }(function($) {
     var defaults = {
         height: "100%",
-        plugins: ["upload",'test'],
+        width:"100%",
+        plugins: ['wrap-tool',"upload", 'test', 'clean'],
         prefix: "cbuilder",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
@@ -31,6 +32,10 @@
         var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
         return currentScript.replace(currentScriptFile, '');
     }
+
+    function isObjectType(type, obj){
+        return toString.call(obj).indexOf('[object ' + type) === 0;
+    } 
 
     var clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
@@ -50,11 +55,14 @@
     cbuilder.prototype = {
         strucView: function() {
             var that = this;
+            var options = that.options;
             var view = {
-                appendHtml: function() {
+                appendHtml: function () {
                     that.$element.addClass('cb-container')
-                        .wrap(that.options.tpl.container)
-                        .append(that.options.tpl.toolbar + that.options.tpl.body);
+                        .wrap(options.tpl.container)
+                        .append(options.tpl.toolbar + options.tpl.body);
+
+                    that.$element.width(options.width).height(options.height);
                 },
                 //加载vendors
                 loadVendors: function () {
@@ -88,47 +96,53 @@
                                 var plugin = getCbuilderPlugin();
                                 //替换为plugin名字
                                 var clsname = 'cb-' + plugin.name;
-                                that.$element.find(clsToolbar).
-                                    append(that.options.tpl.toolbar_button.
-                                        replace(/\{name\}/, plugin.text).
-                                        replace(/\{clsname\}/, clsname)
-                                    );
+                                if (plugin.text) {
+                                    that.$element.find(clsToolbar).
+                                        append(that.options.tpl.toolbar_button.
+                                            replace(/\{name\}/, plugin.text).
+                                            replace(/\{clsname\}/, clsname)
+                                        );
+                                    that._trigger('', plugin.onDomReady);
+                                    var pluginbtn = that.$element.find('.' + clsname);
+                                    pluginbtn.on('click', function() {
+                                        if (plugin.type === 'iframe') {
+                                            $.fancybox.open({
+                                                href: basePath + 'plugins/' + plugin.name + '/plugin.html',
+                                                type: 'iframe',
+                                                padding: 5,
+                                                scrolling: 'no',
+                                                fitToView: true,
+                                                width: plugin.width || 610,
+                                                height: plugin.height || 300,
+                                                autoSize: false,
+                                                closeClick: false
+                                            });
 
-                                var pluginbtn = that.$element.find('.' + clsname);
-                                that._trigger('', plugin.onDomReady);
+                                        } else {
 
-                                pluginbtn.on('click', function () {
-                                    if (plugin.type === 'iframe') {
-                                        $.fancybox.open({
-                                            href: basePath + 'plugins/' + plugin.name + '/plugin.html',
-                                            type: 'iframe',
-                                            padding: 5,
-                                            scrolling: 'no',
-                                            fitToView: true,
-                                            width: plugin.width || 610,
-                                            height: plugin.height || 300,
-                                            autoSize: false,
-                                            closeClick: false
-                                        });
-
-                                    } else {
-
+                                        }
+                                        that._trigger('', plugin.onClick);
+                                        that._trigger('onLoadContent');
+                                    });
+                                } else {
+                                    if (typeof plugin.onLoadContent === "function") {
+                                        plugin.onLoadContent();
                                     }
-                                    that._trigger('', plugin.onClicked);
-                                });
+                                }
                             }
                         });
                     }
                 },
                 bindEvents: function () {
-                    $(clsBody).on('DOMNodeInserted', function (e) {
-//                        debugger;
-//                        var $target = $(e.target);
-//                        if (!$target.hasClass('cb-block')) {
-//                            $target.wrap("<div class='cb-block'></div>");
-//                        }
-                        //if($(e.target).prop('outerHTML'))
-                        //console.log($(e.target).html());
+                    //加载内容,
+                    that.$element.on('onLoadContent', function (e) {
+                        //检查所有元素给加上cb-block类
+                        $(clsBody).children().each(function () {
+                            var $this = $(this);
+                            if (!$this.hasClass('cb-wrap')) {
+                                $this.wrap("<div class='cb-wrap'></div>");
+                            }
+                        });
                     });
                 },
                 struc: function() {
