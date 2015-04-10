@@ -10,7 +10,7 @@
         module.exports = factory(require("jquery"));
     } else {
         factory(jQuery);
-    }
+    } 
 }(function($) {
     var defaults = {
         height: "100%",
@@ -136,12 +136,15 @@
                 bindEvents: function () {
                     //加载内容,
                     that.$element.on('onLoadContent', function (e) {
-                        //检查所有元素给加上cb-block类
-                        $(clsBody).children().each(function () {
+                        //检查所有元素给加上cb-wrap类
+                        $(clsBody).children(":not(.cb-wrap)").each(function () {
                             var $this = $(this);
-                            if (!$this.hasClass('cb-wrap')) {
-                                $this.wrap("<div class='cb-wrap'></div>");
-                            }
+                            var html =
+                                    "<div class='cb-wrap'>" +
+                                    "<div class='cb-content'></div>" +
+                                    "</div>";
+                            $this.wrap(html);
+                            $this.parent().before("<div class='cb-tools'></div>");
                         });
                     });
                 },

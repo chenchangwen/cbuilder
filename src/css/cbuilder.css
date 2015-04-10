@@ -10,7 +10,6 @@
 
 .cb-body {
     padding: 5px;
-    text-align: center;
 }
 
 .cb-wrap  {
@@ -29,10 +28,29 @@
     color: #c71585;
 }
 
-
 .cb-textarea {
     width: 98%;
     height: 200px;
 }
 
+.cb-tools {
+    border: medium none;
+    padding: 10px 15px;
+    background: none repeat scroll 0 0 #242a30;
+    font-size: 12px;
+    line-height: 20px;
+    height: 20px;
+}
 
+.cb-tools .btn-wrap{
+    float: right;
+}
+
+
+.cb-tools .btn {
+    font-weight: 300;
+}
+
+.btn.btn-delete {
+    color: red;
+}
