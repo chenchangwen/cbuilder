@@ -15,12 +15,13 @@
     var defaults = {
         height: "100%",
         width:"100%",
-        plugins: ['wrap-tool',"upload", 'test', 'clean'],
+        plugins: ["upload", 'test', 'clean'],
         prefix: "cbuilder",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
             toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-button {clsname}\">{name}</button></div>",
-            body: "<div class=\"cb-body\"></div>"
+            body: "<div class=\"cb-body\"></div>",
+            content: "<div class=\"cb-wrap\"><div class=\"cb-content\"></div></div>"
         },
         onComplete: false
     };
@@ -46,7 +47,6 @@
         this.$element = $(element);
         this.strucView();
     };
- 
 
     cbuilder.prototype = {
         strucView: function() {
@@ -100,7 +100,8 @@
                                         );
                                     that._trigger('', plugin.onDomReady);
                                     var pluginbtn = that.$element.find('.' + clsname);
-                                    pluginbtn.on('click', function() {
+                                    pluginbtn.on('click', function () {
+                                        $.cbuilder.active = that;
                                         if (plugin.type === 'iframe') {
                                             $.fancybox.open({
                                                 href: basePath + 'plugins/' + plugin.name + '/plugin.html',
@@ -113,9 +114,6 @@
                                                 autoSize: false,
                                                 closeClick: false
                                             });
-
-                                        } else {
-
                                         }
                                         that._trigger('', plugin.onClick);
                                         that._trigger('onLoadContent');
@@ -130,17 +128,22 @@
                     }
                 },
                 bindEvents: function () {
-                    //加载内容,
+                    //onloadContent 事件
                     that.$element.on('onLoadContent', function (e) {
-                        //检查所有元素给加上cb-wrap类
-                        $(clsBody).children(":not(.cb-wrap)").each(function () {
+                        that.$element.find(clsBody).children(":not(.cb-wrap)").each(function () {
                             var $this = $(this);
+                            $this.wrap(that.options.tpl.content);
+                            var $thisparent = $this.parent();
+                            $thisparent.before("<div class='cb-tools'></div>");
                             var html =
-                                    "<div class='cb-wrap'>" +
-                                    "<div class='cb-content'></div>" +
+                                "<div class='btn-wrap'>" +
+                                    "<a href='javascript:;' class='btn btn-delete'>删除</a>" +
                                     "</div>";
-                            $this.wrap(html);
-                            $this.parent().before("<div class='cb-tools'></div>");
+                            var tools = $thisparent.prev('.cb-tools');
+                            tools.html(html);
+                            tools.find('.btn-delete').on('click', function () {
+                                $(this).parents('.cb-wrap').remove();
+                            });
                         });
                     });
                 },
@@ -158,11 +161,15 @@
             if (callback) {
                 callback.call(this.$element);
             }
-        },
-        show: function() {
-
-        } 
+        }
     };
+
+    $.cbuilder = {
+        append: function (html) {
+            $.cbuilder.active.$element.find(clsBody).append(html);
+            $.cbuilder.active._trigger('onLoadContent');
+        }
+    }
 
     $.fn.cbuilder = function(option) {
         var args = arguments;

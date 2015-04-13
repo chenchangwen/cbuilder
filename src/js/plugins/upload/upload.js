@@ -1,25 +1,25 @@
 ﻿require(["../../global.config"], function () {
-    require(["jquery", "uikit", "uikitextend", "uikit!upload"], function ($, UI, uikitextend) {
-
+    require(["jquery", "uikit", "uikitextend", '../../common/regexp',"uikit!upload"], function ($, UI, uikitextend, commomregexp) {
         var $width = $("#width"),
             $height = $("#height"),
             $url = $("#url");
         function save(imgsrc) {
-            var pattern = /^[0-9]*[1-9][0-9]*$/;
+            var regexp = new RegExp(commomregexp.number);
             if ($width.val() !== "0") {
-                if (!pattern.test($width.val())) {
+                if (!regexp.test($width.val())) {
                     uikitextend.uikit.notify({ message: "宽度:请输入正确的数字!" });
                     return false;
                 }
                 width = $width.val();
             }
             if ($height.val() !== "0") {
-                if (!pattern.test($height.val())) {
+                if (!regexp.test($height.val())) {
                     uikitextend.uikit.notify({ message: "高度:请输入正确的数字!" });
                     return false;
                 }
                 height = $height.val();
             }
+            parent.$.cbuilder.append('<p>11111111111111</p>');
         }
 
         var plugin = {
@@ -27,7 +27,7 @@
                 var progressbar = $("#progressbar"),
                     bar = progressbar.find(".uk-progress-bar"),
                     settings = {
-                        action: "/m.php?m=File&a=do_upload_img_2", // upload url
+                        action: "", // upload url
                         allow: "*.(jpg|png)", // allow only images
                         loadstart: function () {
                             bar.css("width", "0%").text("0%");

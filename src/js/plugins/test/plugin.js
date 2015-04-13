@@ -6,7 +6,7 @@
 //            alert('test onDomReady');
         },
         onClick: function () {
-            $('.cb-body').append('<textarea class="cb-textarea"></textarea>');
+            $.cbuilder.append('<textarea class="cb-textarea"></textarea>');
         }
     }
     return exports;

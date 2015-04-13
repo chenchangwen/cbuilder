@@ -3,7 +3,7 @@
         name: "clean",
         text: "清空",
         onClick: function () {
-            $(".cb-body").html("");
+            $.cbuilder.active.$element.find('.cb-body').html('');
         }
     }
     return exports;
