@@ -5,12 +5,14 @@
             $url = $("#url");
         function save(imgsrc) {
             var regexp = new RegExp(commomregexp.number);
+            var attr = '', width, height;
             if ($width.val() !== "0") {
                 if (!regexp.test($width.val())) {
                     uikitextend.uikit.notify({ message: "宽度:请输入正确的数字!" });
                     return false;
                 }
                 width = $width.val();
+                attr = ' width="' + width + '"';
             }
             if ($height.val() !== "0") {
                 if (!regexp.test($height.val())) {
@@ -18,8 +20,17 @@
                     return false;
                 }
                 height = $height.val();
+                attr += ' height="' + height + '"';
             }
-            parent.$.cbuilder.append('<p>11111111111111</p>');
+            regexp = new RegExp(commomregexp.url);
+            if (!regexp.test($url.val())) {
+                uikitextend.uikit.notify({ message: "地址:请输入正确的url地址!" });
+                return false;
+            }
+            var img = '<img src ="' + $url.val() + '"  ' + attr + '></img>';
+
+            parent.$.cbuilder.append(img);
+            parent.$.fancybox.close();
         }
 
         var plugin = {
