@@ -33,10 +33,6 @@
         return currentScript.replace(currentScriptFile, '');
     }
 
-    function isObjectType(type, obj){
-        return toString.call(obj).indexOf('[object ' + type) === 0;
-    } 
-
     var clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
         clsButton = '.cb-button',
