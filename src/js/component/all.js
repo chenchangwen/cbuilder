@@ -1,6 +1,6 @@
 ﻿require.config({
     paths: {
-        link: "../component/link",
+        link: "../../component/link",
         button: "../component/button",
         regexp: "../component/regexp",
         countdown: "../component/countdown",

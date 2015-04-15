@@ -38,6 +38,7 @@
         clsBody = ".cb-body",
         clsButton = '.cb-button',
         clsContainer = '.cb-container',
+        clsContent='.cb-content',
         basePath = currentScriptPath();
 
 
@@ -145,7 +146,20 @@
                                 $(this).parents('.cb-wrap').remove();
                             });
                         });
+
+                        $(clsContent).undelegate('dblclick').delegate('img', 'dblclick', function () {
+                            $.fancybox.open({
+                                href: basePath + 'plugins/picture/plugin.html',
+                                type: 'iframe',
+                                padding: 5,
+                                autoSize: false,
+                                width: "95%",
+                                height: "95%"
+                            });
+                        });
                     });
+                    
+                   
                 },
                 struc: function() {
                     this.appendHtml();
