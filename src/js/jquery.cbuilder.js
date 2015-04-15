@@ -148,6 +148,7 @@
                         });
 
                         $(clsContent).undelegate('dblclick').delegate('img', 'dblclick', function () {
+                            $.cbuilder.activeImage = $(this);
                             $.fancybox.open({
                                 href: basePath + 'plugins/picture/plugin.html',
                                 type: 'iframe',

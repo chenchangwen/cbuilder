@@ -2,15 +2,14 @@
     paths: {
         //vendors
         jquery: '../../../../vendor/jquery/dist/jquery.min',
-        Jcrop: '../../../vendor/Jcrop/js/jquery.Jcrop.min',
+        Jcrop: '../../../../vendor/jcrop/js/jquery.Jcrop.min',
         "uikit": '../../../../vendor/uikit/js/uikit.min',
-        "spin": '../../../../vendor/spin.min',
-        'uikit!upload': '../../../../uikit!upload',
+        "spin": '../../../../lib/spin.min',
+        'uikit!upload': '../../../../vendor/uikit!upload',
         //自定义
         jqextend: '../../core/jqextend',
         uikitextend: '../../core/uikitextend',
-        utils: '../../core/utils',
-        component: '../../component/all'
+        utils: '../../core/utils'
     },
     shim: {
         jqextend: ['jquery'],
