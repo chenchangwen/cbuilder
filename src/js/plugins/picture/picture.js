@@ -1,5 +1,5 @@
 ﻿require(['../../global.config'], function () {
-    require(['jquery', 'Jcrop', 'utils', 'component/all', 'uikitextend', '../../common/regexp', 'spin', '../../../../vendor/tinymce/tinymce.min'], function ($, Jcrop, utils, component, uikitextend, commomregexp,Spinner) {
+    require(['jquery', 'Jcrop', 'utils', 'component', 'uikitextend', 'common/regexp', 'spin', '../../../../vendor/tinymce/tinymce.min'], function ($, Jcrop, utils, component, uikitextend, commomregexp,Spinner) {
         $(document).ready(function () {
             //变量声明
             //链接类型对象
