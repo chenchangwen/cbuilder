@@ -19,7 +19,6 @@
     "doT": "~1.0.1",
     "jquery": "1.11.2",
     "requirejs": "~2.1.17",
-    "spin": "~1.1.6",
     "dropzone": "~4.0.1",
     "jcrop": "~0.9.12",
     "tangram": "*",

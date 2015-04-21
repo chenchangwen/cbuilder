@@ -1,10 +1,10 @@
 ﻿require.config({
     paths: {
-        link: "../../component/link",
-        button: "../component/button",
-        regexp: "../component/regexp",
-        countdown: "../component/countdown",
-        componentutils: "../component/utils"
+        link: "component/link",
+        button: "component/button",
+        regexp: "component/regexp",
+        countdown: "component/countdown",
+        componentutils: "component/utils"
     }
 });
 define(["link", "button", "regexp", "countdown"], function (ccwlink, ccwbutton, ccwregexp, ccwcountdown) {
