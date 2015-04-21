@@ -1,5 +1,5 @@
 ﻿require(['../../global.config'], function () {
-    require(['jquery', 'Jcrop', 'utils', 'component', 'spin', 'uikitextend', '../../../../vendor/tinymce/tinymce.min'], function ($, Jcrop, utils, component, Spinner, uikitextend) {
+    require(['jquery', 'Jcrop', 'utils', 'component/all', 'uikitextend', '../../common/regexp', 'spin', '../../../../vendor/tinymce/tinymce.min'], function ($, Jcrop, utils, component, uikitextend, commomregexp,Spinner) {
         $(document).ready(function () {
             //变量声明
             //链接类型对象
@@ -40,6 +40,7 @@
                 $editmap = null,
                 //cropwrap是否已经委托
                 isdelegate = false;
+                activeImage = parent.$.cbuilder.activeImage;
             var fontstyle = "";
             var offsetw = ($(document).width() < $("body").width() ? $(document).width() : $("body").width()),
                   offseth = (document.all ? document.getElementsByTagName("html")[0].offsetHeight : window.innerHeight);
@@ -53,6 +54,7 @@
             function loadContent() {
                 var willload;
                 $content.html(willload);
+                $content.html(activeImage.prop('outerHTML'));
                 $cropwrap = $(".cropwrap");
 
                 var opts = {
@@ -745,7 +747,7 @@
                         }
                         else
                             if ($baritem1.is(":hidden")) {
-                                var re = new RegExp(component.regexp.url, "ig");
+                                var re = new RegExp(commomregexp.url, "ig");
                                 if ($linktype.val() == 'link') {
                                     if (!re.test($link.val())) {
                                         uikitextend.uikit.notify({ message: "请输入正确的链接地址!" });
