@@ -148,7 +148,7 @@
                         });
 
                         $(clsContent).undelegate('dblclick').delegate('img', 'dblclick', function () {
-                            $.cbuilder.activeImage = $(this);
+                            $.cbuilder.active = $(this);
                             $.fancybox.open({
                                 href: basePath + 'plugins/picture/plugin.html',
                                 type: 'iframe',
@@ -159,8 +159,6 @@
                             });
                         });
                     });
-                    
-                   
                 },
                 struc: function() {
                     this.appendHtml();

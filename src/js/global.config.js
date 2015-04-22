@@ -10,8 +10,7 @@
         //自定义
         jqextend: 'core/jqextend',
         uikitextend: 'core/uikitextend',
-        utils: 'core/utils',
-        component: 'component/all'
+        utils: 'core/utils'
     },
     shim: {
         jqextend: ['jquery'],
