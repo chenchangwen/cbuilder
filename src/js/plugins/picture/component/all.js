@@ -2,7 +2,6 @@
     paths: {
         link: "plugins/picture/component/link",
         button: "plugins/picture/component/button",
-        regexp: "plugins/picture/component/regexp",
         countdown: "plugins/picture/component/countdown",
         componentutils: "plugins/picture/component/utils"
     }
