@@ -15,7 +15,7 @@
     var defaults = {
         height: "100%",
         width:"100%",
-        plugins: ["upload", 'test', 'clean'],
+        plugins: ["upload", 'test', 'clean','anchor'],
         prefix: "cbuilder",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
@@ -106,6 +106,7 @@
                                         if (plugin.type === 'iframe') {
                                             $.fancybox.open({
                                                 href: basePath + 'plugins/' + plugin.name + '/plugin.html',
+                                                title: plugin.text,
                                                 type: 'iframe',
                                                 padding: 5,
                                                 scrolling: 'no',

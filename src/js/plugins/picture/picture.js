@@ -1,5 +1,40 @@
 ﻿require(['../../global.config'], function () {
     require(['jquery', 'Jcrop', 'utils', 'plugins/picture/component/all', 'uikitextend', 'common/regexp', 'spin'], function ($, Jcrop, utils, component, uikitextend, commomregexp, Spinner) {
+        /*RGB颜色转换为16进制*/
+        String.prototype.colorHex = function () {
+            //十六进制颜色值的正则表达式  
+            var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
+            var that = this;
+            if (/^(rgb|RGB)/.test(that)) {
+                var aColor = that.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
+                var strHex = "#";
+                for (var i = 0; i < aColor.length; i++) {
+                    var hex = Number(aColor[i]).toString(16);
+                    if (hex === "0") {
+                        hex += hex;
+                    }
+                    strHex += hex;
+                }
+                if (strHex.length !== 7) {
+                    strHex = that;
+                }
+                return strHex;
+            } else if (reg.test(that)) {
+                var aNum = that.replace(/#/, "").split("");
+                if (aNum.length === 6) {
+                    return that;
+                } else if (aNum.length === 3) {
+                    var numHex = "#";
+                    for (var i = 0; i < aNum.length; i += 1) {
+                        numHex += (aNum[i] + aNum[i]);
+                    }
+                    return numHex;
+                }
+            } else {
+                return that;
+            }
+        };
+
         $(document).ready(function () {
             //变量声明
             //链接类型对象
@@ -85,13 +120,6 @@
             //初始化
             function init() {
                 $img = $("img");
-                var src = $img.attr("src");
-                //处理正确路径
-                if (src[0] === ".") {
-                    $img.attr("src", src.substr(1, src.length));
-                    $img.attr("data-mce-src", src);
-                }
-
                 var picRealWidth, picRealHeight;
                 $img.attr("src", $img.attr("src")).load(function () {
                     picRealWidth = this.width;
@@ -257,7 +285,7 @@
                     trnpic.length = 0;
                     $selecthour.each(function () {
                         var $this = $(this);
-                        if ($this.text() != "选择") {
+                        if ($this.text() !== "选择") {
                             trnpic.push($(this).parent().parent().prev().attr("src"));
                             trndate.push($(this).text());
                         }
@@ -274,37 +302,7 @@
                     var tempfontstyle = fontstyle.split(";");
                     tempfontstyle.length = 3;
                     //字体
-                    var fontfamily = $.trim($("#mceu_0-open").text());
-                    var fontsize = $.trim($("#mceu_1-open").text());
-                    var fontcolor = $("#mceu_2-preview").attr("style");
                     var font = "";
-                    if (fontfamily == "字体") {
-                        if (tempfontstyle[0] != undefined) {
-                            font += (tempfontstyle[0] || "") + "$$";
-                        } else {
-                            font += "font-family:" + (tempfontstyle[0] || "") + "$$";
-                        }
-                    } else {
-                        font += "font-family:" + fontfamily + "$$";
-                    }
-                    if (fontsize == "字号") {
-                        if (tempfontstyle[1] != undefined) {
-                            font += (tempfontstyle[1] || "") + "$$";
-                        } else {
-                            font += "font-size:" + (tempfontstyle[1] || "") + "$$";
-                        }
-                    } else {
-                        font += "font-size:" + fontsize + "$$";
-                    }
-                    if (fontcolor == undefined) {
-                        if (tempfontstyle[2] != undefined) {
-                            font += (tempfontstyle[2] || "") + "$$";
-                        } else {
-                            font += "color:" + (tempfontstyle[2] || "") + "$$";
-                        }
-                    } else {
-                        font += "color:" + $("#mceu_2-preview").css("background-color").colorHex() + "$$";
-                    }
                     //保存时间
                     $img.attr("startdate", $startdate.val());
                     $img.attr("enddate", $enddate.val());
@@ -544,7 +542,6 @@
                             if (jcrophheigth < orginheight) {
                                 jcrophheigth = jcrophheigth + (orginheight - jcrophheigth);
                             }
-                            //console.log('处理后:  jcrophwidth:' + jcrophwidth + ' jcrophheigth:' + jcrophheigth);
                             imgpos = {
                                 w: jcrophwidth,
                                 h: jcrophheigth,
@@ -564,10 +561,6 @@
                             });
                             var left = obj.position().left;
                             var top = obj.position().top;
-                            //console.log('选择时');
-                            //console.log('orignwidth:' + orignwidth + ' orginheight:' + orginheight);
-                            //console.log(imgpos);
-                            //console.log('width:' + (w + left) + " height:" + (h +top )+ ' left:' + left + ' top:' + top);
                             jcrop_api.animateTo([w + left, h + top, left, top]);
                         } else {
                             jcrop_api.animateTo([100, 100, 0, 0]);
@@ -643,11 +636,17 @@
                     isactivebtnhidden = true;
 
                     sidebar.temprow.remove();
-                    $link.val($editnote.attr("href"));
-                    $linktype.find("option[value='" + $editnote.attr("linktype") + "']").prop("selected", "selected").trigger("change");
-                    $linktarget.find('input[value=' + $editnote.attr("target") + ']').prop("checked", "checked").trigger("click");
+
+                    var notetarget = $editnote.attr("target");
+                    var linktype = $editnote.attr("linktype");
+                    if (linktype === 'link') {
+                        $link.val($editnote.attr("href"));
+                    } 
+                    //  $editnote.attr("target")
+                    $linktype.find("option[value='" + linktype + "']").prop("selected", "selected").trigger("change");
+                    $linktarget.find('input[value=' + notetarget + ']').prop("checked", "checked").trigger("click");
                     //锚点/倒计时
-                    $linktarget.find("option[value='" + $editnote.attr("target") + "']").prop("selected", "selected").trigger("click");
+                    $linktarget.find("option[value='" + (notetarget || $editnote.attr("href").replace(/#/, '')) + "']").prop("selected", "selected").trigger("click");
                     //时间类型
                     $("#countdowntype").find("option[value='" + $editnote.attr("datetype") + "']").prop("selected", "selected");
                     $sidebar.css("transform", "translateX(-10px)");
@@ -759,18 +758,6 @@
                         }
                     });
 
-                    //                    $("#close").on("click", function () {
-                    //                        if (typeof (jcrop_api) != "undefined") {
-                    //                            jcrop_api.release();
-                    //                            jcrop_api.destroy();
-                    //                            delete jcrop_api;
-                    //                            $editnote.css("border", "2px solid blue");
-                    //                            $editnote = null;
-                    //                            isnewselected = false;
-                    ////                            sidebar.hide();
-                    //                        }
-                    //                    });
-
                     $("#addhotlink").on("click", function () {
                         if (typeof (jcrop_api) != "undefined") {
                             jcrop_api.release();
@@ -837,10 +824,8 @@
                     //链接类型点击事件 兼容chrome
                     $linktype.change(function () {
                         //先删除临时行
-
                         sidebar.temprow.remove();
                         var $this = $(this),
-                            linkvalue = linktype[$this.val()],
                             html = "",
                             linkval = $this.val();
                         //如果相等则禁止输入地址
@@ -851,24 +836,21 @@
                         }
 
                         //如果是锚点(读取并生成锚点)
-                        if (linkval == "anchor") {
-                            //锚点只读第一个编辑器的
-                            //var editor1 = parent.tinymce.editors[0];
-                            //var $anchor = $(editor1.getBody()).find(".tempanchor");
-                            //var len = $anchor.length;
-                            //if (len > 0) {
-                            //    html = getTempRowHtml(function () {
-                            //        $anchor.each(function () {
-                            //            var id = $(this).attr("id");
-                            //            html += "<option value=\"" + id + "\">" + id + "</option>";
-                            //        });
-                            //        return html;
-                            //    }, "select");
-                            //} else {
-                            //    html = getTempRowHtml(function () {
-                            //        return "<div class=\"uk-alert\">没有锚点</div>";
-                            //    });
-                            //}
+                        if (linkval === "anchor") {
+                            var $anchors = parent.$.cbuilder.active.parents('.cb-body').find('.cb-anchor');
+                            if ($anchors.length > 0) {
+                                html = getTempRowHtml(function() {
+                                    $anchors.each(function () {
+                                        var id = $(this).attr("id");
+                                        html += "<option value=\"" + id + "\">" + id + "</option>";
+                                    });
+                                    return html;
+                                }, "select");
+                            } else {
+                                html = getTempRowHtml(function () {
+                                    return "<div class=\"uk-alert\">没有锚点</div>";
+                                });
+                            }
                         }
                         else {
                             if (linkval === 'link') {
@@ -929,7 +911,7 @@
                         var wraptag = linktype === 'countdown' ? 'div' : 'a';
                         var imgposposition = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + (imgpos.h - 6) + "px;";
                         var html =
-                            "<" + wraptag + " contenteditable=\"false\" class=\"imgpos\" style=\"position:absolute;border:2px solid blue;" + imgposposition + "\"";
+                            "<" + wraptag + " class=\"imgpos\" style=\"position:absolute;border:2px solid blue;" + imgposposition + "\"";
 
                         if (linktype === 'link') {
                             html += " href=\"" + $link.val() + "\"";

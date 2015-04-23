@@ -7,10 +7,9 @@
         "uikit": '../../vendor/uikit/js/uikit.min',
         "spin": '../../lib/spin.min',
         'uikit!upload': '../../uikit!upload',
-        //自定义
-        jqextend: 'core/jqextend',
-        uikitextend: 'core/uikitextend',
-        utils: 'core/utils'
+        //common
+        uikitextend: 'common/uikitextend',
+        utils: 'common/utils'
     },
     shim: {
         jqextend: ['jquery'],
