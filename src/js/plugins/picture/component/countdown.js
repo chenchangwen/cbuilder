@@ -1,6 +1,6 @@
 ﻿define(['jquery', 'componentutils'], function ($, utils) {
-    var text = ["距离开始时间", "距离结束时间", "时间循环", "先开始后结束"];
-    var value = ["0", "1", "2", "3"];
+    var text = ["距离开始时间", "距离结束时间", "先开始后结束"];
+    var value = ["0", "1", "2"];
     var html = '<select>';
     for (var i = 0; i < value.length; i++) {
         html += "<option value=\"" + value[i] + "\">" + text[i] + "</option>";

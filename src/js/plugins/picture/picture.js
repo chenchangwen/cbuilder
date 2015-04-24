@@ -1,39 +1,5 @@
 ﻿require(['../../global.config'], function () {
-    require(['jquery', 'Jcrop', 'utils', 'plugins/picture/component/all', 'uikitextend', 'common/regexp', 'spin'], function ($, Jcrop, utils, component, uikitextend, commomregexp, Spinner) {
-        /*RGB颜色转换为16进制*/
-        String.prototype.colorHex = function () {
-            //十六进制颜色值的正则表达式  
-            var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
-            var that = this;
-            if (/^(rgb|RGB)/.test(that)) {
-                var aColor = that.replace(/(?:\(|\)|rgb|RGB)*/g, "").split(",");
-                var strHex = "#";
-                for (var i = 0; i < aColor.length; i++) {
-                    var hex = Number(aColor[i]).toString(16);
-                    if (hex === "0") {
-                        hex += hex;
-                    }
-                    strHex += hex;
-                }
-                if (strHex.length !== 7) {
-                    strHex = that;
-                }
-                return strHex;
-            } else if (reg.test(that)) {
-                var aNum = that.replace(/#/, "").split("");
-                if (aNum.length === 6) {
-                    return that;
-                } else if (aNum.length === 3) {
-                    var numHex = "#";
-                    for (var i = 0; i < aNum.length; i += 1) {
-                        numHex += (aNum[i] + aNum[i]);
-                    }
-                    return numHex;
-                }
-            } else {
-                return that;
-            }
-        };
+    require(['jquery', 'Jcrop', 'utils', 'plugins/picture/component/all', 'uikitextend', 'common/regexp', 'spin', 'spectrum'], function ($, Jcrop, utils, component, uikitextend, commomregexp, Spinner) {
 
         $(document).ready(function () {
             //变量声明
@@ -42,7 +8,7 @@
                 link: [],
                 button: ["youhui", "login"],
                 anchor: [],
-                countdown: ["0", "1", "2", "3"]
+                countdown: ["0", "1", "2"]
             };
             //带有$+变量名,均为jquery对象
             var 
@@ -152,6 +118,53 @@
                 if ($img.attr("dayhours") === "true") {
                     $dayhours.prop("checked", "checked");
                 }
+
+                //增加字体
+                var html = '';
+                var $fd = $(".fontdemo");
+                var fontfamily = ['Andale Mono', 'Arial', 'Arial Black', 'Book Antiqua', 'Comic Sans MS', 'Courier New', 'Georgia', 'Helvetica', 'Impact', 'Symbol', 'Tahoma', 'Terminal', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'Webdings', 'Wingdings'];
+                for (var i = 0; i < fontfamily.length; i++) {
+                    html += '<option value="' + fontfamily[i] + '">' + fontfamily[i] + '</option>';
+                }
+                var $fm = $("#fontfamily");
+                $fm.html(html);
+                $fm.change(function() {
+                    $fd.css('font-family', $(this).val());
+                });
+                html = '';
+                for (i = 14; i < 60;) {
+                    html += '<option value="' + i + '">' + i + 'px' + '</option>';
+                    i += 2;
+                }
+                var $fs = $("#fontsize");
+                $fs.html(html);
+                $fs.change(function () {
+                    $fd.css('font-size', $(this).val() + 'px');
+                    $fd.css('line-height', $(this).val() + 'px');
+                });
+
+                $("#fontcolor").spectrum({
+                    showPalette: true,
+                    color: "#000",
+                    chooseText: "确 定",
+                    cancelText: "取 消",
+                    showInput: true,
+                    preferredFormat: "hex",
+                    palette: [
+                       ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+                       ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+                       ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
+                       ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
+                       ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
+                       ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
+                       ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
+                       ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
+                    ],
+                    change: function (color) {
+                        $("#fontcolor").val(color.toHexString());
+                        $fd.css('color', color.toHexString());
+                    }
+                });
             }
 
             //获得临时行元素html
@@ -206,68 +219,26 @@
                                 $temprow.eq(i).remove();
                             }
                         }
-
-                        //循环时间input
-                        var cycledate = getTempRowHtml(function () {
-                            return "<input type=\"text\" class=\"cycledate\" disabled=\"disabled\" id=\"cycledate\" value=\"" + value + "\" style=\"width: 100%\">";
-                        });
-
-                        //如果链接目标是"时间循环"添加以下DOM
-                        if (obj.val() == linktype["countdown"][2]) {
-                            html = "";
-                            html = getTempRowHtml(function () {
-                                for (var i = 0; i <= 23; i++) {
-                                    html += "<option value=\"" + i + "\">" + i + "</option>";
-                                }
-                                return html;
-                            }, "select", "class=\"circulation\"");
-                            $(".temprow:eq(1)").remove();
-                            obj.parent().parent().parent().parent().after(html);
-                            var $circulation = $(".circulation");
-                            var $selectwrap = $circulation.parent();
-                            //添加动态内容
-                            $circulation.before("<lable class=\"uk-form-label\">小时</lable>");
-                            $selectwrap.append("&nbsp;<a class=\"add uk-button uk-button-primary\">添加</a>");
-                            $selectwrap.append("&nbsp;<a class=\"clear uk-button uk-button-danger\">清空</a>");
-                            $selectwrap.parent().after(cycledate);
-                            //绑定事件
-                            $selectwrap.delegate("a", "click", function () {
-                                var $this = $(this);
-                                var $cycledate = $(".cycledate");
-                                if ($this.text() == "添加") {
-                                    var selecting = $circulation.children("option:selected").val();
-                                    var selected = $cycledate.val().split(",");
-                                    if (!utils.isCompareExist(selecting, selected)) {
-                                        $cycledate.val($cycledate.val() + selecting + ",");
-                                    } else {
-                                        uikitextend.uikit.notify({ message: "该小时已经存在!" });
-                                    }
-                                } else {
-                                    $cycledate.val("");
-                                }
-                            });
+                        //其他链接目标添加"时间类型"
+                        var countdowntype = getTempRowHtml(function () {
+                            html += "<option value=\"hour\">时</option>";
+                            html += "<option value=\"minute\">分</option>";
+                            html += "<option value=\"second\">秒</option>";
+                            return html;
+                        }, "select", "class=\"countdowntype\" id=\"countdowntype\"");
+                        obj.parent().parent().after(countdowntype);
+                        //中文后缀
+                        var cdsuffixischecked = "";
+                        if ($editnote.attr("cdsuffix") == "false") {
+                            cdsuffixischecked = "";
                         } else {
-                            //其他链接目标添加"时间类型"
-                            var countdowntype = getTempRowHtml(function () {
-                                html += "<option value=\"hour\">时</option>";
-                                html += "<option value=\"minute\">分</option>";
-                                html += "<option value=\"second\">秒</option>";
-                                return html;
-                            }, "select", "class=\"countdowntype\" id=\"countdowntype\"");
-                            obj.parent().parent().after(countdowntype);
-                            //中文后缀
-                            var cdsuffixischecked = "";
-                            if ($editnote.attr("cdsuffix") == "false") {
-                                cdsuffixischecked = "";
-                            } else {
-                                cdsuffixischecked = "checked=\"checked\"";
-                            }
-                            var cdsuffixhtml = "&nbsp;<label><input type=\"checkbox\"  " + cdsuffixischecked + " class=\"cdsuffix\"> 保留中文后缀</label>";
-                            $("#countdowntype").after(cdsuffixhtml);
-
-                            var $countdowntype = $(".countdowntype");
-                            $countdowntype.before("<label class=\"uk-form-label\" for=\"countdowntype\">时间类型</label>");
+                            cdsuffixischecked = "checked=\"checked\"";
                         }
+                        var cdsuffixhtml = "&nbsp;<label><input type=\"checkbox\"  " + cdsuffixischecked + " class=\"cdsuffix\"> 保留中文后缀</label>";
+                        $("#countdowntype").after(cdsuffixhtml);
+
+                        var $countdowntype = $(".countdowntype");
+                        $countdowntype.before("<label class=\"uk-form-label\" for=\"countdowntype\">时间类型</label>");
                     }
                 }
             }
@@ -297,16 +268,10 @@
                     else {
                         $img.removeAttr("trndate");
                         $img.removeAttr("trnpic");
-                    }
-
-                    var tempfontstyle = fontstyle.split(";");
-                    tempfontstyle.length = 3;
-                    //字体
-                    var font = "";
+                    }                  
                     //保存时间
                     $img.attr("startdate", $startdate.val());
                     $img.attr("enddate", $enddate.val());
-                    $img.attr("fontstyle", font);
                     //保存倒计时
                     if ($dayhours.prop("checked")) {
                         $img.attr("dayhours", "true");
@@ -378,7 +343,6 @@
                     trnpic = [];
                     trndate = [];
                     $tblimg.html("");
-                    //        $fxinput.val('');
                 });
 
                 //切换图片预览

@@ -28,11 +28,6 @@
     color: #c71585;
 }
 
-.cb-textarea {
-    width: 98%;
-    height: 200px;
-}
-
 .cb-tools {
     border: medium none;
     padding: 10px 15px;
@@ -46,11 +41,22 @@
     float: right;
 }
 
-
 .cb-tools .btn {
     font-weight: 300;
 }
 
 .btn.btn-delete {
     color: red;
+}
+
+
+.cb-content .cb-textarea {
+    width: 98%;
+    height: 200px;
+}
+.cb-content .cb-anchor {
+    background-image: url('../images/anchor.gif');
+    width: 20px;
+    height: 20px;
+    display: inline-block;
 }

@@ -7,6 +7,7 @@
     <link href="../../../../vendor/uikit/css/uikit.gradient.min.css" rel="stylesheet" />
     <link href="../../../../vendor/uikit/css/components/notify.almost-flat.min.css" rel="stylesheet"/>
     <script src="../../../../lib/My97DatePicker/WdatePicker.js"></script>
+    <link href="../../../../vendor/spectrum/spectrum.css" rel="stylesheet" />
     <style type="text/css">
         #sidebar {
             width: 450px;
@@ -147,9 +148,16 @@
                 </div>
                 <div class="uk-form-row">
                     <label class="uk-form-label">字体设定</label>
-
+                    <select id="fontfamily"></select>
+                    <select id="fontsize"></select>
+                    <input type='text' id="fontcolor" />
                 </div>
-
+                <div class="uk-form-row">
+                    <p class="fontdemo" style="margin: 5px;">
+                        font Style
+                    </p>
+                </div>
+              
 
                 <div class="uk-form-row">
                     <div class="uk-form-controls">

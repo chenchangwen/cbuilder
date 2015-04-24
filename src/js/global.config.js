@@ -4,6 +4,7 @@
         //vendors
         jquery: '../../vendor/jquery/dist/jquery.min',
         Jcrop: '../../vendor/Jcrop/js/jquery.Jcrop.min',
+        spectrum: '../../vendor/spectrum/spectrum',
         "uikit": '../../vendor/uikit/js/uikit.min',
         "spin": '../../lib/spin.min',
         'uikit!upload': '../../uikit!upload',
@@ -18,7 +19,8 @@
         "spin": ['jquery'],
         Jcrop: ['jquery'],
         "uikit": ['jquery'],
-        "uikit!upload": ['jquery']
+        "uikit!upload": ['jquery'],
+        spectrum:['jquery']
     },
     config: {
         "uikit": {
