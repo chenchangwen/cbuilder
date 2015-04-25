@@ -26,6 +26,7 @@
                 $tblimg = $("#tblimg"),
                 $body = $('body'),
                 $floatbtn = $('#floatbtn'),
+                $fontdemo  = $(".fontdemo"),
                 //是否激活隐藏按钮
                 isactivebtnhidden = true,
                 $img,
@@ -40,7 +41,6 @@
                 $editmap = null,
                 //cropwrap是否已经委托
                 isdelegate = false;
-            var fontstyle = "";
             var offsetw = ($(document).width() < $("body").width() ? $(document).width() : $("body").width()),
                   offseth = (document.all ? document.getElementsByTagName("html")[0].offsetHeight : window.innerHeight);
             $(document).ready(function () {
@@ -108,12 +108,7 @@
                 content.init();
                 renderTransitionPic();
                 
-                fontstyle = $img.attr("fontstyle");
-                if (fontstyle != undefined) {
-                    fontstyle = $img.attr("fontstyle").replace(/\$\$/ig, ";");
-                } else {
-                    fontstyle = "";
-                }
+            
                 //倒计时转换小时
                 if ($img.attr("dayhours") === "true") {
                     $dayhours.prop("checked", "checked");
@@ -121,15 +116,23 @@
 
                 //增加字体
                 var html = '';
-                var $fd = $(".fontdemo");
                 var fontfamily = ['Andale Mono', 'Arial', 'Arial Black', 'Book Antiqua', 'Comic Sans MS', 'Courier New', 'Georgia', 'Helvetica', 'Impact', 'Symbol', 'Tahoma', 'Terminal', 'Times New Roman', 'Trebuchet MS', 'Verdana', 'Webdings', 'Wingdings'];
                 for (var i = 0; i < fontfamily.length; i++) {
                     html += '<option value="' + fontfamily[i] + '">' + fontfamily[i] + '</option>';
                 }
+                var fm = $img.css('font-family') || '';
+                var color = $img.css('color') || '';
+                var fs = $img.css('font-size') || '';
+
+                $fontdemo.css("font-family", fm);
+                $fontdemo.css("color", color);
+                $fontdemo.css("font-size", fs);
                 var $fm = $("#fontfamily");
+                
                 $fm.html(html);
+                $fm.find("option[value='" + fm + "']").prop("selected", "selected");
                 $fm.change(function() {
-                    $fd.css('font-family', $(this).val());
+                    $fontdemo.css('font-family', $(this).val());
                 });
                 html = '';
                 for (i = 14; i < 60;) {
@@ -138,18 +141,21 @@
                 }
                 var $fs = $("#fontsize");
                 $fs.html(html);
+                $fs.find("option[value='" + fs.replace(/px/,'') + "']").prop("selected", "selected");
+
                 $fs.change(function () {
-                    $fd.css('font-size', $(this).val() + 'px');
-                    $fd.css('line-height', $(this).val() + 'px');
+                    $fontdemo.css('font-size', $(this).val() + 'px');
+                    $fontdemo.css('line-height', $(this).val() + 'px');
                 });
 
                 $("#fontcolor").spectrum({
                     showPalette: true,
-                    color: "#000",
-                    chooseText: "确 定",
-                    cancelText: "取 消",
+                    color: color || "#000",
                     showInput: true,
                     preferredFormat: "hex",
+                    hideAfterPaletteSelect: true,
+                    clickoutFiresChange: true,
+                    showButtons: false,
                     palette: [
                        ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
                        ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
@@ -161,10 +167,11 @@
                        ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
                     ],
                     change: function (color) {
-                        $("#fontcolor").val(color.toHexString());
-                        $fd.css('color', color.toHexString());
+                        $fontdemo.css('color', color.toHexString());
                     }
                 });
+
+               
             }
 
             //获得临时行元素html
@@ -272,6 +279,9 @@
                     //保存时间
                     $img.attr("startdate", $startdate.val());
                     $img.attr("enddate", $enddate.val());
+                    $img.css("font-family", $fontdemo.css('font-family') || '');
+                    $img.css("color", $fontdemo.css('color') || '');
+                    $img.css("font-size", $fontdemo.css('font-size') || '');
                     //保存倒计时
                     if ($dayhours.prop("checked")) {
                         $img.attr("dayhours", "true");
