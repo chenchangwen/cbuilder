@@ -11,7 +11,8 @@
                     uikitextend.uikit.notify({ message: "宽度:请输入正确的数字!" });
                     return false;
                 }
-                width = $width.val();
+                width = $width.val() || "";
+                if (width!=="")
                 attr = ' width="' + width + '"';
             }
             if ($height.val() !== "0") {
@@ -19,7 +20,8 @@
                     uikitextend.uikit.notify({ message: "高度:请输入正确的数字!" });
                     return false;
                 }
-                height = $height.val();
+                height = $height.val()|| "";
+                if (height !== "")
                 attr += ' height="' + height + '"';
             }
             regexp = new RegExp(commomregexp.url);

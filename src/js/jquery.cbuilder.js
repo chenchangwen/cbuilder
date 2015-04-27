@@ -35,7 +35,8 @@
 
     var clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
-        clsContent='.cb-content',
+        clsContent = '.cb-content',
+        clsWrap = '.cb-wrap',
         basePath = currentScriptPath();
 
     var cbuilder = function(element, options) {
@@ -137,11 +138,13 @@
                                     "<a href='javascript:;' class='btn btn-delete'>删除</a>" +
                                     "</div>";
                             $thisparent.prev('.cb-tools').html(html);
-                            var clsbtnwrap = $('.btn-wrap');
+                            var clsbtnwrap = $(this).parents(clsWrap).find('.btn-wrap');
 
                             //工具条-删除
                             clsbtnwrap.find('.btn-delete').on('click', function () {
-                                $(this).parents('.cb-wrap').remove();
+                                if (confirm('确定删除?')) {
+                                    $(this).parents('.cb-wrap').remove();
+                                }
                             });
 
                             //工具条-设为切换图片
@@ -149,16 +152,22 @@
                                 html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
                                 clsbtnwrap.append(html);
                                 clsbtnwrap.find('.btn-trnspic').on('click', function () {
-                                    if (confirm('确认设为切换图片?')) {
-                                        var $this = $(this);
-                                        $.cbuilder.trnspic.push($this);
+                                    if (confirm('确定设为切换图片?')) {
+                                        var pclsWrap = $(this).parents(clsWrap);
+                                        var src = pclsWrap.find('img').attr('src');
+                                        $.cbuilder.active = that;
+                                        if ($.cbuilder.active.trnspic === undefined) {
+                                            $.cbuilder.active.trnspic = [];
+                                        }
+                                        $.cbuilder.active.trnspic.push(src);
+                                        pclsWrap.remove();
                                     }
                                 });
                             }
                         });
 
                         $(clsContent).undelegate('dblclick').delegate('img', 'dblclick', function () {
-                            $.cbuilder.active = $(this);
+                            $.cbuilder.activeimg = $(this);
                             $.fancybox.open({
                                 href: basePath + 'plugins/picture/plugin.html',
                                 type: 'iframe',

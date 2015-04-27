@@ -52,7 +52,7 @@
             //载入内容
             function loadContent() {
 
-                $content.html(parent.$.cbuilder.active.prop('outerHTML'));
+                $content.html(parent.$.cbuilder.activeimg.prop('outerHTML'));
                 $cropwrap = $(".cropwrap");
 
                 var opts = {
@@ -292,13 +292,14 @@
 
                 });
 
-                var maptrnpic = $img.attr("trnpic") == undefined ? "" : $img.attr("trnpic"), forpic, forpictxt;
-
+                var forpic, forpictxt;
                 html = "";
                 //如果没有图片
-                debugger;
-                if (parent.$.cbuilder.trnspic.length === 0) {
-                    var obj = maptrnpic.split(",");
+                if (parent.$.cbuilder.active.trnspic === undefined) {
+                    parent.$.cbuilder.active.trnspic = [];
+                }
+                if (parent.$.cbuilder.active.trnspic.length === 0) {
+                    var obj = $img.attr("trnpic") || "";
                     if (obj === "") {
                         html = "";
                     }
@@ -310,8 +311,8 @@
                         }
                     }
                 } else {
-                    for (i = 0; i < parent.$.cbuilder.trnspic.length; i++) {
-                        forpic = parent.$.cbuilder.trnspic[i];
+                    for (i = 0; i < parent.$.cbuilder.active.trnspic.length; i++) {
+                        forpic = parent.$.cbuilder.active.trnspic[i];
                         forpictxt = forpic.split("/");
                         html += "<li value=\"" + forpic + "\">" + "<a href=\"#\">" + forpictxt[forpictxt.length - 1] + "</a></li>";
                     }
@@ -320,7 +321,10 @@
                     $("#trnsrctip").text("没有图片");
                     $trnsrc.remove();
                 }
-
+                else {
+                    $trnsrc.html(html);
+                    $("#wraptrnsrc").after("&nbsp;<a class=\"uk-button uk-button-danger\" id=\"trnsrcclear\">清空</a>");
+                }
 
                 $("#trnsrctip").on("click", function () {
                     return false;
@@ -809,7 +813,7 @@
 
                         //如果是锚点(读取并生成锚点)
                         if (linkval === "anchor") {
-                            var $anchors = parent.$.cbuilder.active.parents('.cb-body').find('.cb-anchor');
+                            var $anchors = parent.$.cbuilder.activeimg.parents('.cb-body').find('.cb-anchor');
                             if ($anchors.length > 0) {
                                 html = getTempRowHtml(function() {
                                     $anchors.each(function () {
