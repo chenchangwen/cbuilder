@@ -43,10 +43,12 @@
 
 .cb-tools .btn {
     font-weight: 300;
+    margin-left: 15px;
+    color: white;
 }
 
 .btn.btn-delete {
-    color: red;
+    
 }
 
 

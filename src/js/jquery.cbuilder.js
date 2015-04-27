@@ -22,8 +22,7 @@
             toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-button {clsname}\">{name}</button></div>",
             body: "<div class=\"cb-body\"></div>",
             content: "<div class=\"cb-wrap\"><div class=\"cb-content\"></div></div>"
-        },
-        onComplete: false
+        }
     };
 
     function currentScriptPath() {
@@ -36,12 +35,8 @@
 
     var clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
-        clsButton = '.cb-button',
-        clsContainer = '.cb-container',
         clsContent='.cb-content',
         basePath = currentScriptPath();
-
-
 
     var cbuilder = function(element, options) {
         this.options = $.extend({}, defaults, options);
@@ -58,7 +53,6 @@
                     that.$element.addClass('cb-container')
                         .wrap(options.tpl.container)
                         .append(options.tpl.toolbar + options.tpl.body);
-
                     that.$element.width(options.width).height(options.height);
                 },
                 //加载vendors
@@ -136,16 +130,31 @@
                             var $this = $(this);
                             $this.wrap(that.options.tpl.content);
                             var $thisparent = $this.parent();
+                            //添加工具条
                             $thisparent.before("<div class='cb-tools'></div>");
                             var html =
                                 "<div class='btn-wrap'>" +
                                     "<a href='javascript:;' class='btn btn-delete'>删除</a>" +
                                     "</div>";
-                            var tools = $thisparent.prev('.cb-tools');
-                            tools.html(html);
-                            tools.find('.btn-delete').on('click', function () {
+                            $thisparent.prev('.cb-tools').html(html);
+                            var clsbtnwrap = $('.btn-wrap');
+
+                            //工具条-删除
+                            clsbtnwrap.find('.btn-delete').on('click', function () {
                                 $(this).parents('.cb-wrap').remove();
                             });
+
+                            //工具条-设为切换图片
+                            if ($this.prop('tagName') === 'IMG') {
+                                html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
+                                clsbtnwrap.append(html);
+                                clsbtnwrap.find('.btn-trnspic').on('click', function () {
+                                    if (confirm('确认设为切换图片?')) {
+                                        var $this = $(this);
+                                        $.cbuilder.trnspic.push($this);
+                                    }
+                                });
+                            }
                         });
 
                         $(clsContent).undelegate('dblclick').delegate('img', 'dblclick', function () {
@@ -182,7 +191,8 @@
         append: function (html) {
             $.cbuilder.active.$element.find(clsBody).append(html);
             $.cbuilder.active._trigger('onLoadContent');
-        }
+        },
+        trnspic:[]
     }
 
     $.fn.cbuilder = function(option) {

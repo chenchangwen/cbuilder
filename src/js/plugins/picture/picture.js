@@ -296,33 +296,31 @@
 
                 html = "";
                 //如果没有图片
-                //if (editor.transitionPic == "") {
-                //    var obj = maptrnpic.split(",");
-                //    if (obj == "") {
-                //        html = "";
-                //    }
-                //    else {
-                //        for (i = 0; i < obj.length; i++) {
-                //            forpic = obj[i];
-                //            forpictxt = forpic.split("/");
-                //            html += "<li value=\"" + forpic + "\">" + "<a href=\"#\">" + forpictxt[forpictxt.length - 1] + "</a></li>";
-                //        }
-                //    }
-                //} else {
-                //    for (i = 0; i < editor.transitionPic.length; i++) {
-                //        forpic = editor.transitionPic[i];
-                //        forpictxt = forpic.split("/");
-                //        html += "<li value=\"" + forpic + "\">" + "<a href=\"#\">" + forpictxt[forpictxt.length - 1] + "</a></li>";
-                //    }
-                //}
+                debugger;
+                if (parent.$.cbuilder.trnspic.length === 0) {
+                    var obj = maptrnpic.split(",");
+                    if (obj === "") {
+                        html = "";
+                    }
+                    else {
+                        for (i = 0; i < obj.length; i++) {
+                            forpic = obj[i];
+                            forpictxt = forpic.split("/");
+                            html += "<li value=\"" + forpic + "\">" + "<a href=\"#\">" + forpictxt[forpictxt.length - 1] + "</a></li>";
+                        }
+                    }
+                } else {
+                    for (i = 0; i < parent.$.cbuilder.trnspic.length; i++) {
+                        forpic = parent.$.cbuilder.trnspic[i];
+                        forpictxt = forpic.split("/");
+                        html += "<li value=\"" + forpic + "\">" + "<a href=\"#\">" + forpictxt[forpictxt.length - 1] + "</a></li>";
+                    }
+                }
                 if (html === "") {
                     $("#trnsrctip").text("没有图片");
                     $trnsrc.remove();
                 }
-                //else {
-                //    $trnsrc.html(html);
-                //    $("#wraptrnsrc").after("&nbsp;<a class=\"uk-button uk-button-danger\" id=\"trnsrcclear\">清空</a>");
-                //}
+
 
                 $("#trnsrctip").on("click", function () {
                     return false;
