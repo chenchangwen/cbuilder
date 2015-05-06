@@ -1,8 +1,9 @@
 ﻿require(["../../global.config"], function () {
-    require(["jquery", "uikit", "uikitextend", 'common/regexp',"uikit!upload"], function ($, UI, uikitextend, commomregexp) {
+    require(["jquery", "uikit", "uikitextend", 'common/regexp', "common/utils", "uikit!upload"], function ($, UI, uikitextend, commomregexp,commomutils) {
         var $width = $("#width"),
             $height = $("#height"),
             $url = $("#url");
+
         function save(imgsrc) {
             var regexp = new RegExp(commomregexp.number);
             var attr = '', width, height;

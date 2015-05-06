@@ -4,8 +4,9 @@
   font-weight: 400;
   line-height: 1.6;
   color: #333;
-  border: 2px solid blue;
+  border: 1px solid #aaa;
   overflow: auto;
+  border-radius: 4px;
 }
 
 .cb-body {
@@ -13,44 +14,77 @@
 }
 
 .cb-wrap  {
-    margin-bottom: 10px;
+    border: 1px solid #2e6da4;
+    margin: 20px;
+    border-radius: 4px;
 }
 
 .cb-toolbar {
-    border: 2px solid #f0e68c;
+    border-bottom: 1px solid #aaa;
 }
 
 .cb-button-wrap{
     display:inline-block;
     margin: 5px;
 }
-.cb-button{
-    color: #c71585;
+.cb-btn{
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
+
+.btn-primary {
+  color: #fff;
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
 
 .cb-tools {
     border: medium none;
     padding: 10px 15px;
-    background: none repeat scroll 0 0 #242a30;
     font-size: 12px;
     line-height: 20px;
     height: 20px;
 }
 
+.cb-tools a:link,a:visited,a:hover,a:active {
+    color: #666;
+    text-decoration: none;
+}
+
 .cb-tools .btn-wrap{
     float: right;
+    color: #ffffff;
 }
 
 .cb-tools .btn {
     font-weight: 300;
     margin-left: 15px;
-    color: white;
 }
 
 .btn.btn-delete {
     
 }
-
+.cb-content {
+    width: 100%;
+}
 
 .cb-content .cb-textarea {
     width: 98%;

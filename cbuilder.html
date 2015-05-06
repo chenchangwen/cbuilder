@@ -4,21 +4,20 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <script src="vendor/jquery/dist/jquery.min.js"></script>
     <script src="src/js/jquery.cbuilder.js"></script>
-    <link href="src/css/cbuilder.css" rel="stylesheet" />
+    <link href="src/css/cbuilder.css" rel="stylesheet" />    
     <title>jquery.cbuilder demo</title>
     <script type="text/javascript">
         $(document).ready(function () {
             var options = {
-                height: '200px'
+                height: '500px'
             };
-            $('#test1,#test2').cbuilder(options);
-
-//            $('#test').cbuilder('append', '<textarea class="cb-textarea"></textarea>');
+            $('#test1').cbuilder(options);
         });
     </script>
 </head>
 <body>
+
 <div id="test1"></div>
-<div id="test2"></div>
- </body>
+
+</body>
 </html>

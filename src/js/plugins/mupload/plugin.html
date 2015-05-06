@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script data-main="mupload.js" src="../../../../vendor/requirejs/require.js"></script>
+    <link href="../../../../vendor/dropzone/dist/min/dropzone.min.css" rel="stylesheet" />
+    <link href="style.css" rel="stylesheet" />
+    <title>多图上传</title>
+</head>
+<body>
+    <form action="/m.php?m=File&a=do_upload_img_2" method="post" enctype="multipart/form-data" class="dropzone dz-clickable" id="my-dropzone">
+        <div class="dz-message">
+            拖动文件在这里或者点击上传
+            <br>
+            <span class="note">只可以上传.png|.jpg文件</span>
+        </div>
+    </form>
+</body>
+</html>

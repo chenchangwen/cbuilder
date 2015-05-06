@@ -15,13 +15,13 @@
     var defaults = {
         height: "100%",
         width:"100%",
-        plugins: ["upload", 'test', 'clean','anchor'],
+        plugins: ["upload",'mupload','test', 'clean','anchor'],
         prefix: "cbuilder",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
-            toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-button {clsname}\">{name}</button></div>",
+            toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-btn btn-primary {clsname}\">{name}</button></div>",
             body: "<div class=\"cb-body\"></div>",
-            content: "<div class=\"cb-wrap\"><div class=\"cb-content\"></div></div>"
+            wrap: "<div class=\"cb-wrap\"><div class=\"cb-content\"></div></div>"
         }
     };
 
@@ -59,9 +59,16 @@
                 //加载vendors
                 loadVendors: function () {
                     var vendors = [
-                        '../../vendor/fancybox/source/jquery.fancybox.pack.js',
+
                         '../../vendor/fancybox/source/jquery.fancybox.css',
-                        '../../vendor/dropzone/dist/dropzone.js'
+                        '../../vendor/fancybox/source/jquery.fancybox.pack.js',
+
+                        '../../vendor/dropzone/dist/dropzone.css',
+                        '../../vendor/dropzone/dist/dropzone.js',
+
+                        '../../vendor/dragula.js/dist/dragula.min.js',
+                        '../../vendor/dragula.js/dist/dragula.min.css'
+
                     ];
                     for (var i = 0; i < vendors.length; i++) {
                         var vendor = vendors[i];
@@ -69,7 +76,10 @@
                             var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                             $("head").append(cssLink);
                         } else {
-                            $.getScript(vendor);
+                            $.ajax({
+                                async: false,
+                                url:vendor
+                            });
                         }
                     }
                 },
@@ -125,20 +135,23 @@
                     }
                 },
                 bindEvents: function () {
+                    var $cbbody = that.$element.find(clsBody);
                     //onloadContent 事件
                     that.$element.on('onLoadContent', function (e) {
-                        that.$element.find(clsBody).children(":not(.cb-wrap)").each(function () {
+                        $cbbody.children(":not(.cb-wrap)").each(function () {
                             var $this = $(this);
-                            $this.wrap(that.options.tpl.content);
+                            //增加 cb-wrap div
+                            $this.wrap(that.options.tpl.wrap);
+                            //dragula(document.ge('cb-wrap'));
                             var $thisparent = $this.parent();
-                            //添加工具条
+                            //增加 工具条
                             $thisparent.before("<div class='cb-tools'></div>");
                             var html =
                                 "<div class='btn-wrap'>" +
                                     "<a href='javascript:;' class='btn btn-delete'>删除</a>" +
                                     "</div>";
                             $thisparent.prev('.cb-tools').html(html);
-                            var clsbtnwrap = $(this).parents(clsWrap).find('.btn-wrap');
+                            var clsbtnwrap = $this.parents(clsWrap).find('.btn-wrap');
 
                             //工具条-删除
                             clsbtnwrap.find('.btn-delete').on('click', function () {
@@ -147,7 +160,7 @@
                                 }
                             });
 
-                            //工具条-设为切换图片
+                            //如果当前元素是图片,则增加该按钮
                             if ($this.prop('tagName') === 'IMG') {
                                 html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
                                 clsbtnwrap.append(html);
@@ -166,6 +179,7 @@
                             }
                         });
 
+                        //图片双击事件
                         $(clsContent).undelegate('dblclick').delegate('img', 'dblclick', function () {
                             $.cbuilder.activeimg = $(this);
                             $.fancybox.open({
@@ -178,6 +192,14 @@
                             });
                         });
                     });
+
+                    //绑定拖拽事件
+                    dragula($cbbody[0], {
+                        moves: function (el, container, handle) {
+                            return handle.className === 'cb-tools';
+                        }
+                    });
+
                 },
                 struc: function() {
                     this.appendHtml();

@@ -1,9 +1,9 @@
 ﻿function getCbuilderPlugin() {
     var exports = {
-        name: "upload",
-        text:'上传图片',
-        width: 600,
-        height: 300,
+        name: "mupload",
+        text:'多图上传',
+        width: 750,
+        height: 326,
         type:'iframe'
     }
     return exports;

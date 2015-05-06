@@ -1,7 +1,7 @@
 ﻿function getCbuilderPlugin() {
     var exports = {
         name: "test",
-        text: '测试-插入内容',
+        text: '文本域',
         onDomReady: function () {
 //            alert('test onDomReady');
         },

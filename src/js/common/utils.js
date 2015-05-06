@@ -1,8 +1,6 @@
 ﻿
 define(['jquery'], function ($) {
-    var exports = {
-        
-    }
+    var exports = {};
     //随机数
     exports.rndNum = function rndNum(n) {
         var rnd = "";
@@ -52,6 +50,19 @@ define(['jquery'], function ($) {
                         obj[pfn]();
                     }
                 }
+            }
+        }
+    }
+
+    //加载css
+    exports.loadFile = function(arg) {
+        for (var i = 0; i < arg.length; i++) {
+            var link = arg[i];
+            if (link.indexOf('css') >= 0) {
+                var css = $("<link rel='stylesheet' type='text/css' href='" + link + "'>");
+                $("head").append(css);
+            } else {
+                $.getScript(link);
             }
         }
     }

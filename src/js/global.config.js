@@ -8,6 +8,7 @@
         "uikit": '../../vendor/uikit/js/uikit.min',
         "spin": '../../lib/spin.min',
         'uikit!upload': '../../uikit!upload',
+        dropzone: '../../vendor/dropzone/dist/min/dropzone.min',
         //common
         uikitextend: 'common/uikitextend',
         utils: 'common/utils'
@@ -20,7 +21,8 @@
         Jcrop: ['jquery'],
         "uikit": ['jquery'],
         "uikit!upload": ['jquery'],
-        spectrum:['jquery']
+        spectrum: ['jquery'],
+        dropzone: ['jquery']
     },
     config: {
         "uikit": {
