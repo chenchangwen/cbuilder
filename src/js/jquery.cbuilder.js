@@ -15,7 +15,7 @@
     var defaults = {
         height: "100%",
         width:"100%",
-        plugins: ["upload",'mupload','test', 'clean','anchor'],
+        plugins: ["upload",'mupload','test', 'clean','anchor','preview'],
         prefix: "cbuilder",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
@@ -116,8 +116,8 @@
                                                 padding: 5,
                                                 scrolling: 'no',
                                                 fitToView: true,
-                                                width: plugin.width || 610,
-                                                height: plugin.height || 300,
+                                                width: plugin.width || '95%',
+                                                height: plugin.height || '95%',
                                                 autoSize: false,
                                                 closeClick: false
                                             });

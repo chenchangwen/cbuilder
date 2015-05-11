@@ -1,5 +1,5 @@
 ﻿require(["../../global.config"], function () {
-    require(["jquery", "uikit", "uikitextend", 'common/regexp', "common/utils", "uikit!upload"], function ($, UI, uikitextend, commomregexp,commomutils) {
+    require(["jquery", "uikit", "uikitextend", 'common/regexp', "common/utils", "uikit!upload"], function ($, UI, uikitextend, commomregexp) {
         var $width = $("#width"),
             $height = $("#height"),
             $url = $("#url");
