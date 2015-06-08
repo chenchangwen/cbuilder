@@ -9,7 +9,7 @@
             var attr = '', width, height;
             if ($width.val() !== "0") {
                 if (!regexp.test($width.val())) {
-                    uikitextend.uikit.notify({ message: "宽度:请输入正确的数字!" });
+                    uikitextend.uikit.notify({ message: "宽度:只能是数字!" });
                     return false;
                 }
                 width = $width.val() || "";
@@ -18,7 +18,7 @@
             }
             if ($height.val() !== "0") {
                 if (!regexp.test($height.val())) {
-                    uikitextend.uikit.notify({ message: "高度:请输入正确的数字!" });
+                    uikitextend.uikit.notify({ message: "高度:只能是数字!" });
                     return false;
                 }
                 height = $height.val()|| "";
@@ -27,7 +27,7 @@
             }
             regexp = new RegExp(commomregexp.url);
             if (!regexp.test($url.val())) {
-                uikitextend.uikit.notify({ message: "地址:请输入正确的url地址!" });
+                uikitextend.uikit.notify({ message: "地址:不正确!" });
                 return false;
             }
             var img = '<img src ="' + $url.val() + '"  ' + attr + '></img>';

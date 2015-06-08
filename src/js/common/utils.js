@@ -54,7 +54,7 @@ define(['jquery'], function ($) {
         }
     }
 
-    //加载css
+    //加载文件
     exports.loadFile = function(arg) {
         for (var i = 0; i < arg.length; i++) {
             var link = arg[i];

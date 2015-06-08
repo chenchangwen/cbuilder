@@ -51,8 +51,13 @@
 
             //载入内容
             function loadContent() {
-
-                $content.html(parent.$.cbuilder.activeimg.prop('outerHTML'));
+                var activeimg = parent.$.cbuilder.activeimg;
+                if (activeimg.parent().hasClass("cropwrap")) {
+                    activeimg = activeimg.parent().prop('outerHTML');
+                } else {
+                    activeimg = parent.$.cbuilder.activeimg.prop('outerHTML');
+                }
+                $content.html(activeimg);
                 $cropwrap = $(".cropwrap");
 
                 var opts = {
@@ -434,7 +439,7 @@
             function format() {
                 //img 如果没有被div包住,则让cropwrap包住,并在里面增加map元素
                 if ($img.parent().attr("class") != "cropwrap") {
-                    $img.wrap("<div class=\"cropwrap\"  style=\"position:relative\"></div>");
+                    $img.wrap("<div class=\"cropwrap\"></div>");
                     $cropwrap = $(".cropwrap");
                 }
                 if (!isdelegate) {
@@ -710,6 +715,13 @@
                                 return false;
                             }
                             $("#save").trigger('click');
+                           
+                            var activeimg = parent.$.cbuilder.activeimg;
+                            if (activeimg.parent().hasClass("cropwrap")) {
+                                activeimg.parent().html($cropwrap.html());
+                            } else {
+                                activeimg.prop('outerHTML', $content.html());
+                            }
                             parent.$.fancybox.close();
                             
                         }

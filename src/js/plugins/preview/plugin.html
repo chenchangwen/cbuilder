@@ -2,19 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title></title>
+    <title>cbuilder 预览</title>
+    <script src="../../../../vendor/jquery/dist/jquery.min.js"></script>
     <link href="../../../css/cbuilder.css" rel="stylesheet" />
     <script type="text/javascript">
         $(document).ready(function () {
-//            var editor = opener.tinymce.activeEditor;
-//            var content = editor.getContent().replace(/\.\//ig, '\/');
-//            $content = $('#content');
-//            $content.html(content);
+            $("#content").html(parent.$.cbuilder.active.$element.find('.cb-body').html());
         });
     </script>
 </head>
 <body>
-    <div id="content" style="display: none">
+    <div id="content">
     </div>
 </body>
 </html>

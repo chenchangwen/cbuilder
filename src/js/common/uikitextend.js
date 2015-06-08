@@ -5,7 +5,7 @@
                 var defaultopt = {
                     message: '',
                     status: 'danger',
-                    timeout: 800,
+                    timeout: 800
                 };
                 var opt = $.extend({}, defaultopt, option);
                 if (opt.status === 'success') {
