@@ -6,7 +6,11 @@
   color: #333;
   border: 1px solid #aaa;
   overflow: auto;
-  border-radius: 4px;
+}
+
+/* 热点套 */
+.cb-container .cropwrap a:hover{
+    cursor: default;
 }
 
 .cb-body {
@@ -16,7 +20,6 @@
 .cb-wrap  {
     border: 1px solid #2e6da4;
     margin: 20px;
-    border-radius: 4px;
 }
 
 .cb-wrap .cropwrap {
@@ -50,7 +53,6 @@
     user-select: none;
     background-image: none;
     border: 1px solid transparent;
-    border-radius: 4px;
 }
 
 .btn-primary {

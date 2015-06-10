@@ -37,6 +37,7 @@
         clsBody = ".cb-body",
         clsContent = '.cb-content',
         clsWrap = '.cb-wrap',
+        stroriginhtml = 'originhtml',
         basePath = currentScriptPath();
 
     var cbuilder = function(element, options) {
@@ -50,13 +51,19 @@
             var that = this;
             var options = that.options;
             var view = {
+                /* 附加html */
                 appendHtml: function () {
-                    that.$element.addClass('cb-container')
+                    var thiselement = that.$element;
+                    thiselement.data(stroriginhtml, thiselement.html());
+                    thiselement.html('');
+                    thiselement.addClass('cb-container')
                         .wrap(options.tpl.container)
                         .append(options.tpl.toolbar + options.tpl.body);
-                    that.$element.width(options.width).height(options.height);
+                    thiselement.width(options.width).height(options.height);
+                    /* 缓存元素 */
+                    this.$body = thiselement.find(clsBody);
                 },
-                //加载vendors
+                /* 加载vendors */
                 loadVendors: function () {
                     var vendors = [
 
@@ -83,7 +90,7 @@
                         }
                     }
                 },
-                //加载plugin
+                /* 加载plugins */ 
                 loadPlugins: function () {
                     var len = that.options.plugins.length;
                     for (var i = 0; i < len; i++) {
@@ -134,10 +141,12 @@
                         });
                     }
                 },
+                /* 绑定事件 */
                 bindEvents: function () {
                     var $cbbody = that.$element.find(clsBody);
                     //onloadContent 事件
                     that.$element.on('onLoadContent', function (e) {
+                        //构建基本元素
                         $cbbody.children(":not(.cb-wrap)").each(function () {
                             var $this = $(this);
                             //增加 cb-wrap div
@@ -159,9 +168,8 @@
                                     $(this).parents('.cb-wrap').remove();
                                 }
                             });
-
-                            //如果当前元素是图片,则增加该按钮
-                            if ($this.prop('tagName') === 'IMG') {
+                            //如果当前元素是"图片",则增加该按钮
+                            if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {
                                 html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
                                 clsbtnwrap.append(html);
                                 clsbtnwrap.find('.btn-trnspic').on('click', function () {
@@ -180,7 +188,9 @@
                         });
 
                         //图片双击事件
-                        $(clsContent).undelegate('dblclick').delegate('img', 'dblclick', function () {
+                        $(clsContent).undelegate('dblclick').delegate('img,.cropwrap', 'dblclick', function () {
+                            //初始化并没激活,所以必须再次设定激活状态
+                            $.cbuilder.active = $(this).parents('.cb-container');
                             $.cbuilder.activeimg = $(this);
                             $.fancybox.open({
                                 href: basePath + 'plugins/picture/plugin.html',
@@ -191,6 +201,11 @@
                                 height: "95%"
                             });
                         });
+
+                        /* 阻止A点击跳转 */
+                        $(clsContent).undelegate('click').delegate('a', 'click', function () {
+                            return false;
+                        });
                     });
 
                     //绑定拖拽事件
@@ -199,21 +214,29 @@
                             return handle.className === 'cb-tools';
                         }
                     });
-
                 },
-                struc: function() {
+                /* 加载内容 */
+                loadContent: function () {
+                    this.$body.html(that.$element.data(stroriginhtml));
+                    that.$element.data(stroriginhtml, '');
+                    that._trigger('onLoadContent');
+                },
+                /* 构建 */
+                struc: function () {
+                    /* 便于控制顺序 */
                     this.appendHtml();
                     this.loadVendors();
                     this.loadPlugins();
                     this.bindEvents();
+                    this.loadContent();
                 }
             };
             view.struc();
         },
-        _trigger: function(event, callback) {
+        _trigger: function(event, cb) {
             this.$element.trigger(event);
-            if (callback) {
-                callback.call(this.$element);
+            if (cb) {
+                cb.call(this.$element);
             }
         }
     };
