@@ -16,7 +16,6 @@
         height: "100%",
         width:"100%",
         plugins: ["upload",'mupload','test', 'clean','anchor','preview'],
-        prefix: "cbuilder",
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
             toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-btn btn-primary {clsname}\">{name}</button></div>",
@@ -38,6 +37,7 @@
         clsContent = '.cb-content',
         clsWrap = '.cb-wrap',
         stroriginhtml = 'originhtml',
+        strcbuilder = 'cbuilder',
         basePath = currentScriptPath();
 
     var cbuilder = function(element, options) {
@@ -246,17 +246,38 @@
             $.cbuilder.active.$element.find(clsBody).append(html);
             $.cbuilder.active._trigger('onLoadContent');
         },
-        trnspic:[]
+        trnspic: [],
+        getContent: function () {
+            /* 清理 */
+            var clean  = function() {
+                var html = '';
+                var clonecontents = $.cbuilder.active.$element.clone();
+                var $contents = clonecontents.find('.cb-content');
+                $contents.each(function() {
+
+                    var $this = $(this);
+                    var $children = $this.children();
+                    $children.each(function() {
+                        if ($(this).hasClass('cropwrap')) {
+                            $(this).find('.imgpos').css('border', '');
+                        }
+                        html += $(this).html();
+                    });
+                });
+                return html;
+            }
+            return '<div class="' + strcbuilder + '">' + clean() + '</div>';
+        }
     }
 
     $.fn.cbuilder = function(option) {
         var args = arguments;
         return $(this).each(function() {
-            var data = $(this).data("cbuilder");
+            var data = $(this).data(strcbuilder);
             var options = (typeof option !== "object") ? null : option;
             if (!data) {
                 data = new cbuilder(this, options);
-                $(this).data("cbuilder", data);
+                $(this).data(strcbuilder, data);
             }
             if (typeof option === "string") {
                 data[option].apply(data, Array.prototype.slice.call(args, 1));

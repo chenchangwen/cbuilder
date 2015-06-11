@@ -4,15 +4,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>cbuilder 预览</title>
     <script src="../../../../vendor/jquery/dist/jquery.min.js"></script>
-    <link href="../../../css/cbuilder.css" rel="stylesheet" />
     <script type="text/javascript">
         $(document).ready(function () {
-            $("#content").html(parent.$.cbuilder.active.$element.find('.cb-body').html());
+            var html = parent.$.cbuilder.getContent();
+            $('body').append(html);
         });
     </script>
 </head>
 <body>
-    <div id="content">
-    </div>
 </body>
 </html>
