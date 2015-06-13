@@ -15,7 +15,7 @@
     var defaults = {
         height: "100%",
         width:"100%",
-        plugins: ["upload",'mupload','test', 'clean','anchor','preview'],
+        plugins: ["upload", 'mupload', 'test', 'clean', 'anchor', 'preview', 'picture'],
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
             toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-btn btn-primary {clsname}\">{name}</button></div>",
@@ -102,7 +102,12 @@
                             url: src,
                             success: function () {
                                 //执行动态函数,并获取plugin对象
-                                var plugin = getCbuilderPlugin();
+                                var plugin = getCbuilderPlugin(that.$element,basePath);
+                                //为真才走以下流程
+                                if (plugin.isMenu === false) {
+                                    plugin.onLoaded();
+                                    return false;
+                                }
                                 //替换为plugin名字
                                 var clsname = 'cb-' + plugin.name;
                                 if (plugin.text) {
@@ -111,7 +116,7 @@
                                             replace(/\{name\}/, plugin.text).
                                             replace(/\{clsname\}/, clsname)
                                         );
-                                    that._trigger('', plugin.onDomReady);
+                                    that._trigger('', plugin.onLoaded);
                                     var pluginbtn = that.$element.find('.' + clsname);
                                     pluginbtn.on('click', function () {
                                         $.cbuilder.active = that;
@@ -130,11 +135,11 @@
                                             });
                                         }
                                         that._trigger('', plugin.onClick);
-                                        that._trigger('onLoadContent');
+                                        //that._trigger('onWrapContent');
                                     });
                                 } else {
-                                    if (typeof plugin.onLoadContent === "function") {
-                                        plugin.onLoadContent();
+                                    if (typeof plugin.onLoaded === "function") {
+                                        plugin.onLoaded();
                                     }
                                 }
                             }
@@ -144,8 +149,8 @@
                 /* 绑定事件 */
                 bindEvents: function () {
                     var $cbbody = that.$element.find(clsBody);
-                    //onloadContent 事件
-                    that.$element.on('onLoadContent', function (e) {
+                    /* onWrapContent 事件 */
+                    that.$element.on('onWrapContent', function (e) {
                         //构建基本元素
                         $cbbody.children(":not(.cb-wrap)").each(function () {
                             var $this = $(this);
@@ -186,29 +191,9 @@
                                 });
                             }
                         });
-
-                        //图片双击事件
-                        $(clsContent).undelegate('dblclick').delegate('img,.cropwrap', 'dblclick', function () {
-                            //初始化并没激活,所以必须再次设定激活状态
-                            $.cbuilder.active = $(this).parents('.cb-container');
-                            $.cbuilder.activeimg = $(this);
-                            $.fancybox.open({
-                                href: basePath + 'plugins/picture/plugin.html',
-                                type: 'iframe',
-                                padding: 5,
-                                autoSize: false,
-                                width: "95%",
-                                height: "95%"
-                            });
-                        });
-
-                        /* 阻止A点击跳转 */
-                        $(clsContent).undelegate('click').delegate('a', 'click', function () {
-                            return false;
-                        });
                     });
 
-                    //绑定拖拽事件
+                    /* 绑定拖拽事件 */
                     dragula($cbbody[0], {
                         moves: function (el, container, handle) {
                             return handle.className === 'cb-tools';
@@ -219,7 +204,6 @@
                 loadContent: function () {
                     this.$body.html(that.$element.data(stroriginhtml));
                     that.$element.data(stroriginhtml, '');
-                    that._trigger('onLoadContent');
                 },
                 /* 构建 */
                 struc: function () {
@@ -229,6 +213,10 @@
                     this.loadPlugins();
                     this.bindEvents();
                     this.loadContent();
+                    $(document).ready(function () {
+                        that._trigger('onWrapContent');
+                        that._trigger('onContentReady');
+                    });
                 }
             };
             view.struc();
@@ -244,29 +232,13 @@
     $.cbuilder = {
         append: function (html) {
             $.cbuilder.active.$element.find(clsBody).append(html);
-            $.cbuilder.active._trigger('onLoadContent');
+            $.cbuilder.active._trigger('onWrapContent');
+            $.cbuilder.active._trigger('onContentReady');
         },
         trnspic: [],
         getContent: function () {
-            /* 清理 */
-            var clean  = function() {
-                var html = '';
-                var clonecontents = $.cbuilder.active.$element.clone();
-                var $contents = clonecontents.find('.cb-content');
-                $contents.each(function() {
-
-                    var $this = $(this);
-                    var $children = $this.children();
-                    $children.each(function() {
-                        if ($(this).hasClass('cropwrap')) {
-                            $(this).find('.imgpos').css('border', '');
-                        }
-                        html += $(this).html();
-                    });
-                });
-                return html;
-            }
-            return '<div class="' + strcbuilder + '">' + clean() + '</div>';
+            $.cbuilder.active._trigger('onGetContentBefore');
+            return '<div class="' + strcbuilder + '">' + $.cbuilder.active._content + '</div>';
         }
     }
 
