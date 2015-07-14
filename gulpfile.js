@@ -14,25 +14,26 @@ var gulp = require('gulp'),
 
 var config = {
     path: {
-        js: ['js/**/*.js'],
-        less: ['less/*.less']
+        js: ['src/js/**/*.js'],
+        less: ['src/less/**/*.less']
     },
     dist: {
         js: './dist/js',
-        css: './dist/css',
+        // css: './dist/css',
+        css:'src/css',
         fonts: './dist/fonts'
     }
 };
 
 gulp.task('default', ['clean'], function() {
-    gulp.start('js', 'less', 'watch');
+    gulp.start('less', 'watch');
 });
 
 
 gulp.task('watch', function() {
-    gulp.watch([config.path.js], ['js']).on('change', function(event) {
-        console.log('js文件变更: ' + event.path + ' was ' + event.type);
-    });
+    // gulp.watch([config.path.js], ['js']).on('change', function(event) {
+    //     console.log('js文件变更: ' + event.path + ' was ' + event.type);
+    // });
     gulp.watch([config.path.less], ['less']).on('change', function(event) {
         console.log('less文件变更: ' + event.path + ' was ' + event.type);
     });
@@ -58,7 +59,7 @@ gulp.task('js', function() {
 //less
 gulp.task('less', function() {
     gulp.src(config.path.less)
-        .pipe(concat('channel.css'))
+        .pipe(concat('cbuilder.css'))
         .pipe(less())
         .pipe(rename({
             suffix: '.min'

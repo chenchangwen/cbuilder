@@ -25,6 +25,7 @@
     "fancybox": "~2.1.5",
     "uikit": "~2.18.0",
     "spectrum": "~1.6.2",
-    "dragula.js": "~1.5.1"
+    "dragula.js": "~1.5.1",
+    "layer": "https://github.com/sentsin/layer.git"
   }
 }

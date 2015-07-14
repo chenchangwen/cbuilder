@@ -15,7 +15,7 @@
     var defaults = {
         height: "100%",
         width:"100%",
-        plugins: ["upload", 'mupload', 'test', 'clean', 'anchor', 'preview', 'picture'],
+        plugins: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
             toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-btn btn-primary {clsname}\">{name}</button></div>",
@@ -74,8 +74,10 @@
                         '../../vendor/dropzone/dist/dropzone.js',
 
                         '../../vendor/dragula.js/dist/dragula.min.js',
-                        '../../vendor/dragula.js/dist/dragula.min.css'
+                        '../../vendor/dragula.js/dist/dragula.min.css',
 
+                        '../../vendor/layer/layer.js',
+                        '../../vendor/layer/skin/layer.css'
                     ];
                     for (var i = 0; i < vendors.length; i++) {
                         var vendor = vendors[i];
@@ -169,27 +171,35 @@
 
                             //工具条-删除
                             clsbtnwrap.find('.btn-delete').on('click', function () {
-                                if (confirm('确定删除?')) {
-                                    $(this).parents('.cb-wrap').remove();
-                                }
-                            });
-                            //如果当前元素是"图片",则增加该按钮
-                            if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {
-                                html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
-                                clsbtnwrap.append(html);
-                                clsbtnwrap.find('.btn-trnspic').on('click', function () {
-                                    if (confirm('确定设为切换图片?')) {
-                                        var pclsWrap = $(this).parents(clsWrap);
-                                        var src = pclsWrap.find('img').attr('src');
-                                        $.cbuilder.active = that;
-                                        if ($.cbuilder.active.trnspic === undefined) {
-                                            $.cbuilder.active.trnspic = [];
-                                        }
-                                        $.cbuilder.active.trnspic.push(src);
-                                        pclsWrap.remove();
-                                    }
+                                var $this = $(this);
+                                layer.confirm('确定删除', { icon: 3 }, function (index) {
+                                    layer.close(index);
+                                    $this.parents('.cb-wrap').remove();
                                 });
-                            }
+                            });
+                            $.cbuilder.active = that;
+                            $.cbuilder.active.tools = $thisparent.prev('.cb-tools');
+                            that._trigger('onToolsReady');
+
+                            //如果当前元素是"图片",则增加该按钮
+//                            if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {
+//                                html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
+//                                clsbtnwrap.append(html);
+//                                clsbtnwrap.find('.btn-trnspic').on('click', function () {
+//                                    var $this = $(this);
+//                                    layer.confirm('确定设为切换图片', { icon: 3 }, function (index) {
+//                                        layer.close(index);
+//                                        var pclsWrap = $this.parents(clsWrap);
+//                                        var src = pclsWrap.find('img').attr('src');
+//                                        $.cbuilder.active = that;
+//                                        if ($.cbuilder.active.trnspic === undefined) {
+//                                            $.cbuilder.active.trnspic = [];
+//                                        }
+//                                        $.cbuilder.active.trnspic.push(src);
+//                                        pclsWrap.remove();
+//                                    });
+//                                });
+//                            }
                         });
                     });
 
