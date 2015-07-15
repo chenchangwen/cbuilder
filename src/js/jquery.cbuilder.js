@@ -46,6 +46,33 @@
         this.strucView();
     };
 
+    $.cbuilder = {
+        append: function (html) {
+            $.cbuilder.active.$element.find(clsBody).append(html);
+            $.cbuilder.active._trigger('onWrapContent');
+            $.cbuilder.active._trigger('onContentReady');
+        },
+        trnspic: [],
+        wraping: {
+            tools: {
+                addbtn: function (obj) {
+                    var html = "<a href='javascript:;' class='btn'>" + obj.text + "</a>";
+                    var clsbtnwrap = this.element.parents(clsWrap).find('.btn-wrap');
+                    clsbtnwrap.append(html);
+                    if (obj.click) {
+                        clsbtnwrap.find('.btn:last').on('click', function () {
+                            obj.click($(this));
+                        });
+                    }
+                }
+            }
+        },
+        getContent: function () {
+            $.cbuilder.active._trigger('onGetContentBefore');
+            return '<div class="' + strcbuilder + '">' + $.cbuilder.active._content + '</div>';
+        }
+    }
+
     cbuilder.prototype = {
         strucView: function() {
             var that = this;
@@ -178,28 +205,8 @@
                                 });
                             });
                             $.cbuilder.active = that;
-                            $.cbuilder.active.tools = $thisparent.prev('.cb-tools');
+                            $.cbuilder.wraping.tools.element = $this;
                             that._trigger('onToolsReady');
-
-                            //如果当前元素是"图片",则增加该按钮
-//                            if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {
-//                                html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
-//                                clsbtnwrap.append(html);
-//                                clsbtnwrap.find('.btn-trnspic').on('click', function () {
-//                                    var $this = $(this);
-//                                    layer.confirm('确定设为切换图片', { icon: 3 }, function (index) {
-//                                        layer.close(index);
-//                                        var pclsWrap = $this.parents(clsWrap);
-//                                        var src = pclsWrap.find('img').attr('src');
-//                                        $.cbuilder.active = that;
-//                                        if ($.cbuilder.active.trnspic === undefined) {
-//                                            $.cbuilder.active.trnspic = [];
-//                                        }
-//                                        $.cbuilder.active.trnspic.push(src);
-//                                        pclsWrap.remove();
-//                                    });
-//                                });
-//                            }
                         });
                     });
 
@@ -231,7 +238,7 @@
             };
             view.struc();
         },
-        _trigger: function(event, cb) {
+        _trigger: function (event, cb) {
             this.$element.trigger(event);
             if (cb) {
                 cb.call(this.$element);
@@ -239,18 +246,6 @@
         }
     };
 
-    $.cbuilder = {
-        append: function (html) {
-            $.cbuilder.active.$element.find(clsBody).append(html);
-            $.cbuilder.active._trigger('onWrapContent');
-            $.cbuilder.active._trigger('onContentReady');
-        },
-        trnspic: [],
-        getContent: function () {
-            $.cbuilder.active._trigger('onGetContentBefore');
-            return '<div class="' + strcbuilder + '">' + $.cbuilder.active._content + '</div>';
-        }
-    }
 
     $.fn.cbuilder = function(option) {
         var args = arguments;

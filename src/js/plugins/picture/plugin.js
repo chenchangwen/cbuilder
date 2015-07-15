@@ -37,25 +37,34 @@
                 });
             });
 
-            element.on('onToolsReady', function (e) {
+            element.on('onToolsReady', function () {
                 var clsWrap = '.cb-wrap';
-                var clsbtnwrap = $.cbuilder.active.tools.find('.btn-wrap');
-                var html = "<a href='javascript:;' class='btn btn-trnspic'>设为切换图片</a>";
-                clsbtnwrap.append(html);
-                clsbtnwrap.find('.btn-trnspic').on('click', function () {
-                    var $this = $(this);
-                    layer.confirm('确定设为切换图片', { icon: 3 }, function (index) {
-                        layer.close(index);
-                        var pclsWrap = $this.parents(clsWrap);
-                        var src = pclsWrap.find('img').attr('src');
-                        $.cbuilder.active = $this.parents('.container');
-                        if ($.cbuilder.active.trnspic === undefined) {
-                            $.cbuilder.active.trnspic = [];
+                var $this = $.cbuilder.wraping.tools.element;
+                if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {
+                    $.cbuilder.wraping.tools.addbtn({
+                        text: '新建热点',
+                        click: function($this) {
+                            alert(123123);
                         }
-                        $.cbuilder.active.trnspic.push(src);
-                        pclsWrap.remove();
                     });
-                });
+
+                    $.cbuilder.wraping.tools.addbtn({
+                        text: '设为切换图片',
+                        click: function($this) {
+                            layer.confirm('确定设为切换图片', { icon: 3 }, function(index) {
+                                layer.close(index);
+                                var pclsWrap = $this.parents(clsWrap);
+                                var src = pclsWrap.find('img').attr('src');
+                                $.cbuilder.active = $this.parents('.container');
+                                if ($.cbuilder.active.trnspic === undefined) {
+                                    $.cbuilder.active.trnspic = [];
+                                }
+                                $.cbuilder.active.trnspic.push(src);
+                                pclsWrap.remove();
+                            });
+                        }
+                    });
+                }
             });
         }
     }
