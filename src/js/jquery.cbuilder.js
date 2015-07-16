@@ -15,7 +15,7 @@
     var defaults = {
         height: "100%",
         width:"100%",
-        plugins: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
+        modules: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
         tpl: {
             toolbar: "<div class=\"cb-toolbar\"></div>",
             toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-btn btn-primary {clsname}\">{name}</button></div>",
@@ -94,8 +94,8 @@
                 loadVendors: function () {
                     var vendors = [
 
-                        '../../vendor/fancybox/source/jquery.fancybox.css',
-                        '../../vendor/fancybox/source/jquery.fancybox.pack.js',
+                        '../../vendor/layer/layer.js',
+                        '../../vendor/layer/skin/layer.css',
 
                         '../../vendor/dropzone/dist/dropzone.css',
                         '../../vendor/dropzone/dist/dropzone.js',
@@ -103,8 +103,6 @@
                         '../../vendor/dragula.js/dist/dragula.min.js',
                         '../../vendor/dragula.js/dist/dragula.min.css',
 
-                        '../../vendor/layer/layer.js',
-                        '../../vendor/layer/skin/layer.css'
                     ];
                     for (var i = 0; i < vendors.length; i++) {
                         var vendor = vendors[i];
@@ -119,56 +117,53 @@
                         }
                     }
                 },
-                /* 加载plugins */ 
-                loadPlugins: function () {
-                    var len = that.options.plugins.length;
+                /* 加载modules */ 
+                loadModules: function () {
+                    var len = that.options.modules.length;
                     for (var i = 0; i < len; i++) {
-                        var name = that.options.plugins[i];
-                        var src = 'src/js/plugins/' + name + '/' + 'plugin' + '.js';
+                        var name = that.options.modules[i];
+                        var src = 'src/js/modules/' + name + '/' + 'main' + '.js';
                         $.ajax({
                             async: false,
                             type: "get",
                             url: src,
                             success: function () {
-                                //执行动态函数,并获取plugin对象
-                                var plugin = getCbuilderPlugin(that.$element,basePath);
+                                //执行动态函数,并获取module对象
+                                var module = init(that.$element,basePath);
                                 //为真才走以下流程
-                                if (plugin.isMenu === false) {
-                                    plugin.onLoaded();
+                                if (module.isToolbar === false) {
+                                    module.onLoaded();
                                     return false;
                                 }
-                                //替换为plugin名字
-                                var clsname = 'cb-' + plugin.name;
-                                if (plugin.text) {
+                                //替换为module名字
+                                var clsname = 'cb-' + module.toolbar.name;
+                                if (module.toolbar.text) {
                                     that.$element.find(clsToolbar).
                                         append(that.options.tpl.toolbar_button.
-                                            replace(/\{name\}/, plugin.text).
+                                            replace(/\{name\}/, module.toolbar.text).
                                             replace(/\{clsname\}/, clsname)
                                         );
-                                    that._trigger('', plugin.onLoaded);
-                                    var pluginbtn = that.$element.find('.' + clsname);
-                                    pluginbtn.on('click', function () {
+                                    that._trigger('', module.onLoaded);
+                                    var modulebtn = that.$element.find('.' + clsname);
+                                    modulebtn.on('click', function () {
                                         $.cbuilder.active = that;
-                                        if (plugin.type === 'iframe') {
-                                            $.fancybox.open({
-                                                href: basePath + 'plugins/' + plugin.name + '/plugin.html',
-                                                title: plugin.text,
-                                                type: 'iframe',
-                                                padding: 5,
-                                                scrolling: 'no',
-                                                fitToView: true,
-                                                width: plugin.width || '95%',
-                                                height: plugin.height || '95%',
-                                                autoSize: false,
-                                                closeClick: false
+                                        if (module.type === 'iframe') {
+                                            var width = module.width != undefined ? module.width + 'px' : '95%';
+                                            var height = module.height != undefined ? module.height + 'px' : '95%';
+                                            layer.open({
+                                                type: 2,
+                                                title: module.toolbar.text,
+                                                shadeClose: true,
+                                                shade: 0.3,
+                                                area: [width,height],
+                                                content: basePath + 'modules/' + module.toolbar.name + '/main.html'
                                             });
                                         }
-                                        that._trigger('', plugin.onClick);
-                                        //that._trigger('onWrapContent');
+                                        that._trigger('', module.toolbar.onClick);
                                     });
                                 } else {
-                                    if (typeof plugin.onLoaded === "function") {
-                                        plugin.onLoaded();
+                                    if (typeof module.onLoaded === "function") {
+                                        module.onLoaded();
                                     }
                                 }
                             }
@@ -227,7 +222,7 @@
                     /* 便于控制顺序 */
                     this.appendHtml();
                     this.loadVendors();
-                    this.loadPlugins();
+                    this.loadModules();
                     this.bindEvents();
                     this.loadContent();
                     $(document).ready(function () {

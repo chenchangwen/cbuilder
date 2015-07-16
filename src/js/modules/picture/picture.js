@@ -1,5 +1,5 @@
 ﻿require(['../../global.config'], function () {
-    require(['jquery', 'Jcrop', 'utils', 'plugins/picture/component/all', 'uikitextend', 'common/regexp', 'spin', 'spectrum'], function ($, Jcrop, utils, component, uikitextend, commomregexp, Spinner) {
+    require(['jquery', 'Jcrop', 'utils', 'modules/picture/component/all', 'uikitextend', 'common/regexp', 'spin', 'spectrum'], function ($, Jcrop, utils, component, uikitextend, commomregexp, Spinner) {
 
         $(document).ready(function () {
             //变量声明
@@ -722,11 +722,11 @@
                             } else {
                                 activeimg.prop('outerHTML', $content.html());
                             }
-                            parent.$.fancybox.close();
-                            
+                            parent.$.layer.closeAll(); 
+
                         }
                         else if (index === 3) {
-                            parent.$.fancybox.close();
+                            parent.$.layer.closeAll(); 
                         }
                     });
 

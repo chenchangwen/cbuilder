@@ -1,6 +1,6 @@
-﻿function getCbuilderPlugin(element,basePath) {
+﻿function init(element, basePath) {
     var exports = {
-        isMenu: false,
+        isToolbar: false,
         onLoaded: function () {
             element.on('onGetContentBefore', function() {
                 /* 清理 */
@@ -22,13 +22,13 @@
                     /* 初始化并没激活,所以必须再次设定激活状态 */
                     $.cbuilder.active = $(this).parents('.cb-container');
                     $.cbuilder.activeimg = $(this);
-                    $.fancybox.open({
-                        href: basePath + 'plugins/picture/plugin.html',
-                        type: 'iframe',
-                        padding: 5,
-                        autoSize: false,
-                        width: "95%",
-                        height: "95%"
+                    layer.open({
+                        type: 2,
+                        title: '编辑图片',
+                        shadeClose: true,
+                        shade: 0.3,
+                        area: ['95%', '95%'],
+                        content: basePath + 'modules/picture/main.html'
                     });
                 });
                 /* 阻止A点击跳转 */

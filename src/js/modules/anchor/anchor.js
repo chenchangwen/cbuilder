@@ -9,7 +9,7 @@
                 } 
                 var html = '<a class="cb-anchor" id="' + val + '"/>';
                 parent.$.cbuilder.append(html);
-                parent.$.fancybox.close();
+                parent.layer.closeAll();
             });
         });
     });
