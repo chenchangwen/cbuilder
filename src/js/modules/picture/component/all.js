@@ -1,9 +1,9 @@
 ﻿require.config({
     paths: {
-        link: "plugins/picture/component/link",
-        button: "plugins/picture/component/button",
-        countdown: "plugins/picture/component/countdown",
-        componentutils: "plugins/picture/component/utils"
+        link: "modules/picture/component/link",
+        button: "modules/picture/component/button",
+        countdown: "modules/picture/component/countdown",
+        componentutils: "modules/picture/component/utils"
     }
 });
 define(["link", "button", "countdown"], function (ccwlink, ccwbutton, ccwcountdown) {

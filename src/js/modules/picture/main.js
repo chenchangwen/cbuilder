@@ -18,19 +18,19 @@
             });
             element.on('onContentReady', function (e) {
                 /* 图片双击事件 */
-                $('.cb-content').undelegate('dblclick').delegate('img,.cropwrap', 'dblclick', function () {
-                    /* 初始化并没激活,所以必须再次设定激活状态 */
-                    $.cbuilder.active = $(this).parents('.cb-container');
-                    $.cbuilder.activeimg = $(this);
-                    layer.open({
-                        type: 2,
-                        title: '编辑图片',
-                        shadeClose: true,
-                        shade: 0.3,
-                        area: ['95%', '95%'],
-                        content: basePath + 'modules/picture/main.html'
-                    });
-                });
+                //$('.cb-content').undelegate('dblclick').delegate('img,.cropwrap', 'dblclick', function () {
+                //    /* 初始化并没激活,所以必须再次设定激活状态 */
+                //    $.cbuilder.active = $(this).parents('.cb-container');
+                //    $.cbuilder.activeimg = $(this);
+                //    layer.open({
+                //        type: 2,
+                //        title: '编辑图片',
+                //        shadeClose: true,
+                //        shade: 0.3,
+                //        area: ['95%', '95%'],
+                //        content: basePath + 'modules/picture/main.html'
+                //    });
+                //});
                 /* 阻止A点击跳转 */
                 $('.cb-content').undelegate('click').delegate('a', 'click', function () {
                     return false;
@@ -39,16 +39,16 @@
 
             element.on('onToolsReady', function () {
                 var clsWrap = '.cb-wrap';
-                var $this = $.cbuilder.wraping.tools.element;
+                var $this = $.cbuilder.item.tools.element;
                 if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {
-                    $.cbuilder.wraping.tools.addbtn({
+                    $.cbuilder.item.tools.addbtn({
                         text: '新建热点',
                         click: function($this) {
                             alert(123123);
                         }
                     });
 
-                    $.cbuilder.wraping.tools.addbtn({
+                    $.cbuilder.item.tools.addbtn({
                         text: '设为切换图片',
                         click: function($this) {
                             layer.confirm('确定设为切换图片', { icon: 3 }, function(index) {

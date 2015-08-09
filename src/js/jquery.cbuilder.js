@@ -17,10 +17,11 @@
         width:"100%",
         modules: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
         tpl: {
-            toolbar: "<div class=\"cb-toolbar\"></div>",
-            toolbar_button: "<div class=\"cb-button-wrap\"><button class=\"cb-btn btn-primary {clsname}\">{name}</button></div>",
-            body: "<div class=\"cb-body\"></div>",
-            wrap: "<div class=\"cb-wrap\"><div class=\"cb-content\"></div></div>"
+            toolbar: "<div class='cb-toolbar'></div>",
+            toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
+            body: "<div class='cb-body'></div>",
+            body_item: "<div class='cb-item'><div class='cb-content'></div></div>",
+            body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
         }
     };
 
@@ -35,7 +36,7 @@
     var clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
         clsContent = '.cb-content',
-        clsWrap = '.cb-wrap',
+        clsWrap = '.cb-item',
         stroriginhtml = 'originhtml',
         strcbuilder = 'cbuilder',
         basePath = currentScriptPath();
@@ -52,8 +53,7 @@
             $.cbuilder.active._trigger('onWrapContent');
             $.cbuilder.active._trigger('onContentReady');
         },
-        trnspic: [],
-        wraping: {
+        item: {
             tools: {
                 addbtn: function (obj) {
                     var html = "<a href='javascript:;' class='btn'>" + obj.text + "</a>";
@@ -128,14 +128,13 @@
                             type: "get",
                             url: src,
                             success: function () {
-                                //执行动态函数,并获取module对象
+                                /* 执行动态函数,并获取module对象 */
                                 var module = init(that.$element,basePath);
-                                //为真才走以下流程
                                 if (module.isToolbar === false) {
                                     module.onLoaded();
                                     return false;
                                 }
-                                //替换为module名字
+                                /* 替换为module名字 */
                                 var clsname = 'cb-' + module.toolbar.name;
                                 if (module.toolbar.text) {
                                     that.$element.find(clsToolbar).
@@ -175,37 +174,31 @@
                     var $cbbody = that.$element.find(clsBody);
                     /* onWrapContent 事件 */
                     that.$element.on('onWrapContent', function (e) {
-                        //构建基本元素
-                        $cbbody.children(":not(.cb-wrap)").each(function () {
+                        /* 构建基本元素 */
+                        $cbbody.children(":not(" + clsWrap + ")").each(function () {
                             var $this = $(this);
-                            //增加 cb-wrap div
-                            $this.wrap(that.options.tpl.wrap);
-                            //dragula(document.ge('cb-wrap'));
-                            var $thisparent = $this.parent();
-                            //增加 工具条
-                            $thisparent.before("<div class='cb-tools'></div>");
-                            var html =
-                                "<div class='btn-wrap'>" +
-                                    "<a href='javascript:;' class='btn btn-delete'>删除</a>" +
-                                    "</div>";
-                            $thisparent.prev('.cb-tools').html(html);
-                            var clsbtnwrap = $this.parents(clsWrap).find('.btn-wrap');
+                            /* 增加 cb-item div */
+                            $this.wrap(that.options.tpl.body_item);
+                            /* 增加 工具条 */
+                            $this.parent().before(that.options.tpl.body_item_tool);
 
-                            //工具条-删除
-                            clsbtnwrap.find('.btn-delete').on('click', function () {
-                                var $this = $(this);
-                                layer.confirm('确定删除', { icon: 3 }, function (index) {
-                                    layer.close(index);
-                                    $this.parents('.cb-wrap').remove();
-                                });
-                            });
                             $.cbuilder.active = that;
-                            $.cbuilder.wraping.tools.element = $this;
+                            $.cbuilder.item.tools.element = $this;
+                            $.cbuilder.item.tools.addbtn({
+                                text: '删除',
+                                click: function ($this) {
+                                    layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
+                                        layer.close(index);
+                                        $this.parents(clsWrap).remove();
+                                    });
+                                }
+                            });
+
                             that._trigger('onToolsReady');
                         });
                     });
 
-                    /* 绑定拖拽事件 */
+                    /* 拖拽事件 */
                     dragula($cbbody[0], {
                         moves: function (el, container, handle) {
                             return handle.className === 'cb-tools';
@@ -214,17 +207,16 @@
                 },
                 /* 加载内容 */
                 loadContent: function () {
-                    this.$body.html(that.$element.data(stroriginhtml));
+                    view.$body.html(that.$element.data(stroriginhtml));
                     that.$element.data(stroriginhtml, '');
                 },
                 /* 构建 */
                 struc: function () {
-                    /* 便于控制顺序 */
-                    this.appendHtml();
-                    this.loadVendors();
-                    this.loadModules();
-                    this.bindEvents();
-                    this.loadContent();
+                    view.appendHtml();
+                    view.loadVendors();
+                    view.loadModules();
+                    view.bindEvents();
+                    view.loadContent();
                     $(document).ready(function () {
                         that._trigger('onWrapContent');
                         that._trigger('onContentReady');

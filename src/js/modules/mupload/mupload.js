@@ -1,4 +1,4 @@
-﻿require(["../../global.config"], function() {
+﻿require(["../require.config"], function () {
     require(["jquery", 'dropzone'], function ($) {
         var allfile = [];
         $(document).ready(function() {

@@ -12,7 +12,7 @@
         //common
         uikitextend: 'common/uikitextend',
         utils: 'common/utils'
-    }, 
+    },
     shim: {
         jqextend: ['jquery'],
         uikitextend: ['jquery'],

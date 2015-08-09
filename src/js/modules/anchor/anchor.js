@@ -1,4 +1,4 @@
-﻿require(["../../global.config"], function () {
+﻿require(["../require.config"], function () {
     require(['jquery', 'uikitextend'], function ($,uikitextend) {
         $(document).ready(function() {
             $('#confirm').on('click', function () {
