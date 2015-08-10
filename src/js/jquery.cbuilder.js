@@ -1,7 +1,6 @@
-﻿// *
-//    jQuery cbuilder v1.0 - 2015-4-4 
-//    (c) Kevin 21108589@qq.com
-//	license: http://www.opensource.org/licenses/mit-license.php
+﻿//   jQuery cbuilder v1.0 - 2015-4-4 
+//   (c) Kevin 21108589@qq.com
+//	 license: http://www.opensource.org/licenses/mit-license.php
 
 (function(factory) {
     if (typeof define === "function" && define.amd) {
@@ -78,8 +77,8 @@
             var that = this;
             var options = that.options;
             var view = {
-                /* 附加html */
-                appendHtml: function () {
+                /* 初始化 */
+                init: function () {
                     var thiselement = that.$element;
                     thiselement.data(stroriginhtml, thiselement.html());
                     thiselement.html('');
@@ -88,21 +87,22 @@
                         .append(options.tpl.toolbar + options.tpl.body);
                     thiselement.width(options.width).height(options.height);
                     /* 缓存元素 */
-                    this.$body = thiselement.find(clsBody);
+                    view.$body = thiselement.find(clsBody);
                 },
                 /* 加载vendors */
                 loadVendors: function () {
                     var vendors = [
-
+                        /* 弹出层 */
                         '../../vendor/layer/layer.js',
                         '../../vendor/layer/skin/layer.css',
 
-                        '../../vendor/dropzone/dist/dropzone.css',
-                        '../../vendor/dropzone/dist/dropzone.js',
-
+                        /* 拖拽 */
                         '../../vendor/dragula.js/dist/dragula.min.js',
                         '../../vendor/dragula.js/dist/dragula.min.css',
 
+                        /* 菜单 */
+                        '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js',
+                        '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css'
                     ];
                     for (var i = 0; i < vendors.length; i++) {
                         var vendor = vendors[i];
@@ -169,7 +169,42 @@
                         });
                     }
                 },
-                /* 绑定事件 */
+                /* 菜单 */
+                contextMenuEvent: function () {
+                    $.contextMenu({
+                        selector: '.cb-content',
+                        callback: function (key, options) {
+                            var $this = $(this);
+                        },
+                        items: {
+                            "edit": { name: "属性", icon: "edit" },
+                            //"cut": { name: "Cut", icon: "cut" },
+                            //"copy": { name: "Copy", icon: "copy" },
+                            //"paste": { name: "Paste", icon: "paste" },
+                            //"delete": { name: "Delete", icon: "delete" },
+                            "sep1": "---------",
+                            "quit": { name: "退出", icon: "quit" }
+                        }
+                    });
+                },
+                /* 属性窗口 */
+                propertiesWindow: function () {
+                    var html = "<div class='propertiesWindow'></div>";
+                    that.$element.append(html);
+                },
+                /* 建立内容 */
+                appendHtml: function () {
+                    view.$body.html(that.$element.data(stroriginhtml));
+                    that.$element.data(stroriginhtml, '');
+                },
+                /* 触发事件 */
+                triggerEvent: function() {
+                    $(document).ready(function () {
+                        that._trigger('onWrapContent');
+                        that._trigger('onContentReady');
+                    });
+                },
+                /* 事件 */
                 bindEvents: function () {
                     var $cbbody = that.$element.find(clsBody);
                     /* onWrapContent 事件 */
@@ -198,29 +233,23 @@
                         });
                     });
 
-                    /* 拖拽事件 */
+                    /* 拖拽 */
                     dragula($cbbody[0], {
                         moves: function (el, container, handle) {
                             return handle.className === 'cb-tools';
                         }
                     });
-                },
-                /* 加载内容 */
-                loadContent: function () {
-                    view.$body.html(that.$element.data(stroriginhtml));
-                    that.$element.data(stroriginhtml, '');
+                    view.contextMenuEvent();
                 },
                 /* 构建 */
                 struc: function () {
-                    view.appendHtml();
+                    view.init();
                     view.loadVendors();
                     view.loadModules();
                     view.bindEvents();
-                    view.loadContent();
-                    $(document).ready(function () {
-                        that._trigger('onWrapContent');
-                        that._trigger('onContentReady');
-                    });
+                    view.propertiesWindow();
+                    view.appendHtml();
+                    view.triggerEvent();
                 }
             };
             view.struc();
