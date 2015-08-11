@@ -1,19 +1,20 @@
-//   jQuery cbuilder v1.0 - 2015-4-4 
+﻿//   jQuery cbuilder v1.0 - 2015-4-4 
 //   (c) Kevin 21108589@qq.com
 //	 license: http://www.opensource.org/licenses/mit-license.php
+
 (function(factory) {
     if (typeof define === "function" && define.amd) {
-        define([ "jquery" ], factory);
+        define(["jquery"], factory);
     } else if (typeof exports === "object") {
         module.exports = factory(require("jquery"));
     } else {
         factory(jQuery);
-    }
-})(function($) {
+    } 
+}(function($) {
     var defaults = {
         height: "100%",
-        width: "99%",
-        modules: [ "upload", "mupload", "test", "countdown", "clean", "anchor", "preview", "picture" ],
+        width:"99%",
+        modules: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
@@ -22,120 +23,143 @@
             body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
         }
     };
+
     function currentScriptPath() {
-        var scripts = document.querySelectorAll("script[src]");
+        var scripts = document.querySelectorAll('script[src]');
         var currentScript = scripts[scripts.length - 1].src;
-        var currentScriptChunks = currentScript.split("/");
+        var currentScriptChunks = currentScript.split('/');
         var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
-        return currentScript.replace(currentScriptFile, "");
+        return currentScript.replace(currentScriptFile, '');
     }
-    var clsContainer = ".cb-container", clsToolbar = ".cb-toolbar", clsBody = ".cb-body", clsContent = ".cb-content", clsWrap = ".cb-item", stroriginhtml = "originhtml", strcbuilder = "cbuilder", basePath = currentScriptPath();
+
+    var clsContainer = ".cb-container",
+        clsToolbar = ".cb-toolbar",
+        clsBody = ".cb-body",
+        clsContent = '.cb-content',
+        clsWrap = '.cb-item',
+        stroriginhtml = 'originhtml',
+        strcbuilder = 'cbuilder',
+        basePath = currentScriptPath();
+
     var cbuilder = function(element, options) {
         this.options = $.extend({}, defaults, options);
         this.$element = $(element);
         this.strucView();
     };
+
     $.cbuilder = {
-        append: function(html) {
+        append: function (html) {
             $.cbuilder.active.$element.find(clsBody).append(html);
-            $.cbuilder.active._trigger("onWrapContent");
-            $.cbuilder.active._trigger("onContentReady");
+            $.cbuilder.active._trigger('onWrapContent');
+            $.cbuilder.active._trigger('onContentReady');
         },
         item: {
             tools: {
-                addbtn: function(obj) {
+                addbtn: function (obj) {
                     var html = "<a href='javascript:;' class='btn'>" + obj.text + "</a>";
-                    var clsbtnwrap = this.element.parents(clsWrap).find(".btn-wrap");
+                    var clsbtnwrap = this.element.parents(clsWrap).find('.btn-wrap');
                     clsbtnwrap.append(html);
                     if (obj.click) {
-                        clsbtnwrap.find(".btn:last").on("click", function() {
+                        clsbtnwrap.find('.btn:last').on('click', function () {
                             obj.click($(this));
                         });
                     }
                 }
             }
         },
-        getContent: function() {
-            $.cbuilder.active._trigger("onGetContentBefore");
-            return '<div class="' + strcbuilder + '">' + $.cbuilder.active._content + "</div>";
+        getContent: function () {
+            $.cbuilder.active._trigger('onGetContentBefore');
+            return '<div class="' + strcbuilder + '">' + $.cbuilder.active._content + '</div>';
         }
-    };
+    }
+
     cbuilder.prototype = {
         strucView: function() {
             var that = this;
             var options = that.options;
             var view = {
                 /* 初始化 */
-                init: function() {
+                init: function () {
                     var thiselement = that.$element;
                     thiselement.data(stroriginhtml, thiselement.html());
-                    thiselement.html("");
-                    thiselement.addClass("cb-container").wrap(options.tpl.container).append(options.tpl.toolbar + options.tpl.body);
+                    thiselement.html('');
+                    thiselement.addClass('cb-container')
+                        .wrap(options.tpl.container)
+                        .append(options.tpl.toolbar + options.tpl.body);
                     thiselement.width(options.width).height(options.height);
                     /* 缓存元素 */
                     view.$body = thiselement.find(clsBody);
                 },
                 /* 加载vendors */
-                loadVendors: function() {
-                    var vendors = [ /* 弹出层 */
-                    "../../vendor/layer/layer.js", "../../vendor/layer/skin/layer.css", /* 拖拽 */
-                    "../../vendor/dragula.js/dist/dragula.min.js", "../../vendor/dragula.js/dist/dragula.min.css", /* 菜单 */
-                    "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css" ];
+                loadVendors: function () {
+                    var vendors = [
+                        /* 弹出层 */
+                        '../../vendor/layer/layer.js',
+                        '../../vendor/layer/skin/layer.css',
+
+                        /* 拖拽 */
+                        '../../vendor/dragula.js/dist/dragula.min.js',
+                        '../../vendor/dragula.js/dist/dragula.min.css',
+
+                        /* 菜单 */
+                        '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js',
+                        '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css'
+                    ];
                     for (var i = 0; i < vendors.length; i++) {
                         var vendor = vendors[i];
-                        if (vendor.indexOf("css") >= 0) {
+                        if (vendor.indexOf('css') >= 0) {
                             var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                             $("head").append(cssLink);
                         } else {
                             $.ajax({
                                 async: false,
-                                url: vendor
+                                url:vendor
                             });
                         }
                     }
                 },
-                /* 加载modules */
-                loadModules: function() {
+                /* 加载modules */ 
+                loadModules: function () {
                     var len = that.options.modules.length;
                     for (var i = 0; i < len; i++) {
                         var name = that.options.modules[i];
-                        var src = "src/js/modules/" + name + "/" + "main" + ".js";
+                        var src = 'src/js/modules/' + name + '/' + 'main' + '.js';
                         $.ajax({
                             async: false,
                             type: "get",
                             url: src,
-                            success: function() {
+                            success: function () {
                                 /* 执行动态函数,并获取module对象 */
-                                var module = init(that.$element, basePath);
+                                var module = init(that.$element,basePath);
                                 if (module.isToolbar === false) {
                                     module.onLoaded();
                                     return false;
                                 }
                                 /* 替换为module名字 */
-                                var clsname = "cb-" + module.toolbar.name;
+                                var clsname = 'cb-' + module.toolbar.name;
                                 if (module.toolbar.text) {
                                     //that.$element.find(clsToolbar).
                                     //    append(that.options.tpl.toolbar_button.
                                     //        replace(/\{name\}/, module.toolbar.text).
                                     //        replace(/\{clsname\}/, clsname)
                                     //    );
-                                    that._trigger("", module.onLoaded);
-                                    var modulebtn = that.$element.find("." + clsname);
-                                    modulebtn.on("click", function() {
+                                    that._trigger('', module.onLoaded);
+                                    var modulebtn = that.$element.find('.' + clsname);
+                                    modulebtn.on('click', function () {
                                         $.cbuilder.active = that;
-                                        if (module.type === "iframe") {
-                                            var width = module.width !== undefined ? module.width + "px" : "95%";
-                                            var height = module.height !== undefined ? module.height + "px" : "95%";
+                                        if (module.type === 'iframe') {
+                                            var width = module.width !== undefined ? module.width + 'px' : '95%';
+                                            var height = module.height !== undefined ? module.height + 'px' : '95%';
                                             layer.open({
                                                 type: 2,
                                                 title: module.toolbar.text,
                                                 shadeClose: true,
-                                                shade: .3,
-                                                area: [ width, height ],
-                                                content: basePath + "modules/" + module.toolbar.name + "/main.html"
+                                                shade: 0.3,
+                                                area: [width,height],
+                                                content: basePath + 'modules/' + module.toolbar.name + '/main.html'
                                             });
                                         }
-                                        that._trigger("", module.toolbar.onClick);
+                                        that._trigger('', module.toolbar.onClick);
                                     });
                                 } else {
                                     if (typeof module.onLoaded === "function") {
@@ -147,91 +171,78 @@
                     }
                 },
                 /* 菜单 */
-                contextMenuEvent: function() {
+                contextMenuEvent: function () {
                     $.contextMenu({
-                        selector: ".cb-content *",
-                        callback: function(key, options) {
-                            that._trigger("showPropertiesWindow", "", $(this));
+                        selector: '.cb-content *',
+                        callback: function (key, options) {
+                            that._trigger('showPropertiesWindow','',$(this));
                         },
                         items: {
-                            edit: {
-                                name: "编辑",
-                                icon: "edit"
-                            },
+                            "edit": { name: "编辑", icon: "edit" },
                             //"cut": { name: "Cut", icon: "cut" },
                             //"copy": { name: "Copy", icon: "copy" },
                             //"paste": { name: "Paste", icon: "paste" },
                             //"delete": { name: "Delete", icon: "delete" },
-                            sep1: "---------",
-                            quit: {
-                                name: "退出",
-                                icon: "quit"
-                            }
+                            "sep1": "---------",
+                            "quit": { name: "退出", icon: "quit" }
                         }
                     });
                 },
                 /* 属性窗口 */
-                propertiesWindow: function() {
-                    var templates = {
-                        propertiesWindow: '<div class="cb-propertiesWindow"><ul class="cb-subnav"><li class="cb-active"><a href="javascript:;">&#x5143;&#x7D20;</a></li><li><a href="javascript:;">&#x5C5E;&#x6027;</a></li></ul><hr class="cb-article-divider"></div>'
-                    };
-                    that.$element.append(templates.propertiesWindow);
-                    that.$element.on("showPropertiesWindow", function(event, obj) {
-                        var $this = $(this);
-                        var $propertiesWindow = $this.find(".cb-propertiesWindow");
-                        $propertiesWindow.show();
-                    });
+                propertiesWindow: function () {
+                    ~~include('./block/propertiesWindow.js')
                 },
                 /* 建立内容 */
-                appendHtml: function() {
+                appendHtml: function () {
                     view.$body.html(that.$element.data(stroriginhtml));
-                    that.$element.data(stroriginhtml, "");
+                    that.$element.data(stroriginhtml, '');
                 },
                 /* 触发事件 */
                 triggerEvent: function() {
-                    $(document).ready(function() {
-                        that._trigger("onWrapContent");
-                        that._trigger("onContentReady");
+                    $(document).ready(function () {
+                        that._trigger('onWrapContent');
+                        that._trigger('onContentReady');
                     });
                 },
                 /* 事件 */
-                bindEvents: function() {
+                bindEvents: function () {
                     var $cbbody = that.$element.find(clsBody);
                     /* onWrapContent 事件 */
-                    that.$element.on("onWrapContent", function(e) {
+                    that.$element.on('onWrapContent', function (e) {
                         /* 构建基本元素 */
-                        $cbbody.children(":not(" + clsWrap + ")").each(function() {
+                        $cbbody.children(":not(" + clsWrap + ")").each(function () {
                             var $this = $(this);
                             /* 增加 cb-item div */
                             $this.wrap(that.options.tpl.body_item);
                             /* 增加 工具条 */
                             $this.parent().before(that.options.tpl.body_item_tool);
+
                             $.cbuilder.active = that;
                             $.cbuilder.item.tools.element = $this;
                             $.cbuilder.item.tools.addbtn({
-                                text: "删除",
-                                click: function($this) {
-                                    layer.confirm("确定删除该项?", {
-                                        icon: 3
-                                    }, function(index) {
+                                text: '删除',
+                                click: function ($this) {
+                                    layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
                                         layer.close(index);
                                         $this.parents(clsWrap).remove();
                                     });
-                                }
-                            });
-                            that._trigger("onToolsReady");
+                                } 
+                            }); 
+
+                            that._trigger('onToolsReady');
                         });
                     });
+
                     /* 拖拽 */
                     dragula($cbbody[0], {
-                        moves: function(el, container, handle) {
-                            return handle.className === "cb-tools";
+                        moves: function (el, container, handle) {
+                            return handle.className === 'cb-tools';
                         }
                     });
                     view.contextMenuEvent();
                 },
                 /* 构建 */
-                struc: function() {
+                struc: function () {
                     view.init();
                     view.loadVendors();
                     view.loadModules();
@@ -243,18 +254,20 @@
             };
             view.struc();
         },
-        _trigger: function(event, cb, params) {
-            this.$element.trigger(event, params || "");
+        _trigger: function (event, cb, params) {
+            this.$element.trigger(event, params || '');
             if (cb) {
                 cb.call(this.$element);
             }
         }
     };
+
+
     $.fn.cbuilder = function(option) {
         var args = arguments;
         return $(this).each(function() {
             var data = $(this).data(strcbuilder);
-            var options = typeof option !== "object" ? null : option;
+            var options = (typeof option !== "object") ? null : option;
             if (!data) {
                 data = new cbuilder(this, options);
                 $(this).data(strcbuilder, data);
@@ -264,4 +277,4 @@
             }
         });
     };
-});
+}));
