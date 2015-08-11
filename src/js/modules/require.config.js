@@ -9,9 +9,9 @@
         "spin": '../../lib/spin.min',
         'uikit!upload': '../../uikit!upload',
         dropzone: '../../vendor/dropzone/dist/min/dropzone.min',
-        //common
-        uikitextend: 'common/uikitextend',
-        utils: 'common/utils'
+        //commons
+        uikitextend: 'commons/uikitextend',
+        utils: 'commons/utils'
     },
     shim: {
         jqextend: ['jquery'],

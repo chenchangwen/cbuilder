@@ -32,7 +32,8 @@
         return currentScript.replace(currentScriptFile, '');
     }
 
-    var clsToolbar = ".cb-toolbar",
+    var clsContainer = ".cb-container",
+        clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
         clsContent = '.cb-content',
         clsWrap = '.cb-item',
@@ -172,12 +173,12 @@
                 /* 菜单 */
                 contextMenuEvent: function () {
                     $.contextMenu({
-                        selector: '.cb-content',
+                        selector: '.cb-content *',
                         callback: function (key, options) {
-                            var $this = $(this);
+                            that._trigger('showPropertiesWindow','',$(this));
                         },
                         items: {
-                            "edit": { name: "属性", icon: "edit" },
+                            "edit": { name: "编辑", icon: "edit" },
                             //"cut": { name: "Cut", icon: "cut" },
                             //"copy": { name: "Copy", icon: "copy" },
                             //"paste": { name: "Paste", icon: "paste" },
@@ -189,8 +190,19 @@
                 },
                 /* 属性窗口 */
                 propertiesWindow: function () {
-                    var html = "<div class='propertiesWindow'></div>";
+                    var html = "<div class='cb-propertiesWindow'>";
+                    html += "<ul class='cb-subnav'>";
+                    html += "<li class='cb-active'><a href='javascript:;'>元素</a></li>";
+                    html += "<li><a href='javascript:;'>属性</a></li>";
+                    html += "</ul>";
+                    html += "<hr class='cb-article-divider'>";
+                    html += "</div>";
                     that.$element.append(html);
+                    that.$element.on('showPropertiesWindow', function (event, obj) {
+                        var $this = $(this);
+                        var $propertiesWindow = $this.find('.cb-propertiesWindow');
+                        $propertiesWindow.show();
+                    });
                 },
                 /* 建立内容 */
                 appendHtml: function () {
@@ -254,8 +266,8 @@
             };
             view.struc();
         },
-        _trigger: function (event, cb) {
-            this.$element.trigger(event);
+        _trigger: function (event, cb, params) {
+            this.$element.trigger(event, params || '');
             if (cb) {
                 cb.call(this.$element);
             }

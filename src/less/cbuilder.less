@@ -1,7 +1,7 @@
-﻿@import "global.less";
-@import "toolbar.less";
-@import "body.less";
-
+﻿    @import "global.less";
+    @import "toolbar.less";
+    @import "body.less";
+    @import "propertiesWindow.less"; 
 .cb-container {
     background: #fff;
     font-family: "Segoe UI","Lucida Grande",Helvetica,Arial,"Microsoft YaHei",FreeSans,Arimo,"Droid Sans","wenquanyi micro hei","Hiragino Sans GB","Hiragino Sans GB W3",FontAwesome,sans-serif;
@@ -9,19 +9,20 @@
     line-height: 1.6;
     color: #333;
     .gborder(1px);
-    overflow: auto;
+    overflow: hidden;
     border-radius: 3px;
-    .propertiesWindow{
-        background:#ecfaff;
-        border:1px solid #d8d8d8;
-        height:300px;
-        width:300px;
-        top:0px;
-        right:0px;
-        position:absolute;
+    hr{
+        box-sizing: content-box;
+        height: 0;
+        margin: 10px 0;
+        border: 0;
+        border-top: 1px solid #e5e5e5;
     }
     .cropwrap a:hover {
         cursor: default;
+    }
+    .cb-article-divider{
+
     }
 }
  
