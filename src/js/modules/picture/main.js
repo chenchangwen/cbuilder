@@ -2,7 +2,7 @@
     var exports = {
         isToolbar: false,
         onLoaded: function () {
-            element.on('onGetContentBefore', function() {
+            element.on('cbuilder:onGetContentBefore', function () {
                 /* 清理 */
                 var clean = function() {
                     var html = '';
@@ -16,7 +16,7 @@
                 }
                 $.cbuilder.active._content = clean();
             });
-            element.on('onContentReady', function (e) {
+            element.on('cbuilder:onContentReady', function (e) {
                 /* 图片双击事件 */
                 //$('.cb-content').undelegate('dblclick').delegate('img,.cropwrap', 'dblclick', function () {
                 //    /* 初始化并没激活,所以必须再次设定激活状态 */
@@ -37,7 +37,7 @@
                 });
             });
 
-            element.on('onToolsReady', function () {
+            element.on('cbuilder:onToolsReady', function () {
                 var clsWrap = '.cb-wrap';
                 var $this = $.cbuilder.item.tools.element;
                 if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {

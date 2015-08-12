@@ -14,6 +14,7 @@ var gulp = require("gulp"),
     clean = require("gulp-clean"),
     fileinclude = require("gulp-file-include"),
     prettify = require("gulp-prettify"),
+    plumber = require('gulp-plumber'),
     html2js = require('gulp-html-js-template');
 
 var path = {
@@ -42,7 +43,7 @@ gulp.task("watch", function () {
     gulp.watch([path.dev.tplhtml], ["template","js"]).on("change", function (event) {
         console.log("tpl文件变更: " + event.path + " was " + event.type);
     });
-    gulp.watch([path.dev.js], ["js"]).on("change", function (event) {
+    gulp.watch([path.dev.js, 'src/js/core/block/*.js'], ["js"]).on("change", function (event) {
         console.log("js文件变更: " + event.path + " was " + event.type);
     });
     gulp.watch([path.dev.less], ["less"]).on("change", function(event) {
@@ -61,18 +62,20 @@ gulp.task('init', function () {
 var replace = require('gulp-replace');
 gulp.task('template', function () {
     return gulp.src(path.dev.tplhtml)
+        .pipe(plumber())
         .pipe(html2js())
         .pipe(uglify({ compress: true }))
         .pipe(replace(/\s{2,}/ig, ''))
         .pipe(gulp.dest(path.src.tpl))
-        .pipe(notify({
-            message: "--template 任务 完成 --"
-        }));
+        //.pipe(notify({
+        //    message: "--template 任务 完成 --"
+        //}));
 });
 
 //脚本
 gulp.task("js", ['template'],function() {
     gulp.src(path.dev.js)
+        .pipe(plumber())
         .pipe(fileinclude({
             prefix: "~~",
             basedev: "~file"
@@ -87,15 +90,16 @@ gulp.task("js", ['template'],function() {
         //.pipe(jshint())
         //.pipe(jshint.reporter("default"))
         //.pipe(stripDebug())
-        .pipe(notify({
-            message: "--js 任务 完成 --"
-        }));
+        //.pipe(notify({
+        //    message: "--js 任务 完成 --"
+        //}));
 });
 
 
 //less
 gulp.task("less", function() {
     gulp.src(path.dev.less)
+        .pipe(plumber())
         .pipe(concat("cbuilder.css"))
         .pipe(less())
         .pipe(rename({
@@ -103,9 +107,9 @@ gulp.task("less", function() {
         }))
         .pipe(minifycss())
         .pipe(gulp.dest(path.dist.css))
-        .pipe(notify({
-            message: "--less 任务 完成 --"
-        }));
+        //.pipe(notify({
+        //    message: "--less 任务 完成 --"
+        //}));
 });
 
 
@@ -113,6 +117,7 @@ gulp.task("less", function() {
 gulp.task("clean", function() {
     return gulp.src([path.dist.js, path.dist.css], {
             read: false
-        })
+    })
+    .pipe(plumber())
     .pipe(clean());
 });
