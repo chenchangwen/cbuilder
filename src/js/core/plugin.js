@@ -242,7 +242,7 @@
             $.contextMenu({
                 selector: '.cb-content *',
                 callback: function (key, options) {
-                    $propertiesWindow.trigger('propertiesWindow:show', $(this));
+                    $pw.trigger('propertiesWindow:show', $(this));
                 },
                 items: {
                     "edit": { name: "编辑", icon: "edit" },

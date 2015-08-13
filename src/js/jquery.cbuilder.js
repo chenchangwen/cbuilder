@@ -223,7 +223,7 @@
             $.contextMenu({
                 selector: ".cb-content *",
                 callback: function(key, options) {
-                    $propertiesWindow.trigger("propertiesWindow:show", $(this));
+                    $pw.trigger("propertiesWindow:show", $(this));
                 },
                 items: {
                     edit: {
@@ -245,25 +245,53 @@
         /* 属性窗口 */
         propertiesWindow: function() {
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><ul class="cb-subnav"><li class="cb-active"><a href="javascript:;">&#x5143;&#x7D20;</a></li><li><a href="javascript:;">&#x5C5E;&#x6027;</a></li></ul><div class="operate"><a class="close" href="javascript:;"></a></div><hr class="cb-article-divider"></div>'
+                propertiesWindow: '<div class="cb-propertiesWindow"><div class="pw-heading"></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;">&#x7F16;&#x8F91;</a></li><li><a href="javascript:;">&#x64CD;&#x4F5C;</a></li></ul><div class="pw-operate"><a class="close" href="javascript:;"></a></div><hr class="cb-article-divider"><div class="pw-body-content"></div></div></div>',
+                bodycontentheading: '<h1 class="pw-body-content-heading">#value</h1>',
+                hr: '<hr class="cb-article-divider">'
             };
             var $element = $("body");
             $element.append(templates.propertiesWindow);
-            $propertiesWindow = $element.find(".cb-propertiesWindow");
-            $propertiesWindow.on("propertiesWindow:show", function(event, obj) {
-                $propertiesWindow.show();
+            $pw = $element.find(".cb-propertiesWindow");
+            $pwcontent = $pw.find(".pw-body-content");
+            $pw.on("propertiesWindow:show", function(event, obj) {
+                var $eventobj = $(obj);
+                $pw.find(".pw-heading").text("<" + $eventobj.prop("tagName") + ">");
+                $pw.find(".pw-content");
+                $pw.selectedobj = $eventobj;
+                $pw.find(".cb-pills li:first").trigger("click", 0 || $pw.selectedindex);
+                $pw.show();
             });
-            $propertiesWindow.children("ul").delegate("li", "click", function() {
+            function buildList(obj, title, attrlist) {
+                var html = templates.bodycontentheading.replace(/#value/, title);
+                html += '<table class="pw-body-content-list">';
+                for (var i = 0; i < attrlist.length; i++) {
+                    html += "<tr>";
+                    html += '<td class="text">' + attrlist[i] + ":</td>";
+                    html += '<td class="input">' + '<input type="text" value="' + obj.css(attrlist[i]) + '"></input>' + "</td>";
+                    html += "</tr>";
+                }
+                html += "</table>";
+                html += templates.hr;
+                return html;
+            }
+            $pw.find("ul").delegate("li", "click", function(event, objindex) {
                 var $this = $(this);
                 var stractive = "cb-active";
-                if ($this.hasClass(stractive)) {
-                    return false;
-                }
-                $this.parent().find("li").removeClass(stractive);
-                $this.addClass(stractive);
+                var index = objindex || $this.index();
+                $pwcontent.html("");
+                /* 编辑 */
+                if (index === 0) {
+                    var html = "";
+                    html += buildList($pw.selectedobj, "盒子", [ "height", "width" ]);
+                    html += buildList($pw.selectedobj, "颜色 & 背景", [ "color", "background-position", "background-color" ]);
+                    html += buildList($pw.selectedobj, "字体 & 文本", [ "font-size", "font-weight", "font-family", "line-height", "word-spacing" ]);
+                    $pwcontent.html(html);
+                } else if (index === 1) {}
+                $pw.selectedindex = index;
+                $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);
             });
-            $propertiesWindow.find(".close").on("click", function() {
-                $propertiesWindow.hide();
+            $pw.find(".close").on("click", function() {
+                $pw.hide();
             });
         },
         load: function() {
