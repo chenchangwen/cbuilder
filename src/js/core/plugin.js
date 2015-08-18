@@ -59,11 +59,11 @@
         item: {
             tools: {
                 addbtn: function (obj) {
-                    var html = "<a href='javascript:;' class='btn'>" + obj.text + "</a>";
+                    var html = "<a href='javascript:;'>" + obj.text + "</a>";
                     var clsbtnwrap = this.element.parents(clsWrap).find('.btn-wrap');
                     clsbtnwrap.append(html);
                     if (obj.click) {
-                        clsbtnwrap.find('.btn:last').on('click', function () {
+                        clsbtnwrap.find('a:last').on('click', function () {
                             obj.click($(this));
                         });
                     }
@@ -242,7 +242,7 @@
             $.contextMenu({
                 selector: '.cb-content *',
                 callback: function (key, options) {
-                    $pw.trigger('propertiesWindow:show', $(this));
+                    $.cbuilder.$pw.trigger('propertiesWindow:show', $(this));
                 },
                 items: {
                     "edit": { name: "编辑", icon: "edit" },
@@ -259,14 +259,14 @@
         propertiesWindow: function () {
             ~~include('./block/propertiesWindow.js')
         },
-        load: function () {
+        struc: function () {
             $(document).ready(function() {
                 onceView.propertiesWindow();
                 onceView.contextMenu();
             });
         }
     }
-    onceView.load();
+    onceView.struc();
 
 
     $.fn.cbuilder = function(option) {

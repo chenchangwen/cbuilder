@@ -60,11 +60,11 @@
         item: {
             tools: {
                 addbtn: function(obj) {
-                    var html = "<a href='javascript:;' class='btn'>" + obj.text + "</a>";
+                    var html = "<a href='javascript:;'>" + obj.text + "</a>";
                     var clsbtnwrap = this.element.parents(clsWrap).find(".btn-wrap");
                     clsbtnwrap.append(html);
                     if (obj.click) {
-                        clsbtnwrap.find(".btn:last").on("click", function() {
+                        clsbtnwrap.find("a:last").on("click", function() {
                             obj.click($(this));
                         });
                     }
@@ -223,7 +223,7 @@
             $.contextMenu({
                 selector: ".cb-content *",
                 callback: function(key, options) {
-                    $pw.trigger("propertiesWindow:show", $(this));
+                    $.cbuilder.$pw.trigger("propertiesWindow:show", $(this));
                 },
                 items: {
                     edit: {
@@ -248,14 +248,15 @@
                 propertiesWindow: '<div class="cb-propertiesWindow"><div class="pw-header"></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;">&#x7F16;&#x8F91;</a></li><li><a href="javascript:;">&#x64CD;&#x4F5C;</a></li></ul><div class="pw-operate"><a class="close" href="javascript:;"></a></div><hr class="cb-article-divider"><div class="pw-body-content"></div><div class="pw-body-footer"></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">',
-                bodycontentfooter: '<button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button>'
+                editbtns: '<button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button>',
+                operationbtns: '<button type="button" class="btn primary delete">&#x5220; &#x9664;</button>'
             };
             var view = {
                 domCache: function() {
                     var $element = $("body");
                     $element.append(templates.propertiesWindow);
                     /* 全局 */
-                    $pw = view.$pw = $element.find(".cb-propertiesWindow");
+                    $.cbuilder.$pw = view.$pw = $element.find(".cb-propertiesWindow");
                     view.$pwcontent = view.$pw.find(".pw-body-content");
                     view.$pwfooter = view.$pw.find(".pw-body-footer");
                 },
@@ -282,16 +283,60 @@
                         /* 编辑 */
                         if (index === 0) {
                             var html = "";
-                            html += buildList(view.$pw.selectedobj, "盒子", [ "height", "width" ]);
+                            html += buildList(view.$pw.$selectedobj, "盒子", [ "height", "width" ]);
                             view.$pwcontent.html(html);
                             if (view.$pwfooter.html() === "") {
-                                view.$pwfooter.append(templates.bodycontentfooter);
+                                view.$pwfooter.append(templates.editbtns);
                                 var $savebtn = view.$pwfooter.find(".save");
                                 $savebtn.on("click", function() {
-                                    alert("123123");
+                                    var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
+                                    $bodylist.each(function() {
+                                        var $this = $(this);
+                                        var text = $this.find(".text").text().replace(/:/, "");
+                                        var value = $this.find(".input").find("input").val();
+                                        if (view.$pw.$selectedobj.css(text)) {
+                                            view.$pw.$selectedobj.css(text, value);
+                                        } else if (view.$pw.$selectedobj.prop(text)) {
+                                            view.$pw.$selectedobj.prop(text, value);
+                                        }
+                                    });
                                 });
                             }
-                        } else if (index === 1) {}
+                        } else if (index === 1) {
+                            if (view.$pwfooter.html() === "") {
+                                view.$pwfooter.append(templates.operationbtns);
+                                var $btndel = view.$pwfooter.find(".delete");
+                                $btndel.on("click", function() {
+                                    layer.confirm("确定删除当前编辑元素?", {
+                                        icon: 3
+                                    }, function(index) {
+                                        var $deleteobj = "";
+                                        var $selectedobj = view.$pw.$selectedobj;
+                                        /* 如果是image */
+                                        var $pimage = $selectedobj.parent(".cb-image");
+                                        if ($pimage.length !== 0) {
+                                            if ($pimage.children().length === 1 || $selectedobj.prop("tagName") === "IMG") {
+                                                $deleteobj = $pimage.parents(".cb-item");
+                                            } else {
+                                                $deleteobj = $selectedobj;
+                                            }
+                                        } else {
+                                            /* 其他元素 */
+                                            var $parent = $selectedobj.parents(".cb-content");
+                                            var $item = $selectedobj.parents(".cb-item");
+                                            if ($parent.children().length === 1) {
+                                                $deleteobj = $item;
+                                            } else {
+                                                $deleteobj = $item;
+                                            }
+                                        }
+                                        $deleteobj.remove();
+                                        view.$pw.hide();
+                                        layer.close(index);
+                                    });
+                                });
+                            }
+                        }
                         view.$pw.selectedindex = index;
                         $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);
                         view.$pw.show();
@@ -302,7 +347,7 @@
                         var $eventobj = $(obj);
                         view.$pw.find(".pw-header").text("<" + $eventobj.prop("tagName") + ">");
                         view.$pw.find(".pw-content");
-                        view.$pw.selectedobj = $eventobj;
+                        view.$pw.$selectedobj = $eventobj;
                         view.$pw.find(".cb-pills li:first").trigger("click", 0 || view.$pw.selectedindex);
                     });
                 },
@@ -313,6 +358,7 @@
                 },
                 bindEvents: function() {
                     view.customShowEvent();
+                    view.closeEvent();
                     view.pillsEvent();
                 },
                 struc: function() {
@@ -322,14 +368,14 @@
             };
             view.struc();
         },
-        load: function() {
+        struc: function() {
             $(document).ready(function() {
                 onceView.propertiesWindow();
                 onceView.contextMenu();
             });
         }
     };
-    onceView.load();
+    onceView.struc();
     $.fn.cbuilder = function(option) {
         var args = arguments;
         return $(this).each(function() {

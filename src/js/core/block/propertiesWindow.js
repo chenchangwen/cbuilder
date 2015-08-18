@@ -4,7 +4,7 @@ var view = {
         var $element = $('body');
         $element.append(templates.propertiesWindow);
         /* 全局 */
-        $pw = view.$pw = $element.find('.cb-propertiesWindow');
+        $.cbuilder.$pw = view.$pw = $element.find('.cb-propertiesWindow');
         view.$pwcontent = view.$pw.find('.pw-body-content');
         view.$pwfooter = view.$pw.find('.pw-body-footer');
     },
@@ -27,24 +27,69 @@ var view = {
             var $this = $(this);
             var stractive = 'cb-active';
             var index = objindex || $this.index();
+            var $selectedobj = view.$pw.$selectedobj;
+
             view.$pwcontent.html('');
             view.$pwfooter.html('');
             /* 编辑 */
             if (index === 0) {
                 var html = '';
-                html += buildList(view.$pw.selectedobj, '盒子', ['height', 'width']);
+                html += buildList($selectedobj, '盒子', ['height', 'width']);
                 view.$pwcontent.html(html);
                 if (view.$pwfooter.html() === '') {
-                    view.$pwfooter.append(templates.bodycontentfooter);
+                    view.$pwfooter.append(templates.editbtns);
                     var $savebtn = view.$pwfooter.find('.save');
                     $savebtn.on('click', function () {
-                        alert('123123')
+                        var $bodylist = view.$pwcontent.find('.pw-body-content-list tr');
+                        $bodylist.each(function () {
+                            var $this = $(this);
+                            var text = $this.find('.text').text().replace(/:/,'');
+                            var value = $this.find('.input').find('input').val();
+                            if ($selectedobj.css(text)) {
+                                $selectedobj.css(text, value);
+                            }
+                            else if ($selectedobj.prop(text)) {
+                                $selectedobj.prop(text, value);
+                            }
+                        });
                     });
                 }
             }
             /* 操作 */
             else if (index === 1) {
+                if (view.$pwfooter.html() === '') {
+                    view.$pwfooter.append(templates.operationbtns);
+                    /* 其他按钮 */
 
+                    /* 通用按钮 */
+                    var $btndel = view.$pwfooter.find('.delete');
+                    $btndel.on('click', function() {
+                        layer.confirm('确定删除当前编辑元素?', { icon: 3 }, function (index) {
+                            var $deleteobj = '';
+                            /* 如果是image */
+                            var $pimage = $selectedobj.parent(".cb-image");
+                            if ($pimage.length !== 0) {
+                                if ($pimage.children().length === 1 || $selectedobj.prop('tagName') === 'IMG') {
+                                    $deleteobj = $pimage.parents('.cb-item');
+                                } else {
+                                    $deleteobj = $selectedobj;
+                                }
+                            } else {
+                                /* 其他元素 */
+                                var $parent = $selectedobj.parents('.cb-content');
+                                var $item = $selectedobj.parents('.cb-item');
+                                if ($parent.children().length === 1) {
+                                    $deleteobj = $item;
+                                } else {
+                                    $deleteobj = $item;
+                                }
+                            }
+                            $deleteobj.remove();
+                            view.$pw.hide();
+                            layer.close(index);
+                        });
+                    });
+                }
             }
             view.$pw.selectedindex = index;
             $this.parent().find('li').removeClass(stractive).eq(index).addClass(stractive);
@@ -56,7 +101,7 @@ var view = {
             var $eventobj = $(obj);
             view.$pw.find('.pw-header').text('<' + $eventobj.prop('tagName') + '>');
             view.$pw.find('.pw-content');
-            view.$pw.selectedobj = $eventobj;
+            $selectedobj = $eventobj;
             view.$pw.find('.cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
         });
     },
@@ -67,6 +112,7 @@ var view = {
     },
     bindEvents: function() {
         view.customShowEvent();
+        view.closeEvent();
         view.pillsEvent();
     },
     struc: function () {
@@ -77,10 +123,10 @@ var view = {
 view.struc();
 
 //var attrs = [];
-//$.each(view.$pw.selectedobj.prop('attributes'), function () {
+//$.each($selectedobj.prop('attributes'), function () {
 //    if (this.specified) {
-//        if (view.$pw.selectedobj.prop(this.name) ===undefined)
+//        if ($selectedobj.prop(this.name) ===undefined)
 //        attrs.push({ name: this.name, value: this.value });
 //    }
 //});
-//html += buildList(view.$pw.selectedobj, '属性', attrs);
+//html += buildList($selectedobj, '属性', attrs);
