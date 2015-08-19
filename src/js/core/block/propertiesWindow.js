@@ -95,7 +95,7 @@ var view = {
                                 $deleteobj = $item;
                             }
                         }
-                        $deleteobj.remove();
+                        $deleteobj.detach();
                         view.$pw.hide();
                         layer.close(index);
                     });

@@ -38,36 +38,6 @@
                 });
             });
 
-            element.on('cbuilder:onToolsReady', function () {
-                var clsWrap = '.cb-wrap';
-                var $this = $.cbuilder.item.tools.element;
-                if ($this.prop('tagName') === 'IMG' || $this.hasClass('cropwrap')) {
-                    //$.cbuilder.item.tools.addbtn({
-                    //    text: '新建热点',
-                    //    click: function($this) {
-                    //        alert(123123);
-                    //    }
-                    //});
-
-                    //$.cbuilder.item.tools.addbtn({
-                    //    text: '设为切换图片',
-                    //    click: function($this) {
-                    //        layer.confirm('确定设为切换图片', { icon: 3 }, function(index) {
-                    //            layer.close(index);
-                    //            var pclsWrap = $this.parents(clsWrap);
-                    //            var src = pclsWrap.find('img').attr('src');
-                    //            $.cbuilder.active = $this.parents('.container');
-                    //            if ($.cbuilder.active.trnspic === undefined) {
-                    //                $.cbuilder.active.trnspic = [];
-                    //            }
-                    //            $.cbuilder.active.trnspic.push(src);
-                    //            pclsWrap.remove();
-                    //        });
-                    //    }
-                    //});
-                }
-            });
-
             $.cbuilder.$pw.on('propertiesWindow:operationShow', function (event, obj) {
                 var options = {
                     id:'addarea',

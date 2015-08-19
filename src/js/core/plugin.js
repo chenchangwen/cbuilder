@@ -169,7 +169,7 @@
                     that.$element.data(stroriginhtml, '');
                 },
                 /* 触发事件 */
-                triggerEvent: function() {
+                triggerCustomEvent: function() {
                     $(document).ready(function () {
                         that._trigger('cbuilder:onWrapContent');
                         that._trigger('cbuilder:onContentReady');
@@ -186,27 +186,26 @@
                             /* 增加 cb-item div */
                             $this.wrap(that.options.tpl.body_item);
                             /* 增加 工具条 */
-                            $this.parent().before(that.options.tpl.body_item_tool);
+//                            $this.parent().before(that.options.tpl.body_item_tool);
                             $.cbuilder.active = that;
-                            $.cbuilder.item.tools.element = $this;
-                            $.cbuilder.item.tools.addbtn({
-                                text: '删除',
-                                click: function ($this) {
-                                    layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
-                                        layer.close(index);
-                                        $this.parents(clsWrap).remove();
-                                    });
-                                } 
-                            }); 
+//                            $.cbuilder.item.tools.element = $this;
+//                            $.cbuilder.item.tools.addbtn({
+//                                text: '删除',
+//                                click: function ($this) {
+//                                    layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
+//                                        layer.close(index);
+//                                        $this.parents(clsWrap).remove();
+//                                    });
+//                                } 
+//                            }); 
 
                             that._trigger('cbuilder:onToolsReady');
                         });
                     });
-
                     /* 拖拽 */
                     dragula($cbbody[0], {
                         moves: function (el, container, handle) {
-                            return handle.className === 'cb-tools';
+                            return handle.className === 'item-move';
                         }
                     });
                 },
@@ -217,7 +216,7 @@
                     view.loadToolbar();
                     view.bindEvents();
                     view.appendHtml();
-                    view.triggerEvent();
+                    view.triggerCustomEvent();
                 }
             };
             view.struc();
@@ -255,6 +254,10 @@
                 }
             });
         },
+        /* 工具 */
+        itemtools: function() {
+            ~~include('./block/itemtools.js')
+        },
         /* 属性窗口 */
         propertiesWindow: function () {
             ~~include('./block/propertiesWindow.js')
@@ -263,6 +266,7 @@
             $(document).ready(function() {
                 onceView.propertiesWindow();
                 onceView.contextMenu();
+                onceView.itemtools();
             });
         }
     }

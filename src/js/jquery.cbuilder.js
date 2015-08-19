@@ -154,7 +154,7 @@
                     that.$element.data(stroriginhtml, "");
                 },
                 /* 触发事件 */
-                triggerEvent: function() {
+                triggerCustomEvent: function() {
                     $(document).ready(function() {
                         that._trigger("cbuilder:onWrapContent");
                         that._trigger("cbuilder:onContentReady");
@@ -171,27 +171,25 @@
                             /* 增加 cb-item div */
                             $this.wrap(that.options.tpl.body_item);
                             /* 增加 工具条 */
-                            $this.parent().before(that.options.tpl.body_item_tool);
+                            //                            $this.parent().before(that.options.tpl.body_item_tool);
                             $.cbuilder.active = that;
-                            $.cbuilder.item.tools.element = $this;
-                            $.cbuilder.item.tools.addbtn({
-                                text: "删除",
-                                click: function($this) {
-                                    layer.confirm("确定删除该项?", {
-                                        icon: 3
-                                    }, function(index) {
-                                        layer.close(index);
-                                        $this.parents(clsWrap).remove();
-                                    });
-                                }
-                            });
+                            //                            $.cbuilder.item.tools.element = $this;
+                            //                            $.cbuilder.item.tools.addbtn({
+                            //                                text: '删除',
+                            //                                click: function ($this) {
+                            //                                    layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
+                            //                                        layer.close(index);
+                            //                                        $this.parents(clsWrap).remove();
+                            //                                    });
+                            //                                } 
+                            //                            }); 
                             that._trigger("cbuilder:onToolsReady");
                         });
                     });
                     /* 拖拽 */
                     dragula($cbbody[0], {
                         moves: function(el, container, handle) {
-                            return handle.className === "cb-tools";
+                            return handle.className === "item-move";
                         }
                     });
                 },
@@ -202,7 +200,7 @@
                     view.loadToolbar();
                     view.bindEvents();
                     view.appendHtml();
-                    view.triggerEvent();
+                    view.triggerCustomEvent();
                 }
             };
             view.struc();
@@ -241,6 +239,68 @@
                     }
                 }
             });
+        },
+        /* 工具 */
+        itemtools: function() {
+            var templates = {
+                itemtools: '<div class="cb-itemtools"><i class="item-move" href="javascript:;"></i><i class="item-delete" href="javascript:;"></i></div>'
+            };
+            var view = {
+                domCache: function() {
+                    var $element = $("body");
+                    $element.append(templates.itemtools);
+                    /* 全局 */
+                    $.cbuilder.$itemtools = view.$itemtools = $element.find(".cb-itemtools");
+                    view.$contianer = $(".cb-container");
+                    view.$itemdelete = $(".item-delete");
+                },
+                mouseOverEvent: function() {
+                    view.$contianer.mouseover(function(e) {
+                        var $target = $(e.target);
+                        var $content = $target.parents(clsContent);
+                        if ($(".cb-itemtools").length === 0) {
+                            $("body").append(templates.itemtools);
+                        }
+                        if ($content.length > 0) {
+                            $content.append($.cbuilder.$itemtools);
+                            $.cbuilder.$itemtools.show();
+                        }
+                        if ($target.hasClass("cb-content")) {
+                            $target.append($.cbuilder.$itemtools);
+                            $.cbuilder.$itemtools.show();
+                        }
+                    });
+                    view.$contianer.mouseout(function(e) {
+                        var $target = $(e.target);
+                        var $content = $target.parents(clsContent);
+                        if ($content.length === 0) {
+                            $.cbuilder.$itemtools.hide();
+                        }
+                    });
+                },
+                deleteEvent: function() {
+                    $(".item-delete").on("click", function() {
+                        var that = $(this);
+                        layer.confirm("确定删除该项?", {
+                            icon: 3
+                        }, function(index) {
+                            layer.close(index);
+                            that.parents(clsContent).detach();
+                        });
+                    });
+                },
+                bindEvents: function() {
+                    view.mouseOverEvent();
+                    view.deleteEvent();
+                },
+                struc: function() {
+                    $(document).ready(function() {
+                        view.domCache();
+                        view.bindEvents();
+                    });
+                }
+            };
+            view.struc();
         },
         /* 属性窗口 */
         propertiesWindow: function() {
@@ -344,7 +404,7 @@
                                             $deleteobj = $item;
                                         }
                                     }
-                                    $deleteobj.remove();
+                                    $deleteobj.detach();
                                     view.$pw.hide();
                                     layer.close(index);
                                 });
@@ -385,6 +445,7 @@
             $(document).ready(function() {
                 onceView.propertiesWindow();
                 onceView.contextMenu();
+                onceView.itemtools();
             });
         }
     };
