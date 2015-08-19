@@ -13,7 +13,7 @@
     var defaults = {
         height: "100%",
         width: "99%",
-        modules: [ "upload", "mupload", "test", "countdown", "clean", "anchor", "preview", "picture" ],
+        toolbar: [ "upload", "mupload", "test", "countdown", "clean", "anchor", "preview", "picture" ],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
@@ -100,12 +100,12 @@
                     "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css" ];
                     commons.loadFile(vendors);
                 },
-                /* 加载modules */
-                loadModules: function() {
-                    var len = that.options.modules.length;
+                /* 加载toolbar */
+                loadToolbar: function() {
+                    var len = that.options.toolbar.length;
                     for (var i = 0; i < len; i++) {
-                        var name = that.options.modules[i];
-                        var src = "src/js/modules/" + name + "/" + "main" + ".js";
+                        var name = that.options.toolbar[i];
+                        var src = "src/js/toolbar/" + name + "/" + "main" + ".js";
                         $.ajax({
                             async: false,
                             type: "get",
@@ -134,7 +134,7 @@
                                                 shadeClose: true,
                                                 shade: .3,
                                                 area: [ width, height ],
-                                                content: basePath + "modules/" + module.toolbar.name + "/main.html"
+                                                content: basePath + "toolbar/" + module.toolbar.name + "/main.html"
                                             });
                                         }
                                         that._trigger("", module.toolbar.onClick);
@@ -199,7 +199,7 @@
                 struc: function() {
                     view.init();
                     view.loadVendors();
-                    view.loadModules();
+                    view.loadToolbar();
                     view.bindEvents();
                     view.appendHtml();
                     view.triggerEvent();
@@ -257,8 +257,18 @@
                     $element.append(templates.propertiesWindow);
                     /* 全局 */
                     $.cbuilder.$pw = view.$pw = $element.find(".cb-propertiesWindow");
-                    view.$pwcontent = view.$pw.find(".pw-body-content");
-                    view.$pwfooter = view.$pw.find(".pw-body-footer");
+                    $.cbuilder.$pwcontent = view.$pwcontent = view.$pw.find(".pw-body-content");
+                    $.cbuilder.$pwfooter = view.$pwfooter = view.$pw.find(".pw-body-footer");
+                    $.cbuilder.$pw.AddBtn = function(opts) {
+                        var $obj = $("#" + opts.id);
+                        if ($obj.length === 0) {
+                            var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + "</button>";
+                            $.cbuilder.$pwfooter.append(html);
+                            if (typeof opts.event === "function") {
+                                opts.event($("#" + opts.id));
+                            }
+                        }
+                    };
                 },
                 pillsEvent: function() {
                     function buildList(obj, title, attrlist) {
@@ -278,12 +288,13 @@
                         var $this = $(this);
                         var stractive = "cb-active";
                         var index = objindex || $this.index();
+                        var $selectedobj = view.$pw.$selectedobj;
                         view.$pwcontent.html("");
                         view.$pwfooter.html("");
                         /* 编辑 */
                         if (index === 0) {
                             var html = "";
-                            html += buildList(view.$pw.$selectedobj, "盒子", [ "height", "width" ]);
+                            html += buildList($selectedobj, "盒子", [ "height", "width" ]);
                             view.$pwcontent.html(html);
                             if (view.$pwfooter.html() === "") {
                                 view.$pwfooter.append(templates.editbtns);
@@ -294,48 +305,50 @@
                                         var $this = $(this);
                                         var text = $this.find(".text").text().replace(/:/, "");
                                         var value = $this.find(".input").find("input").val();
-                                        if (view.$pw.$selectedobj.css(text)) {
-                                            view.$pw.$selectedobj.css(text, value);
-                                        } else if (view.$pw.$selectedobj.prop(text)) {
-                                            view.$pw.$selectedobj.prop(text, value);
+                                        if ($selectedobj.css(text)) {
+                                            $selectedobj.css(text, value);
+                                        } else if ($selectedobj.prop(text)) {
+                                            $selectedobj.prop(text, value);
                                         }
                                     });
                                 });
                             }
                         } else if (index === 1) {
-                            if (view.$pwfooter.html() === "") {
-                                view.$pwfooter.append(templates.operationbtns);
-                                var $btndel = view.$pwfooter.find(".delete");
-                                $btndel.on("click", function() {
-                                    layer.confirm("确定删除当前编辑元素?", {
-                                        icon: 3
-                                    }, function(index) {
-                                        var $deleteobj = "";
-                                        var $selectedobj = view.$pw.$selectedobj;
-                                        /* 如果是image */
-                                        var $pimage = $selectedobj.parent(".cb-image");
-                                        if ($pimage.length !== 0) {
-                                            if ($pimage.children().length === 1 || $selectedobj.prop("tagName") === "IMG") {
-                                                $deleteobj = $pimage.parents(".cb-item");
-                                            } else {
-                                                $deleteobj = $selectedobj;
-                                            }
-                                        } else {
-                                            /* 其他元素 */
-                                            var $parent = $selectedobj.parents(".cb-content");
-                                            var $item = $selectedobj.parents(".cb-item");
-                                            if ($parent.children().length === 1) {
-                                                $deleteobj = $item;
-                                            } else {
-                                                $deleteobj = $item;
-                                            }
-                                        }
-                                        $deleteobj.remove();
-                                        view.$pw.hide();
-                                        layer.close(index);
-                                    });
-                                });
+                            /* 其他按钮 */
+                            if ($selectedobj.prop("tagName") === "IMG") {
+                                $.cbuilder.$pw.trigger("propertiesWindow:operationShow", $selectedobj);
                             }
+                            /* 通用按钮 */
+                            view.$pwfooter.append(templates.operationbtns);
+                            var $btndel = view.$pwfooter.find(".delete");
+                            $btndel.on("click", function() {
+                                layer.confirm("确定删除当前编辑元素?", {
+                                    icon: 3
+                                }, function(index) {
+                                    var $deleteobj = "";
+                                    /* 如果是image */
+                                    var $pimage = $selectedobj.parent(".cb-image");
+                                    if ($pimage.length !== 0) {
+                                        if ($pimage.children().length === 1 || $selectedobj.prop("tagName") === "IMG") {
+                                            $deleteobj = $pimage.parents(".cb-item");
+                                        } else {
+                                            $deleteobj = $selectedobj;
+                                        }
+                                    } else {
+                                        /* 其他元素 */
+                                        var $parent = $selectedobj.parents(".cb-content");
+                                        var $item = $selectedobj.parents(".cb-item");
+                                        if ($parent.children().length === 1) {
+                                            $deleteobj = $item;
+                                        } else {
+                                            $deleteobj = $item;
+                                        }
+                                    }
+                                    $deleteobj.remove();
+                                    view.$pw.hide();
+                                    layer.close(index);
+                                });
+                            });
                         }
                         view.$pw.selectedindex = index;
                         $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);

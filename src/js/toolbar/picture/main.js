@@ -16,6 +16,7 @@
                 }
                 $.cbuilder.active._content = clean();
             });
+
             element.on('cbuilder:onContentReady', function (e) {
                 /* 图片双击事件 */
                 //$('.cb-content').undelegate('dblclick').delegate('img,.cropwrap', 'dblclick', function () {
@@ -65,6 +66,19 @@
                     //    }
                     //});
                 }
+            });
+
+            $.cbuilder.$pw.on('propertiesWindow:operationShow', function (event, obj) {
+                var options = {
+                    id:'addarea',
+                    text: '新建区域',
+                    event: function(obj) {
+                        obj.on('click', function () {
+                            alert('新建区域');
+                        });
+                    }
+                };
+                $.cbuilder.$pw.AddBtn(options);
             });
         }
     }

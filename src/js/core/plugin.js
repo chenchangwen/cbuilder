@@ -14,7 +14,7 @@
     var defaults = {
         height: "100%",
         width:"99%",
-        modules: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
+        toolbar: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
@@ -111,12 +111,12 @@
                     ];
                     commons.loadFile(vendors);
                 },
-                /* 加载modules */ 
-                loadModules: function () {
-                    var len = that.options.modules.length;
+                /* 加载toolbar */ 
+                loadToolbar: function () {
+                    var len = that.options.toolbar.length;
                     for (var i = 0; i < len; i++) {
-                        var name = that.options.modules[i];
-                        var src = 'src/js/modules/' + name + '/' + 'main' + '.js';
+                        var name = that.options.toolbar[i];
+                        var src = 'src/js/toolbar/' + name + '/' + 'main' + '.js';
                         $.ajax({
                             async: false,
                             type: "get",
@@ -149,7 +149,7 @@
                                                 shadeClose: true,
                                                 shade: 0.3,
                                                 area: [width,height],
-                                                content: basePath + 'modules/' + module.toolbar.name + '/main.html'
+                                                content: basePath + 'toolbar/' + module.toolbar.name + '/main.html'
                                             });
                                         }
                                         that._trigger('', module.toolbar.onClick);
@@ -214,7 +214,7 @@
                 struc: function () {
                     view.init();
                     view.loadVendors();
-                    view.loadModules();
+                    view.loadToolbar();
                     view.bindEvents();
                     view.appendHtml();
                     view.triggerEvent();

@@ -5,8 +5,18 @@ var view = {
         $element.append(templates.propertiesWindow);
         /* 全局 */
         $.cbuilder.$pw = view.$pw = $element.find('.cb-propertiesWindow');
-        view.$pwcontent = view.$pw.find('.pw-body-content');
-        view.$pwfooter = view.$pw.find('.pw-body-footer');
+        $.cbuilder.$pwcontent = view.$pwcontent = view.$pw.find('.pw-body-content');
+        $.cbuilder.$pwfooter = view.$pwfooter = view.$pw.find('.pw-body-footer');
+        $.cbuilder.$pw.AddBtn = function (opts) {
+            var $obj = $('#' + opts.id);
+            if ($obj.length === 0) {
+                var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + '</button>';
+                $.cbuilder.$pwfooter.append(html);
+                if (typeof opts.event === "function") {
+                    opts.event($('#' + opts.id));
+                }
+            }
+        }
     },
     pillsEvent: function () {
         function buildList(obj, title, attrlist) {
@@ -57,39 +67,39 @@ var view = {
             }
             /* 操作 */
             else if (index === 1) {
-                if (view.$pwfooter.html() === '') {
-                    view.$pwfooter.append(templates.operationbtns);
-                    /* 其他按钮 */
-
-                    /* 通用按钮 */
-                    var $btndel = view.$pwfooter.find('.delete');
-                    $btndel.on('click', function() {
-                        layer.confirm('确定删除当前编辑元素?', { icon: 3 }, function (index) {
-                            var $deleteobj = '';
-                            /* 如果是image */
-                            var $pimage = $selectedobj.parent(".cb-image");
-                            if ($pimage.length !== 0) {
-                                if ($pimage.children().length === 1 || $selectedobj.prop('tagName') === 'IMG') {
-                                    $deleteobj = $pimage.parents('.cb-item');
-                                } else {
-                                    $deleteobj = $selectedobj;
-                                }
-                            } else {
-                                /* 其他元素 */
-                                var $parent = $selectedobj.parents('.cb-content');
-                                var $item = $selectedobj.parents('.cb-item');
-                                if ($parent.children().length === 1) {
-                                    $deleteobj = $item;
-                                } else {
-                                    $deleteobj = $item;
-                                }
-                            }
-                            $deleteobj.remove();
-                            view.$pw.hide();
-                            layer.close(index);
-                        });
-                    });
+                /* 其他按钮 */
+                if ($selectedobj.prop('tagName') === 'IMG') {
+                    $.cbuilder.$pw.trigger('propertiesWindow:operationShow', $selectedobj);
                 }
+                /* 通用按钮 */
+                view.$pwfooter.append(templates.operationbtns);
+                var $btndel = view.$pwfooter.find('.delete');
+                $btndel.on('click', function () {
+                    layer.confirm('确定删除当前编辑元素?', { icon: 3 }, function (index) {
+                        var $deleteobj = '';
+                        /* 如果是image */
+                        var $pimage = $selectedobj.parent(".cb-image");
+                        if ($pimage.length !== 0) {
+                            if ($pimage.children().length === 1 || $selectedobj.prop('tagName') === 'IMG') {
+                                $deleteobj = $pimage.parents('.cb-item');
+                            } else {
+                                $deleteobj = $selectedobj;
+                            }
+                        } else {
+                            /* 其他元素 */
+                            var $parent = $selectedobj.parents('.cb-content');
+                            var $item = $selectedobj.parents('.cb-item');
+                            if ($parent.children().length === 1) {
+                                $deleteobj = $item;
+                            } else {
+                                $deleteobj = $item;
+                            }
+                        }
+                        $deleteobj.remove();
+                        view.$pw.hide();
+                        layer.close(index);
+                    });
+                });
             }
             view.$pw.selectedindex = index;
             $this.parent().find('li').removeClass(stractive).eq(index).addClass(stractive);
@@ -101,7 +111,7 @@ var view = {
             var $eventobj = $(obj);
             view.$pw.find('.pw-header').text('<' + $eventobj.prop('tagName') + '>');
             view.$pw.find('.pw-content');
-            $selectedobj = $eventobj;
+            view.$pw.$selectedobj = $eventobj;
             view.$pw.find('.cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
         });
     },
