@@ -112,7 +112,7 @@
                             url: src,
                             success: function() {
                                 /* 执行动态函数,并获取module对象 */
-                                var module = init(that.$element, basePath);
+                                var module = init(that.$element, basePath, commons);
                                 if (module.isToolbar === false) {
                                     module.onLoaded();
                                     return false;
