@@ -32,6 +32,20 @@
         return currentScript.replace(currentScriptFile, '');
     }
 
+    (function (win) {
+        var Store = {},
+                DOMCache = {
+                    get: function (selector, force) {
+                        if (Store[selector] && !force) {
+                            return Store[selector];
+                        }
+
+                        return (Store[selector] = $(selector));
+                    }
+                };
+        win.DOMCache = DOMCache;
+    }(window));
+
     var clsContainer = ".cb-container",
         clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
@@ -43,6 +57,7 @@
         
     ~~include('./block/commons.js')
 
+   
 
     var cbuilder = function(element, options) {
         this.options = $.extend({}, defaults, options);

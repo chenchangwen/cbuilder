@@ -15,13 +15,16 @@ var view = {
             if ($('.cb-itemtools').length === 0) {
                 $("body").append(templates.itemtools);
             }
-            if ($content.length > 0) {
-                $content.append($.cbuilder.$itemtools);
-                $.cbuilder.$itemtools.show();                
-            }
-            if ($target.hasClass('cb-content')) {
-                $target.append($.cbuilder.$itemtools);
-                $.cbuilder.$itemtools.show();
+            /* jcrop 不存在时才作显示 */
+            if ($(".jcrop-holder").length === 0) {
+                if ($content.length > 0) {
+                    $content.append($.cbuilder.$itemtools);
+                    $.cbuilder.$itemtools.show();
+                }
+                if ($target.hasClass('cb-content')) {
+                    $target.append($.cbuilder.$itemtools);
+                    $.cbuilder.$itemtools.show();
+                }
             }
         });
         view.$contianer.mouseout(function (e) {

@@ -49,20 +49,24 @@
                     });
                 },
                 pwOperationShow: function() {
-                    $.cbuilder.$pw.on('propertiesWindow:operationShow', function (event, obj) {
-                        var options = {
-                            id: 'addarea',
-                            text: '新建区域',
-                            event: function (obj) {
-                                obj.on('click', function () {
-                                    view.loadJcrop(obj);
-                                });
-                            }
-                        };
-                        $.cbuilder.$pw.AddBtn(options);
+                    $.cbuilder.$pw.on('propertiesWindow:operationShow', function (event, opobj) {
+                        var $opobj = $(opobj);
+                        if ($opobj.prop('tagName') === 'IMG') {
+                            var options = {
+                                id: 'addarea',
+                                text: '新建区域',
+                                event: function(obj) {
+                                    obj.on('click', function() {
+                                        $.cbuilder.$pw.trigger('propertiesWindow:operationPageShow', [$opobj, 'area']);
+                                        view.loadJcrop($opobj, 'create');
+                                    });
+                                }
+                            };
+                            $.cbuilder.$pw.AddBtn(options);
+                        }
                     });
                 },
-                loadJcrop: function(obj) {
+                loadJcrop: function (obj,type) {
                     if (typeof (jcrop_api) != "undefined") {
                         jcrop_api.release();
                         jcrop_api.animateTo([100, 100, 0, 0]);
@@ -101,7 +105,7 @@
                             allowSelect: false
                         }, function () {
                             jcrop_api = this;
-                            if (obj != undefined) {
+                            if (type === 'edit') {
                                 var w = obj.width() + 6;
                                 var h = obj.height() + 6;
                                 obj.css({

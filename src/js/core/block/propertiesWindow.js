@@ -1,12 +1,14 @@
 ﻿~~include('../../tpl/propertiesWindow.js')
+/* 属性窗口 */
 var view = {
+    selecotr:'.main',
     domCache: function() {
         var $element = $('body');
         $element.append(templates.propertiesWindow);
         /* 全局 */
         $.cbuilder.$pw = view.$pw = $element.find('.cb-propertiesWindow');
-        $.cbuilder.$pwcontent = view.$pwcontent = view.$pw.find('.pw-body-content');
-        $.cbuilder.$pwfooter = view.$pwfooter = view.$pw.find('.pw-body-footer');
+        $.cbuilder.$pwcontent = view.$pwcontent = view.$pw.find('.pw-main .pw-body-content');
+        $.cbuilder.$pwfooter = view.$pwfooter = view.$pw.find('.pw-main .pw-body-footer');
         $.cbuilder.$pw.AddBtn = function (opts) {
             var $obj = $('#' + opts.id);
             if ($obj.length === 0) {
@@ -44,7 +46,7 @@ var view = {
             /* 编辑 */
             if (index === 0) {
                 var html = '';
-                html += buildList($selectedobj, '盒子', ['height', 'width']);
+                html += buildList($selectedobj, '属性', ['height', 'width']);
                 view.$pwcontent.html(html);
                 if (view.$pwfooter.html() === '') {
                     view.$pwfooter.append(templates.editbtns);
@@ -68,9 +70,7 @@ var view = {
             /* 操作 */
             else if (index === 1) {
                 /* 其他按钮 */
-                if ($selectedobj.prop('tagName') === 'IMG') {
-                    $.cbuilder.$pw.trigger('propertiesWindow:operationShow', $selectedobj);
-                }
+                $.cbuilder.$pw.trigger('propertiesWindow:operationShow', $selectedobj);
                 /* 通用按钮 */
                 view.$pwfooter.append(templates.operationbtns);
                 var $btndel = view.$pwfooter.find('.delete');
@@ -106,23 +106,41 @@ var view = {
             view.$pw.show();
         });
     },
-    customShowEvent: function() {
+    customEvent: function () {
+        /* 属性窗口显示事件 */
         view.$pw.on("propertiesWindow:show", function (event, obj) {
             var $eventobj = $(obj);
-            view.$pw.find('.pw-header').text('<' + $eventobj.prop('tagName') + '>');
-            view.$pw.find('.pw-content');
+            view.$pw.find('.pw-main.pw-header').text('<' + $eventobj.prop('tagName') + '>');
             view.$pw.$selectedobj = $eventobj;
-            view.$pw.find('.cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
+            view.$pw.find('.pw-main .cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
+        });
+        /* 属性窗口页面显示事件 */
+        view.$pw.on("propertiesWindow:operationPageShow", function (event, $obj,type) {
+            $.cbuilder.$itemtools.hide();
+            var headerstr = '';
+            /* 区域 */
+            if (type === 'area') {
+                headerstr = 'DIV';
+                view.$pw.$selectedobj = $obj;
+                view.$pw.find('.cb-pills').hide();
+            }
+            view.$pw.find('.pw-header').text('<' + headerstr + '>');
         });
     },
-    closeEvent: function () {
+    backEvent: function () {
         view.$pw.find('.close').on('click', function () {
             view.$pw.hide();
         });
     },
+    closeEvent: function () {
+        view.$pw.find('.back').on('click', function () {
+            alert('123123');
+        });
+    },
     bindEvents: function() {
-        view.customShowEvent();
+        view.customEvent();
         view.closeEvent();
+        view.backEvent();
         view.pillsEvent();
     },
     struc: function () {
