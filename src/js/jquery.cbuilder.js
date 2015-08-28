@@ -319,7 +319,7 @@
         /* 属性窗口 */
         propertiesWindow: function() {
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;">&#x7F16;&#x8F91;</a></li><li><a href="javascript:;">&#x64CD;&#x4F5C;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"></div><div class="pw-body-footer"></div></div></div><!-- 区域 --><div class="pw-area"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a><a class="back" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"></div><div class="pw-body-footer"></div></div></div></div>',
+                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel pw-active"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;">&#x7F16;&#x8F91;</a></li><li><a href="javascript:;">&#x64CD;&#x4F5C;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"></div><div class="pw-body-footer"></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"></div><div class="pw-body-footer"></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">',
                 editbtns: '<button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button>',
@@ -328,25 +328,8 @@
             /* 属性窗口 */
             var view = {
                 selecotr: ".main",
-                domCache: function() {
-                    var $element = $("body");
-                    $element.append(templates.propertiesWindow);
-                    /* 全局 */
-                    $.cbuilder.$pw = view.$pw = $element.find(".cb-propertiesWindow");
-                    $.cbuilder.$pwcontent = view.$pwcontent = view.$pw.find(".pw-main .pw-body-content");
-                    $.cbuilder.$pwfooter = view.$pwfooter = view.$pw.find(".pw-main .pw-body-footer");
-                    $.cbuilder.$pw.AddBtn = function(opts) {
-                        var $obj = $("#" + opts.id);
-                        if ($obj.length === 0) {
-                            var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + "</button>";
-                            $.cbuilder.$pwfooter.append(html);
-                            if (typeof opts.event === "function") {
-                                opts.event($("#" + opts.id));
-                            }
-                        }
-                    };
-                },
-                pillsEvent: function() {
+                domCache: function() {},
+                pillsEvent: function(selector) {
                     function buildList(obj, title, attrlist) {
                         var html = templates.bodycontentheader.replace(/#value/, title);
                         html += '<table class="pw-body-content-list">';
@@ -360,7 +343,7 @@
                         html += templates.hr;
                         return html;
                     }
-                    view.$pw.find("ul").delegate("li", "click", function(event, objindex) {
+                    view.$pw.find("ul").undelegate("click").delegate("li", "click", function(event, objindex) {
                         var $this = $(this);
                         var stractive = "cb-active";
                         var index = objindex || $this.index();
@@ -426,28 +409,32 @@
                         }
                         view.$pw.selectedindex = index;
                         $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);
-                        view.$pw.show();
+                        view.$pw.find(".pw-active").show();
                     });
                 },
                 customEvent: function() {
                     /* 属性窗口显示事件 */
                     view.$pw.on("propertiesWindow:show", function(event, obj) {
                         var $eventobj = $(obj);
+                        view.$pwallpanel.hide();
                         view.$pw.find(".pw-main.pw-header").text("<" + $eventobj.prop("tagName") + ">");
                         view.$pw.$selectedobj = $eventobj;
                         view.$pw.find(".pw-main .cb-pills li:first").trigger("click", 0 || view.$pw.selectedindex);
                     });
                     /* 属性窗口页面显示事件 */
-                    view.$pw.on("propertiesWindow:operationPageShow", function(event, $obj, type) {
+                    view.$pw.on("propertiesWindow:operationPageShow", function(event, $obj, clsstr) {
                         $.cbuilder.$itemtools.hide();
                         var headerstr = "";
+                        view.$pw.$selectedobj = $obj;
                         /* 区域 */
-                        if (type === "area") {
+                        if (clsstr === "area") {
                             headerstr = "DIV";
-                            view.$pw.$selectedobj = $obj;
-                            view.$pw.find(".cb-pills").hide();
+                            view.$pwallpanel.hide().removeClass("pw-active");
+                            var $area = view.$pw.find(".pw-area");
+                            $area.show();
+                            $area.find(".pw-header").text("<" + headerstr + ">");
+                            view.pillsEvent();
                         }
-                        view.$pw.find(".pw-header").text("<" + headerstr + ">");
                     });
                 },
                 backEvent: function() {
@@ -466,8 +453,27 @@
                     view.backEvent();
                     view.pillsEvent();
                 },
+                init: function() {
+                    var $element = $("body");
+                    $element.append(templates.propertiesWindow);
+                    /* 全局 */
+                    $.cbuilder.$pw = view.$pw = $element.find(".cb-propertiesWindow");
+                    view.$pwallpanel = view.$pw.find(".pw-panel");
+                    view.$pwcontent = view.$pw.find(".pw-body-content");
+                    view.$pwfooter = view.$pw.find(".pw-body-footer");
+                    $.cbuilder.$pw.AddBtn = function(opts) {
+                        var $obj = $("#" + opts.id);
+                        if ($obj.length === 0) {
+                            var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + "</button>";
+                            view.$pw.find(".pw-active .pw-body-footer").append(html);
+                            if (typeof opts.event === "function") {
+                                opts.event($("#" + opts.id));
+                            }
+                        }
+                    };
+                },
                 struc: function() {
-                    view.domCache();
+                    view.init();
                     view.bindEvents();
                 }
             };
