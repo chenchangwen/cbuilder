@@ -55,6 +55,7 @@
                             var options = {
                                 id: 'addarea',
                                 text: '新建区域',
+                                panel:'.pw-main',
                                 event: function(obj) {
                                     obj.on('click', function() {
                                         $.cbuilder.$pw.trigger('propertiesWindow:operationPageShow', [$opobj, 'area']);
