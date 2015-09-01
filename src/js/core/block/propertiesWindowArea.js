@@ -7,7 +7,6 @@
         /* 属性窗口-页面-显示 */
         view.$pw.on("propertiesWindow:editShowEd", function (event, obj,clsstr) {
             /* 隐藏项工具 */
-            debugger;
             $.cbuilder.$itemtools.hide();
             /* 区域 */
             if (clsstr === 'area') {

@@ -25,6 +25,7 @@ var view = {
         /* 保存 */
         var $savebtn = view.$pwfooter.find('.save');
         $savebtn.on('click', function () {
+            debugger;
             var $selectedobj = $(view.$pw.$selectedobj);
             var $bodylist = view.$pwcontent.find('.pw-body-content-list tr');
             $bodylist.each(function () {

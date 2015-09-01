@@ -347,6 +347,7 @@
                     /* 保存 */
                     var $savebtn = view.$pwfooter.find(".save");
                     $savebtn.on("click", function() {
+                        debugger;
                         var $selectedobj = $(view.$pw.$selectedobj);
                         var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
                         $bodylist.each(function() {
@@ -454,7 +455,6 @@
                             /* 属性窗口-页面-显示 */
                             view.$pw.on("propertiesWindow:editShowEd", function(event, obj, clsstr) {
                                 /* 隐藏项工具 */
-                                debugger;
                                 $.cbuilder.$itemtools.hide();
                                 /* 区域 */
                                 if (clsstr === "area") {

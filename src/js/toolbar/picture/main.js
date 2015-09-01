@@ -50,15 +50,17 @@
                 },
                 pwOperationShow: function() {
                     $.cbuilder.$pw.on('propertiesWindow:editShowing', function (event, opobj) {
-                        var $opobj = $(opobj);
-                        if ($opobj.prop('tagName') === 'IMG') {
+                        /* 将当前选择的对象(img)设为 pw的选择对象 */
+                        var $selectedobj = $(opobj);
+                        $.cbuilder.$pw.$selectedobj = $selectedobj;
+                        if ($selectedobj.prop('tagName') === 'IMG') {
                             var options = {
                                 id: 'addarea',
                                 text: '新建区域',
                                 panel:'.pw-main',
                                 event: function(obj) {
                                     obj.on('click', function () {
-                                        view.loadJcrop($opobj, 'create');
+                                        view.loadJcrop($.cbuilder.$pw.$selectedobj, 'create');
                                         $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', [$(this), 'area']);
                                     });
                                 }
@@ -141,11 +143,11 @@
                     this.onGetContentBeforeEvent();
                     this.pwOperationShow();
                 },
-                domCache: function () {
-                },
                 struc: function () {
-                    this.init();
-                    this.bindEvents();
+                    if (typeof $.Jcrop === "undefined") {
+                        this.init();
+                        this.bindEvents();
+                    }
                 }
             };
             view.struc();
