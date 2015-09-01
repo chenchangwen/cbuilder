@@ -55,6 +55,15 @@
                     });
                 }
             }
+        },
+        /* 清理 */
+        clean: function() {
+            /* jcrop */
+            if (typeof jcrop_api != "undefined") {
+                jcrop_api.destroy();
+                jcrop_api.release();
+                delete jcrop_api;
+            }
         }
     };
     var cbuilder = function(element, options) {
@@ -181,19 +190,7 @@
                             var $this = $(this);
                             /* 增加 cb-item div */
                             $this.wrap(that.options.tpl.body_item);
-                            /* 增加 工具条 */
-                            //                            $this.parent().before(that.options.tpl.body_item_tool);
                             $.cbuilder.active = that;
-                            //                            $.cbuilder.item.tools.element = $this;
-                            //                            $.cbuilder.item.tools.addbtn({
-                            //                                text: '删除',
-                            //                                click: function ($this) {
-                            //                                    layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
-                            //                                        layer.close(index);
-                            //                                        $this.parents(clsWrap).remove();
-                            //                                    });
-                            //                                } 
-                            //                            }); 
                             that._trigger("cbuilder:onToolsReady");
                         });
                     });
@@ -230,9 +227,10 @@
             var vendors = [ "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css" ];
             commons.loadFile(vendors);
             $.contextMenu({
-                selector: ".cb-content *",
+                selector: ".cb-content img,.cb-content a",
                 callback: function(key, options) {
-                    $.cbuilder.$pw.trigger("propertiesWindow:show", $(this));
+                    $.cbuilder.$pw.$selectedobj = this;
+                    $.cbuilder.$pw.trigger("propertiesWindow:show");
                 },
                 items: {
                     edit: {
@@ -319,14 +317,13 @@
         /* 属性窗口 */
         propertiesWindow: function() {
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;">&#x7F16;&#x8F91;</a></li><li><a href="javascript:;">&#x64CD;&#x4F5C;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"></div><div class="pw-body-footer"></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"></div><div class="pw-body-footer"></div></div></div></div>',
+                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" value="258"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" value="540"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cropwidth" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cropheight" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cropmarginleft" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cropmargintop" type="text"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
-                hr: '<hr class="cb-article-divider">',
-                editbtns: '<button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button>',
-                operationbtns: '<button type="button" class="btn primary delete">&#x5220; &#x9664;</button>'
+                hr: '<hr class="cb-article-divider">'
             };
             /* 属性窗口 */
             var view = {
+                /* dom缓存 */
                 domCache: function() {
                     var $body = $("body");
                     $body.append(templates.propertiesWindow);
@@ -345,143 +342,169 @@
                         }
                     };
                 },
+                btnsEvent: function() {
+                    view.setPanel(".pw-main");
+                    /* 保存 */
+                    var $savebtn = view.$pwfooter.find(".save");
+                    $savebtn.on("click", function() {
+                        var $selectedobj = $(view.$pw.$selectedobj);
+                        var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
+                        $bodylist.each(function() {
+                            var $this = $(this);
+                            var text = $this.find(".text").text().replace(/:/, "");
+                            var value = $this.find(".input").find("input").val();
+                            if ($selectedobj.css(text)) {
+                                $selectedobj.css(text, value);
+                            } else if ($selectedobj.prop(text)) {
+                                $selectedobj.prop(text, value);
+                            }
+                        });
+                    });
+                    /* 删除 */
+                    var $btndel = view.$pwfooter.find(".delete");
+                    $btndel.on("click", function() {
+                        var $selectedobj = $(view.$pw.$selectedobj);
+                        var tip = "确定删除&lt;" + $selectedobj.prop("tagName") + "&gt;?";
+                        layer.confirm(tip, {
+                            icon: 3
+                        }, function(index) {
+                            var $deleteobj = "";
+                            /* 如果是image */
+                            var $pimage = $selectedobj.parent(".cb-image");
+                            if ($pimage.length !== 0) {
+                                if ($pimage.children().length === 1 || $selectedobj.prop("tagName") === "IMG") {
+                                    $deleteobj = $pimage.parents(".cb-item");
+                                } else {
+                                    $deleteobj = $selectedobj;
+                                }
+                            } else {
+                                /* 其他元素 */
+                                var $parent = $selectedobj.parents(".cb-content");
+                                var $item = $selectedobj.parents(".cb-item");
+                                if ($parent.children().length === 1) {
+                                    $deleteobj = $item;
+                                } else {
+                                    $deleteobj = $item;
+                                }
+                            }
+                            $deleteobj.detach();
+                            view.$pw.hide();
+                            layer.close(index);
+                        });
+                    });
+                },
                 pillsEvent: function() {
-                    function buildList(obj, title, attrlist) {
-                        var html = templates.bodycontentheader.replace(/#value/, title);
-                        html += '<table class="pw-body-content-list">';
-                        for (var i = 0; i < attrlist.length; i++) {
-                            html += "<tr>";
-                            html += '<td class="text">' + (attrlist[i].name || attrlist[i]) + ":</td>";
-                            html += '<td class="input">' + '<input type="text" value="' + (attrlist[i].value || obj.css(attrlist[i])) + '"></input>' + "</td>";
-                            html += "</tr>";
-                        }
-                        html += "</table>";
-                        html += templates.hr;
-                        return html;
-                    }
                     view.$pw.find("ul").delegate("li", "click", function(event, objindex) {
                         var $this = $(this);
                         var stractive = "cb-active";
                         var index = objindex || $this.index();
-                        var $selectedobj = view.$pw.$selectedobj;
                         /* 找当前li的 父 panel */
                         var $panel = $this.parents(".pw-panel");
                         var showselector = "";
                         if ($panel.hasClass("pw-main")) {
-                            view.$pwcontent = $panel.find(".pw-body-content");
-                            view.$pwfooter = $panel.find(".pw-body-footer");
-                            view.$pwcontent.html("");
-                            view.$pwfooter.html("");
                             showselector = ".pw-main";
-                            /* 编辑 */
-                            if (index === 0) {
-                                var html = "";
-                                html += buildList($selectedobj, "属性", [ "height", "width" ]);
-                                view.$pwcontent.html(html);
-                                if (view.$pwfooter.html() === "") {
-                                    view.$pwfooter.append(templates.editbtns);
-                                    var $savebtn = view.$pwfooter.find(".save");
-                                    $savebtn.on("click", function() {
-                                        var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
-                                        $bodylist.each(function() {
-                                            var $this = $(this);
-                                            var text = $this.find(".text").text().replace(/:/, "");
-                                            var value = $this.find(".input").find("input").val();
-                                            if ($selectedobj.css(text)) {
-                                                $selectedobj.css(text, value);
-                                            } else if ($selectedobj.prop(text)) {
-                                                $selectedobj.prop(text, value);
-                                            }
-                                        });
-                                    });
-                                }
-                            } else if (index === 1) {
-                                /* 其他按钮 */
-                                $.cbuilder.$pw.trigger("propertiesWindow:operationShow", $selectedobj);
-                                /* 通用按钮 */
-                                view.$pwfooter.append(templates.operationbtns);
-                                var $btndel = view.$pwfooter.find(".delete");
-                                $btndel.on("click", function() {
-                                    layer.confirm("确定删除当前编辑元素?", {
-                                        icon: 3
-                                    }, function(index) {
-                                        var $deleteobj = "";
-                                        /* 如果是image */
-                                        var $pimage = $selectedobj.parent(".cb-image");
-                                        if ($pimage.length !== 0) {
-                                            if ($pimage.children().length === 1 || $selectedobj.prop("tagName") === "IMG") {
-                                                $deleteobj = $pimage.parents(".cb-item");
-                                            } else {
-                                                $deleteobj = $selectedobj;
-                                            }
-                                        } else {
-                                            /* 其他元素 */
-                                            var $parent = $selectedobj.parents(".cb-content");
-                                            var $item = $selectedobj.parents(".cb-item");
-                                            if ($parent.children().length === 1) {
-                                                $deleteobj = $item;
-                                            } else {
-                                                $deleteobj = $item;
-                                            }
-                                        }
-                                        $deleteobj.detach();
-                                        view.$pw.hide();
-                                        layer.close(index);
-                                    });
-                                });
-                            }
-                            view.$pw.selectedindex = index;
-                            $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);
+                            view.setPanel(showselector);
                         }
                         /* 显示属性窗口 */
+                        $.cbuilder.$pw.trigger("propertiesWindow:editShowing", view.$pw.$selectedobj);
+                        $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);
+                        view.$pw.selectedindex = index;
                         view.$pw.find(showselector).show();
                         view.$pw.show();
                     });
+                    view.btnsEvent();
                 },
                 customEvent: function() {
-                    /* 属性窗口显示事件 */
-                    view.$pw.on("propertiesWindow:show", function(event, obj) {
-                        var $eventobj = $(obj);
+                    /* 属性窗口-主面板-显示 */
+                    view.$pw.on("propertiesWindow:show", function(event) {
+                        commons.clean();
                         view.$pwallpanel.hide();
-                        view.$pw.find(".pw-main .pw-header").text("<" + $eventobj.prop("tagName") + ">");
-                        view.$pw.$selectedobj = $eventobj;
+                        view.$pw.find(".pw-main .pw-header").text("<" + $.cbuilder.$pw.$selectedobj.prop("tagName") + ">");
                         view.$pw.find(".pw-main .cb-pills li:first").trigger("click", 0 || view.$pw.selectedindex);
                     });
-                    /* 属性窗口页面显示事件 */
-                    view.$pw.on("propertiesWindow:operationPageShow", function(event, $obj, clsstr) {
-                        $.cbuilder.$itemtools.hide();
-                        var headerstr = "";
-                        view.$pw.$selectedobj = $obj;
-                        /* 区域 */
-                        if (clsstr === "area") {
-                            headerstr = "当前区域";
-                            view.$pwallpanel.hide();
-                            var $area = view.$pw.find(".pw-area");
-                            $area.show();
-                            $area.find(".pw-header").text("<" + headerstr + ">");
-                        }
-                    });
                 },
-                /* 清除 */
-                clean: function() {
-                    /* jcrop */
-                    if (typeof jcrop_api != "undefined") {
-                        jcrop_api.destroy();
-                        jcrop_api.release();
-                        delete jcrop_api;
-                    }
+                /* 设置panel */
+                setPanel: function(selecotr) {
+                    var $panel = $(selecotr);
+                    view.$panel = $panel;
+                    view.$pwcontent = $panel.find(".pw-body-content");
+                    view.$pwfooter = $panel.find(".pw-body-footer");
+                    view.$pwheader = $panel.find(".pw-header");
                 },
                 backEvent: function() {
+                    /* 后退按钮 */
                     view.$pw.find(".back").on("click", function() {
-                        alert("123123");
+                        $.cbuilder.$pw.trigger("propertiesWindow:show");
                     });
                 },
                 closeEvent: function() {
                     /* 关闭属性窗口 */
                     view.$pw.find(".close").on("click", function() {
-                        view.clean();
+                        commons.clean();
                         view.$pw.hide();
                     });
+                },
+                blockInit: function() {
+                    var areaview = {
+                        bindEvents: function() {
+                            this.saveBtnEvent();
+                            this.deleteBtnEvent();
+                        },
+                        customEvent: function() {
+                            /* 属性窗口-页面-显示 */
+                            view.$pw.on("propertiesWindow:editShowEd", function(event, obj, clsstr) {
+                                /* 隐藏项工具 */
+                                debugger;
+                                $.cbuilder.$itemtools.hide();
+                                /* 区域 */
+                                if (clsstr === "area") {
+                                    view.setPanel(".pw-area");
+                                    var headerstr = "当前区域";
+                                    view.$pwallpanel.hide();
+                                    view.$panel.show();
+                                    view.$pwheader.text("<" + headerstr + ">");
+                                    $("#cropwidth").val($.cbuilder.areapos.w);
+                                    $("#cropheight").val($.cbuilder.areapos.h);
+                                    $("#cropmarginleft").val($.cbuilder.areapos.x);
+                                    $("#cropmargintop").val($.cbuilder.areapos.y);
+                                }
+                                view.$panel.find(".cb-pills-title").text($(obj).text());
+                            });
+                        },
+                        deleteBtnEvent: function() {
+                            $("#area-delete").on("click", function() {
+                                layer.confirm("确定删除<当前区域>?", {
+                                    icon: 3
+                                }, function(index) {
+                                    commons.clean();
+                                    view.$pw.hide();
+                                    layer.close(index);
+                                });
+                            });
+                        },
+                        saveBtnEvent: function() {
+                            $("#area-save").on("click", function() {
+                                var cw = parseInt($("#cropwidth").val());
+                                var ch = parseInt($("#cropheight").val());
+                                var cx = parseInt($("#cropmarginleft").val());
+                                var cy = parseInt($("#cropmargintop").val());
+                                if (typeof jcrop_api != "undefined") {
+                                    jcrop_api.animateTo([ cw + cx, ch + cy, cx, cy ]);
+                                    $.cbuilder.areapos = {
+                                        w: cw,
+                                        h: ch,
+                                        x: cx,
+                                        y: cy
+                                    };
+                                }
+                            });
+                        },
+                        struc: function() {
+                            areaview.customEvent();
+                            areaview.bindEvents();
+                        }
+                    };
+                    areaview.struc();
                 },
                 bindEvents: function() {
                     view.customEvent();
@@ -492,6 +515,7 @@
                 struc: function() {
                     view.domCache();
                     view.bindEvents();
+                    view.blockInit();
                 }
             };
             view.struc();

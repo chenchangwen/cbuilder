@@ -53,7 +53,6 @@ var view = {
             view.domCache();
             view.bindEvents();
         });
-
     }
 };
 view.struc();

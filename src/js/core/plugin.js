@@ -200,20 +200,7 @@
                             var $this = $(this);
                             /* 增加 cb-item div */
                             $this.wrap(that.options.tpl.body_item);
-                            /* 增加 工具条 */
-//                            $this.parent().before(that.options.tpl.body_item_tool);
                             $.cbuilder.active = that;
-//                            $.cbuilder.item.tools.element = $this;
-//                            $.cbuilder.item.tools.addbtn({
-//                                text: '删除',
-//                                click: function ($this) {
-//                                    layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
-//                                        layer.close(index);
-//                                        $this.parents(clsWrap).remove();
-//                                    });
-//                                } 
-//                            }); 
-
                             that._trigger('cbuilder:onToolsReady');
                         });
                     });
@@ -254,9 +241,10 @@
             ];
             commons.loadFile(vendors);
             $.contextMenu({
-                selector: '.cb-content *',
+                selector: '.cb-content img,.cb-content a',
                 callback: function (key, options) {
-                    $.cbuilder.$pw.trigger('propertiesWindow:show', $(this));
+                    $.cbuilder.$pw.$selectedobj = this;
+                    $.cbuilder.$pw.trigger('propertiesWindow:show');
                 },
                 items: {
                     "edit": { name: "编辑", icon: "edit" },

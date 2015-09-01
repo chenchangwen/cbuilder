@@ -40,7 +40,7 @@
                             var clonecontents = $.cbuilder.active.$element.clone();
                             var $contents = clonecontents.find('.cb-content');
                             $contents.each(function () {
-                                $(this).find('.imgpos').css('border', '');
+                                $(this).find('.areapos').css('border', '');
                                 html += $(this).html();
                             });
                             return html;
@@ -49,7 +49,7 @@
                     });
                 },
                 pwOperationShow: function() {
-                    $.cbuilder.$pw.on('propertiesWindow:operationShow', function (event, opobj) {
+                    $.cbuilder.$pw.on('propertiesWindow:editShowing', function (event, opobj) {
                         var $opobj = $(opobj);
                         if ($opobj.prop('tagName') === 'IMG') {
                             var options = {
@@ -57,9 +57,9 @@
                                 text: '新建区域',
                                 panel:'.pw-main',
                                 event: function(obj) {
-                                    obj.on('click', function() {
-                                        $.cbuilder.$pw.trigger('propertiesWindow:operationPageShow', [$opobj, 'area']);
+                                    obj.on('click', function () {
                                         view.loadJcrop($opobj, 'create');
+                                        $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', [$(this), 'area']);
                                     });
                                 }
                             };
@@ -67,11 +67,12 @@
                         }
                     });
                 },
+                /* 载入图像裁剪 */
                 loadJcrop: function (obj,type) {
                     if (typeof (jcrop_api) != "undefined") {
                         jcrop_api.release();
                         jcrop_api.animateTo([100, 100, 0, 0]);
-                        imgpos = {
+                        $.cbuilder.areapos = {
                             w: 100,
                             h: 100,
                             x: 0,
@@ -96,12 +97,13 @@
                                 if (jcrophheigth < orginheight) {
                                     jcrophheigth = jcrophheigth + (orginheight - jcrophheigth);
                                 }
-                                imgpos = {
+                                $.cbuilder.areapos = {
                                     w: jcrophwidth,
                                     h: jcrophheigth,
                                     x: c.x,
                                     y: c.y
                                 };
+                                view.saveJcropPosition();
                             },
                             allowSelect: false
                         }, function () {
@@ -117,7 +119,7 @@
                                 jcrop_api.animateTo([w + left, h + top, left, top]);
                             } else {
                                 jcrop_api.animateTo([100, 100, 0, 0]);
-                                imgpos = {
+                                $.cbuilder.areapos = {
                                     w: 100,
                                     h: 100,
                                     x: 0,
@@ -126,6 +128,13 @@
                             }
                         });
                     }
+                },
+                /* 保存裁剪位置 */
+                saveJcropPosition: function () {
+                    $("#cropwidth").val($.cbuilder.areapos.w);
+                    $("#cropheight").val($.cbuilder.areapos.h);
+                    $("#cropmarginleft").val($.cbuilder.areapos.x);
+                    $("#cropmargintop").val($.cbuilder.areapos.y);
                 },
                 bindEvents: function () {
                     this.onContentReadyEvent();
