@@ -13,19 +13,18 @@
                 onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
                         /* 图片双击事件 */
-                        //$('.cb-content').undelegate('dblclick').delegate('img,.cropwrap', 'dblclick', function () {
-                        //    /* 初始化并没激活,所以必须再次设定激活状态 */
-                        //    $.cbuilder.active = $(this).parents('.cb-container');
-                        //    $.cbuilder.activeimg = $(this);
-                        //    layer.open({
-                        //        type: 2,
-                        //        title: '编辑图片',
-                        //        shadeClose: true,
-                        //        shade: 0.3,
-                        //        area: ['95%', '95%'],
-                        //        content: basePath + 'modules/picture/main.html'
-                        //    });
-                        //});
+                        $('.cb-content').undelegate('dblclick').delegate('.imgpos', 'dblclick', function (e) {
+                            var $this = $(this);
+                            $.cbuilder.$pw.$selectedobj = $this;
+                            /* 初始化并没激活,所以必须再次设定激活状态 */
+                            $.cbuilder.active = $this.parents('.cb-container');
+                            e.stopPropagation();
+                            /* 移除全选范围(避免chrome双击会全选) */
+                            window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+                            
+                            view.loadJcrop($(this).parent().find('img'),'edit');
+                            $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
+                        });
                         /* 阻止A点击跳转 */
                         $('.cb-content').undelegate('click').delegate('a', 'click', function () {
                             return false;
@@ -61,7 +60,7 @@
                                 event: function(obj) {
                                     obj.on('click', function() {
                                         view.loadJcrop($.cbuilder.$pw.$selectedobj, 'create');
-                                        $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', [$(this), 'area']);
+                                        $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', ['新建区域', 'area']);
                                     });
                                 }
                             };
@@ -73,7 +72,7 @@
                     });
                 },
                 /* 载入图像裁剪 */
-                loadJcrop: function (obj,type) {
+                loadJcrop: function (obj, type) {
                     if (typeof (jcrop_api) != "undefined") {
                         jcrop_api.release();
                         jcrop_api.animateTo([100, 100, 0, 0]);
@@ -84,27 +83,11 @@
                             y: 0
                         };
                     } else {
-                        //修正bug jcrop animateTo方法时, 如果x,y不为0,会造成1px不准确的x,y的bug
-                        //根据"原始宽高"与"jcrop宽高"对比来修正.
                         obj.Jcrop({
                             onSelect: function (c) {
-                                //console.log('选择后');
-                                var $jcropfirst = $(".jcrop-holder").children("div:first");
-                                var jcrophheigth = parseInt($jcropfirst.css("height").replace(/px/ig, ""));
-                                var jcrophwidth = parseInt($jcropfirst.css("width").replace(/px/ig, ""));
-                                //原始宽高定义, 修正jcrop 1px的bug
-                                orignwidth = c.w;
-                                orginheight = c.h;
-                                //jcrop宽高与原始宽高对比, 处理jcrop 1px的bug
-                                if (jcrophwidth < orignwidth) {
-                                    jcrophwidth = jcrophwidth + (orignwidth - jcrophwidth);
-                                }
-                                if (jcrophheigth < orginheight) {
-                                    jcrophheigth = jcrophheigth + (orginheight - jcrophheigth);
-                                }
                                 $.cbuilder.areapos = {
-                                    w: jcrophwidth,
-                                    h: jcrophheigth,
+                                    w: c.w,
+                                    h: c.h,
                                     x: c.x,
                                     y: c.y
                                 };
@@ -114,15 +97,15 @@
                         }, function () {
                             jcrop_api = this;
                             if (type === 'edit') {
-                                var w = obj.width() + 6;
-                                var h = obj.height() + 6;
-                                obj.css({
-                                    'border': "2px dashed red"
-                                });
-                                var left = obj.position().left;
-                                var top = obj.position().top;
-                                jcrop_api.animateTo([w + left, h + top, left, top]);
+                                var $obj = $.cbuilder.$pw.$selectedobj;
+                                var left = $obj.position().left;
+                                var top = $obj.position().top;
+                                var w = $obj.width() + 6;
+                                var h = $obj.height() + 6;
+                                $obj.addClass('imgpos-active');
+                                jcrop_api.setSelect([left, top, left + w, top + h]);
                             } else {
+                                /* 默认:创建jcrop */
                                 jcrop_api.animateTo([100, 100, 0, 0]);
                                 $.cbuilder.areapos = {
                                     w: 100,
@@ -144,13 +127,13 @@
                 bindEvents: function () {
                     this.onContentReadyEvent();
                     this.onGetContentBeforeEvent();
-                    this.pwEditShowing();
                 },
                 struc: function () {
                     if (typeof $.Jcrop === "undefined") {
                         this.init();
-                        this.bindEvents();
+                        this.pwEditShowing();
                     }
+                    this.bindEvents();
                 }
             };
             view.struc();

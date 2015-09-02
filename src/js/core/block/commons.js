@@ -21,5 +21,9 @@
             jcrop_api.release();
             delete jcrop_api;
         }
+        /* 如果是激活的imgpos 则删除,因为此时保存 肯定会新建新的imgpos */
+        if ($.cbuilder.$pw.$selectedobj.hasClass('imgpos-active')) {
+            $.cbuilder.$pw.$selectedobj.remove();
+        }
     },
 }
