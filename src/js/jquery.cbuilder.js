@@ -317,7 +317,7 @@
         /* 属性窗口 */
         propertiesWindow: function() {
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" value="258"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" value="540"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cropwidth" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cropheight" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cropmarginleft" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cropmargintop" type="text"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="pwheight"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="pwwidth"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cropwidth" class="croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cropheight" class="croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cropmarginleft" class="croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cropmargintop" class="croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -347,7 +347,6 @@
                     /* 保存 */
                     var $savebtn = view.$pwfooter.find(".save");
                     $savebtn.on("click", function() {
-                        debugger;
                         var $selectedobj = $(view.$pw.$selectedobj);
                         var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
                         $bodylist.each(function() {
@@ -406,7 +405,7 @@
                             showselector = ".pw-main";
                             view.setPanel(showselector);
                         }
-                        /* 显示属性窗口 */
+                        /* 事件:编辑页显示中 */
                         $.cbuilder.$pw.trigger("propertiesWindow:editShowing", view.$pw.$selectedobj);
                         $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);
                         view.$pw.selectedindex = index;
@@ -416,12 +415,14 @@
                     view.btnsEvent();
                 },
                 customEvent: function() {
-                    /* 属性窗口-主面板-显示 */
+                    /* 事件:显示 */
                     view.$pw.on("propertiesWindow:show", function(event) {
                         commons.clean();
                         view.$pwallpanel.hide();
                         view.$pw.find(".pw-main .pw-header").text("<" + $.cbuilder.$pw.$selectedobj.prop("tagName") + ">");
                         view.$pw.find(".pw-main .cb-pills li:first").trigger("click", 0 || view.$pw.selectedindex);
+                        $("#pwheight").val(view.$pw.$selectedobj.css("height").replace(/px/, ""));
+                        $("#pwwidth").val(view.$pw.$selectedobj.css("width").replace(/px/, ""));
                     });
                 },
                 /* 设置panel */
@@ -448,11 +449,62 @@
                 blockInit: function() {
                     var areaview = {
                         bindEvents: function() {
+                            this.cropPosInputEvent();
                             this.saveBtnEvent();
                             this.deleteBtnEvent();
                         },
+                        cropPosInputEvent: function() {
+                            /* 防止非数字输入 */
+                            $(".croppos").on("keypress", function(event) {
+                                if (isNaN(String.fromCharCode(event.which))) {
+                                    event.preventDefault();
+                                }
+                            });
+                            /* 数字输入则重新定位图片裁剪位置 */
+                            $(".croppos").on("keyup", function(event) {
+                                var keyCode = event.keyCode;
+                                if (keyCode === 32) {
+                                    event.returnValue = false;
+                                } else if (keyCode >= 48 && keyCode <= 57 || keyCode >= 96 && keyCode <= 105 || keyCode === 8 || keyCode === 46) {
+                                    console.log(event.target.value);
+                                    event.returnValue = true;
+                                    setTimeout(function() {
+                                        var w = parseInt($("#cropwidth").val());
+                                        var h = parseInt($("#cropheight").val());
+                                        var x = parseInt($("#cropmarginleft").val());
+                                        var y = parseInt($("#cropmargintop").val());
+                                        var $target = $(event.target);
+                                        var name = $target.data("name");
+                                        var value = parseInt(event.target.value) || 0;
+                                        if (name === "width") {
+                                            w = value;
+                                        }
+                                        if (name === "height") {
+                                            h = value;
+                                        }
+                                        if (name === "left") {
+                                            x = value;
+                                        }
+                                        if (name === "top") {
+                                            y = value;
+                                        }
+                                        if (typeof jcrop_api != "undefined") {
+                                            jcrop_api.animateTo([ w + x, h + y, x, y ]);
+                                            $.cbuilder.areapos = {
+                                                w: w,
+                                                h: h,
+                                                x: x,
+                                                y: y
+                                            };
+                                        }
+                                    }, 200);
+                                } else {
+                                    event.returnValue = false;
+                                }
+                            });
+                        },
                         customEvent: function() {
-                            /* 属性窗口-页面-显示 */
+                            /* 事件:编辑页显示完 */
                             view.$pw.on("propertiesWindow:editShowEd", function(event, obj, clsstr) {
                                 /* 隐藏项工具 */
                                 $.cbuilder.$itemtools.hide();
@@ -468,9 +520,11 @@
                                     $("#cropmarginleft").val($.cbuilder.areapos.x);
                                     $("#cropmargintop").val($.cbuilder.areapos.y);
                                 }
+                                /* 改变title */
                                 view.$panel.find(".cb-pills-title").text($(obj).text());
                             });
                         },
+                        /* 删除 */
                         deleteBtnEvent: function() {
                             $("#area-delete").on("click", function() {
                                 layer.confirm("确定删除<当前区域>?", {
@@ -482,22 +536,9 @@
                                 });
                             });
                         },
+                        /* 保存 */
                         saveBtnEvent: function() {
-                            $("#area-save").on("click", function() {
-                                var cw = parseInt($("#cropwidth").val());
-                                var ch = parseInt($("#cropheight").val());
-                                var cx = parseInt($("#cropmarginleft").val());
-                                var cy = parseInt($("#cropmargintop").val());
-                                if (typeof jcrop_api != "undefined") {
-                                    jcrop_api.animateTo([ cw + cx, ch + cy, cx, cy ]);
-                                    $.cbuilder.areapos = {
-                                        w: cw,
-                                        h: ch,
-                                        x: cx,
-                                        y: cy
-                                    };
-                                }
-                            });
+                            $("#area-save").on("click", function() {});
                         },
                         struc: function() {
                             areaview.customEvent();

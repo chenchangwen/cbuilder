@@ -25,7 +25,6 @@ var view = {
         /* 保存 */
         var $savebtn = view.$pwfooter.find('.save');
         $savebtn.on('click', function () {
-            debugger;
             var $selectedobj = $(view.$pw.$selectedobj);
             var $bodylist = view.$pwcontent.find('.pw-body-content-list tr');
             $bodylist.each(function () {
@@ -93,7 +92,7 @@ var view = {
                 //    view.$pwfooter.find('.delete,.btn[id]').show();
                 //}
             }
-            /* 显示属性窗口 */
+            /* 事件:编辑页显示中 */
             $.cbuilder.$pw.trigger('propertiesWindow:editShowing', view.$pw.$selectedobj);
             $this.parent().find('li').removeClass(stractive).eq(index).addClass(stractive);
             view.$pw.selectedindex = index;
@@ -104,12 +103,14 @@ var view = {
 
     },
     customEvent: function () {
-        /* 属性窗口-主面板-显示 */
+        /* 事件:显示 */
         view.$pw.on("propertiesWindow:show", function (event) {
             commons.clean();
             view.$pwallpanel.hide();
             view.$pw.find('.pw-main .pw-header').text('<' + $.cbuilder.$pw.$selectedobj.prop('tagName') + '>');
             view.$pw.find('.pw-main .cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
+            $("#pwheight").val(view.$pw.$selectedobj.css('height').replace(/px/, ''));
+            $("#pwwidth").val(view.$pw.$selectedobj.css('width').replace(/px/, ''));
         });
     },
     /* 设置panel */

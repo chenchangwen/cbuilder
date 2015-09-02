@@ -27,12 +27,14 @@
                         <table class="pw-body-content-list">
                             <tbody>
                             <tr>
-                                <td class="text">height:</td><td class="input">
-                                    <input type="text" value="258">
+                                <td class="text">height:</td>
+                                <td class="input">
+                                    <input type="text" id="pwheight">
                                 </td>
                             </tr><tr>
-                                <td class="text">width:</td><td class="input">
-                                    <input type="text" value="540">
+                                <td class="text">width:</td>
+                                <td class="input">
+                                    <input type="text" id="pwwidth">
                                 </td>
                             </tr>
                             </tbody>
@@ -66,25 +68,25 @@
                             <tr>
                                 <td class="text">width:</td>
                                 <td class="input">
-                                    <input id="cropwidth" type="text">
+                                    <input id="cropwidth" class="croppos" data-name="width"  maxlength="4" type="text">
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text">height:</td>
                                 <td class="input">
-                                    <input id="cropheight" type="text">
+                                    <input id="cropheight" class="croppos" data-name="height" maxlength="4" type="text">
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text">margin-left:</td>
                                 <td class="input">
-                                    <input id="cropmarginleft" type="text">
+                                    <input id="cropmarginleft" class="croppos" data-name="left" maxlength="4" type="text">
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text">margin-top:</td>
                                 <td class="input">
-                                    <input id="cropmargintop" type="text">
+                                    <input id="cropmargintop" class="croppos" data-name="top" maxlength="4" type="text">
                                 </td>
                             </tr>
                             </tbody>

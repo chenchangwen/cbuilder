@@ -1,10 +1,62 @@
 ﻿var areaview = {
-    bindEvents: function() {
+    bindEvents: function () {
+        this.cropPosInputEvent();
         this.saveBtnEvent();
         this.deleteBtnEvent();
     },
+    cropPosInputEvent: function () {
+        /* 防止非数字输入 */
+        $('.croppos').on('keypress', function(event) {
+            if (isNaN(String.fromCharCode(event.which))) {
+                event.preventDefault();
+            }
+        });
+        /* 数字输入则重新定位图片裁剪位置 */
+        $('.croppos').on('keyup', function (event) {
+            var keyCode = event.keyCode;
+            if (keyCode === 32) {
+                event.returnValue = false;
+            }
+            else if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || keyCode === 8 || keyCode === 46) {
+                console.log(event.target.value)
+                event.returnValue = true;
+                setTimeout(function() {
+                    var w = parseInt($("#cropwidth").val());
+                    var h = parseInt($("#cropheight").val());
+                    var x = parseInt($("#cropmarginleft").val());
+                    var y = parseInt($("#cropmargintop").val());
+                    var $target = $(event.target);
+                    var name = $target.data('name');
+                    var value = parseInt(event.target.value) || 0;;
+                    if (name === 'width') {
+                        w = value;
+                    }
+                    if (name === 'height') {
+                        h = value;
+                    }
+                    if (name === 'left') {
+                        x = value;
+                    }
+                    if (name === 'top') {
+                        y = value;
+                    }
+                    if (typeof (jcrop_api) != "undefined") {
+                        jcrop_api.animateTo([w + x, h + y, x, y]);
+                        $.cbuilder.areapos = {
+                            w: w,
+                            h: h,
+                            x: x,
+                            y: y
+                        };
+                    }
+                }, 200);
+            } else {
+                event.returnValue = false;
+            }
+        });
+    },
     customEvent: function() {
-        /* 属性窗口-页面-显示 */
+        /* 事件:编辑页显示完 */
         view.$pw.on("propertiesWindow:editShowEd", function (event, obj,clsstr) {
             /* 隐藏项工具 */
             $.cbuilder.$itemtools.hide();
@@ -20,9 +72,11 @@
                 $("#cropmarginleft").val($.cbuilder.areapos.x);
                 $("#cropmargintop").val($.cbuilder.areapos.y);
             }
+            /* 改变title */
             view.$panel.find('.cb-pills-title').text($(obj).text());
         });
     },
+    /* 删除 */
     deleteBtnEvent: function () {
         $("#area-delete").on('click', function () {
             layer.confirm('确定删除<当前区域>?', { icon: 3 }, function (index) {
@@ -32,21 +86,10 @@
             });
         });
     },
+    /* 保存 */
     saveBtnEvent: function() {
-        $("#area-save").on('click', function() {
-            var cw = parseInt($("#cropwidth").val());
-            var ch = parseInt($("#cropheight").val());
-            var cx = parseInt($("#cropmarginleft").val());
-            var cy = parseInt($("#cropmargintop").val());
-            if (typeof (jcrop_api) != "undefined") {
-                jcrop_api.animateTo([cw + cx, ch + cy, cx, cy]);
-                $.cbuilder.areapos = {
-                    w: cw,
-                    h: ch,
-                    x: cx,
-                    y: cy
-                };
-            }
+        $("#area-save").on('click', function () {
+            
         });
     },
     struc: function () {
