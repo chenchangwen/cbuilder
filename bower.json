@@ -16,7 +16,6 @@
     "tests"
   ],
   "dependencies": {
-    "doT": "~1.0.1",
     "jquery": "1.11.2",
     "requirejs": "~2.1.17",
     "dropzone": "~4.0.1",
