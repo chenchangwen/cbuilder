@@ -46,7 +46,7 @@ var view = {
             layer.confirm(tip, { icon: 3 }, function (index) {
                 var $deleteobj = '';
                 /* 如果是image */
-                var $pimage = $selectedobj.parent(".cb-image");
+                var $pimage = $selectedobj.parent(".cropwrap");
                 if ($pimage.length !== 0) {
                     if ($pimage.children().length === 1 || $selectedobj.prop('tagName') === 'IMG') {
                         $deleteobj = $pimage.parents('.cb-item');

@@ -4,6 +4,7 @@
         this.saveBtnEvent();
         this.deleteBtnEvent();
     },
+    /* 图片裁剪输入事件 */
     cropPosInputEvent: function () {
         /* 防止非数字输入 */
         $('.croppos').on('keypress', function(event) {
@@ -18,7 +19,6 @@
                 event.returnValue = false;
             }
             else if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || keyCode === 8 || keyCode === 46) {
-                console.log(event.target.value)
                 event.returnValue = true;
                 setTimeout(function() {
                     var w = parseInt($("#cropwidth").val());
@@ -57,10 +57,11 @@
     },
     customEvent: function() {
         /* 事件:编辑页显示完 */
-        view.$pw.on("propertiesWindow:editShowEd", function (event, obj,clsstr) {
+        view.$pw.on("propertiesWindow:editShowEd", function (event, opname,clsstr) {
             /* 隐藏项工具 */
             $.cbuilder.$itemtools.hide();
             /* 区域 */
+            debugger;
             if (clsstr === 'area') {
                 view.setPanel('.pw-area');
                 var headerstr = '当前区域';
@@ -73,7 +74,9 @@
                 $("#cropmargintop").val($.cbuilder.areapos.y);
             }
             /* 改变title */
-            view.$panel.find('.cb-pills-title').text($(obj).text());
+            view.$panel.find('.cb-pills-title').text(opname);
+            /* 显示属性窗口,因为此时有可能属性窗口被关闭 */
+            view.$pw.show();
         });
     },
     /* 删除 */
@@ -89,7 +92,22 @@
     /* 保存 */
     saveBtnEvent: function() {
         $("#area-save").on('click', function () {
-            
+            /* 坐标位置 */
+            var width = ($.cbuilder.areapos.w - 6);
+            var height = ($.cbuilder.areapos.h - 6);
+            var left = $.cbuilder.areapos.x;
+            var top = $.cbuilder.areapos.y;
+            var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
+            /* 默认为a 除了倒计时 */
+            var tagname = 'a';
+            var temparea = '<' + tagname + ' id="temparea" class="imgpos" style="' + position + '" ></' + tagname + '>';
+            /* 将位置所生成的dom 添加到父,因为我父永远有cropwrap */
+            var $parent = $.cbuilder.$pw.$selectedobj.parent();
+            $parent.append(temparea);
+            /* 处理temparea 结构 */
+            var $temparea = $("#temparea");
+            $temparea.removeAttr('id');
+            commons.clean();
         });
     },
     struc: function () {
