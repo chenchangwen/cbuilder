@@ -93,17 +93,25 @@
                         </table>
                         <hr class="cb-article-divider">
                         <h1 class="pw-body-content-header">类型</h1>
-                        <table class="pw-body-content-list">
-                            <tbody>
-                                <tr>
-                                    <td class="text">width:</td>
-                                    <td class="input">
-                                        <input id="cropwidth1" class="croppos" data-name="width" maxlength="4" type="text">
-                                    </td>
-                                </tr>
-                               
-                            </tbody>
-                        </table>
+                        <div class="pw-body-content-controls">
+                            <div id="area-type">
+                                <label for="area-type1">
+                                    <input id="area-type1" value="link" type="radio" name="areatype" checked="checked">
+                                    链接
+                                </label>
+                                <label for="area-type2">
+                                    <input id="area-type2" value="anchor" type="radio" name="areatype">
+                                    锚点
+                                </label>
+                            </div>
+                        </div>
+                        <div class="area-type1 pw-controls-panel">
+                            <textarea rows="3" cols="30" style="width: 100%"></textarea>
+                        </div>
+                        <div class="area-type2 pw-controls-panel">
+                            
+                        </div>
+                        <hr class="cb-article-divider">
                     </div>
                     <div class="pw-body-footer">
                         <div class="pw-body-footer">

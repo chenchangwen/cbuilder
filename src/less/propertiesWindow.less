@@ -1,7 +1,7 @@
 ﻿@import "global.less";
 
 .cb-propertiesWindow {
-    .pw-panel{
+    .pw-panel,.pw-controls-panel{
        display:none;
     }
     background: #fff;
@@ -53,6 +53,18 @@
     .pw-body{
         padding:10px;
         margin-top: -10px;
+        input,label { 
+            vertical-align:middle;
+        } 
+        input{
+            margin-bottom:3px;
+        }
+        label{
+            padding-right:6px;
+        }
+        textarea{
+            font-size:12px;
+        }
         .pw-body-content{
             .pw-body-content-header{
                 color:#6a8e46;
@@ -69,8 +81,8 @@
                 td{
                     padding: 8px 0px;
                     vertical-align: top;
-                    line-height: 20px;
-                    font-size: 20px;
+                    line-height: 14px;
+                    font-size: 14px;
                     input{
                         width:100%;
                     }
@@ -82,6 +94,10 @@
                 .input{
                     color:#333;
                 }
+            }
+            .pw-body-content-controls{
+                font-size:14px;
+                margin-bottom: 10px;
             }
         }
         .pw-body-footer{

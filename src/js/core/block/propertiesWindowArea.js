@@ -1,10 +1,17 @@
 ﻿var areaview = {
     bindEvents: function () {
-        this.cropPosInputEvent();
-        this.saveBtnEvent();
-        this.deleteBtnEvent();
+        areaview.cropPosInputEvent();
+        areaview.saveBtnEvent();
+        areaview.deleteBtnEvent();
+        areaview.areaTypeEvent();
     },
-    /* 图片裁剪输入事件 */
+    /* 类型*/
+    areaTypeEvent: function() {
+        $('#area-type').delegate('input', 'click', function() {
+            alert('123123');
+        });
+    },
+    /* 图片裁剪输入 */
     cropPosInputEvent: function () {
         /* 防止非数字输入 */
         $('.croppos').on('keypress', function(event) {
@@ -61,7 +68,6 @@
             /* 隐藏项工具 */
             $.cbuilder.$itemtools.hide();
             /* 区域 */
-            debugger;
             if (clsstr === 'area') {
                 view.setPanel('.pw-area');
                 var headerstr = '当前区域';
