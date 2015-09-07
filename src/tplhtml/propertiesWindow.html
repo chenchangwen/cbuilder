@@ -103,22 +103,26 @@
                                     <input id="area-type2" data-type="anchor" type="radio" name="areatype">
                                     锚点
                                 </label>
+                                <label for="area-type3">
+                                    <input id="area-type3" data-type="countdown" type="radio" name="areatype">
+                                    倒计时
+                                </label>
                             </div>
                         </div>
                         <div class="area-type area-type1 pw-controls-panel">
                             <table class="pw-body-content-list">
                                 <tbody>
                                     <tr>
-                                        <td class="text">url:</td>
+                                        <td class="text">链接地址:</td>
                                         <td class="input">
-                                            <textarea rows="3" cols="30" style="width: 100%"></textarea>
+                                            <textarea id="area-url" rows="3" cols="30" style="width: 100%"></textarea>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="text">打开方式:</td>
                                         <td class="input">
                                             <label for="open-type1">
-                                                <input id="open-type1" data-value="_blank" type="radio" name="opentype">
+                                                <input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">
                                                 新建窗口
                                             </label>
                                             <label for="open-type2">
@@ -131,7 +135,9 @@
                             </table>
                         </div>
                         <div class="area-type area-type2 pw-controls-panel">
-                            
+                            <select id="area-anchor">
+                                
+                            </select>
                         </div>
                         <hr class="cb-article-divider">
                     </div>

@@ -26,4 +26,15 @@
             $.cbuilder.$pw.$selectedobj.remove();
         }
     },
+    regex: {
+        url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+    },
+    layer: {
+        msg: function(msg) {
+            layer.msg(msg, {
+                time: 2000,
+                offset: '200px'
+            });
+        }
+    }
 }

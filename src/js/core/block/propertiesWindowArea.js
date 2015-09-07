@@ -9,13 +9,45 @@
     typeEvent: function () {
         areaview.$areatype.delegate('input', 'click', function () {
             var $this = $(this),
-                id = $this.attr('id');
-            areaview.$selecteType = $this.data('type');
+                inputid = $this.attr('id');
+            var type = areaview.selecteType = $this.data('type');
             var controls = view.$panel.find('.pw-controls-panel');
+            var $obj = $.cbuilder.$pw.$selectedobj;
             /* 隐藏所有controls*/
             controls.hide();
-            /* 匹配当前id的controls 并显示*/
-            view.$panel.find('.pw-controls-panel[class*=' + id + ']').show();
+            /* 匹配类型显示内容 */
+            switch (type) {
+                case 'link':
+                    /* 默认值 */
+                    var defaults= {
+                        url: '',
+                        opentype:'_blank'
+                    }
+                    /* 设定 */
+                    areaview.$areaurl.val($obj.attr('href') || defaults.url);
+                    $.cbuilder.active.$element.find('input[name="opentype"][data-value="' + ($obj.attr('target') || defaults.opentype) + '"]').trigger('click');
+                    break;
+                case 'anchor':
+                    var $anchor = $.cbuilder.active.$element.find(clsContent).find('.cb-anchor');
+                    var $areacnhor = $("#area-anchor");
+                    if ($anchor.length === 0) {
+                        $areacnhor.html('<option>没有锚点</option>');
+                    } else {
+                        var html = '';
+                        $anchor.each(function() {
+                            var anchorid = $(this).attr('id');
+                            html += '<option value=' + anchorid + '>' + anchorid + '</option>';
+                        });
+                        $areacnhor.html(html);
+                        /* 设定 */
+                        if ($obj.attr('href')) {
+                            $areacnhor.find("option[value='" + $obj.attr('href').replace(/#/, '') + "']").prop("selected", "selected");
+                        }
+                    }
+                    break;
+            }
+            /* 匹配当前id的controls 并显示panel*/
+            view.$panel.find('.pw-controls-panel[class*=' + inputid + ']').show();
         });
     },
  
@@ -72,7 +104,7 @@
     },
     customEvent: function() {
         /* 事件:编辑页显示完 */
-        view.$pw.on("propertiesWindow:editShowEd", function (event, opname,clsstr) {
+        view.$pw.on("propertiesWindow:editShowEd", function (event, opname, clsstr) {
             /* 隐藏项工具 */
             $.cbuilder.$itemtools.hide();
             var headerstr = '';
@@ -101,7 +133,7 @@
             var $obj = $.cbuilder.$pw.$selectedobj;
             var linktype = $obj.attr('linktype');
             if (linktype) {
-                areaview.$areatype.find('input[data-type='+$obj.data('type')+']').trigger('click');
+                areaview.$areatype.find('input[data-type=' + linktype + ']').trigger('click');
             } else {
                 areaview.$areatype.find('input:eq(0)').trigger('click');
             }
@@ -109,14 +141,49 @@
         /* 事件:保存类型 */
         view.$pw.on("propertiesWindow:areaTypeSave", function () {
             /* 处理当前area */
-            var $editarea = $("#editarea");
-            var type = areaview.$selecteType;
+            var type = areaview.selecteType;
+            var areatypehtml = '';
             switch (type) {
                 case 'link':
-
+                    var url = $.trim(areaview.$areaurl.val()).toString();
+                    var opentype = $('input[name="opentype"]:checked').data('value');
+                    if (!url.match(commons.regex.url)) {
+                        commons.layer.msg('保存失败:请输入正确的链接地址');
+                        return false;
+                    }
+                    areatypehtml += 'target="' + opentype + '"';
+                    areatypehtml += 'href="' + url + '"';
+                    break;
+                case 'anchor':
+                    var $anchor = $.cbuilder.active.$element.find(clsContent).find('.cb-anchor');
+                    if ($anchor.length === 0) {
+                        commons.layer.msg('保存失败:请添加锚点');
+                        return false;
+                    }
+                    areatypehtml += 'href="#' + $("#area-anchor").val() + '"';
                     break;
             }
-            $editarea.removeAttr('id');
+            /* 全部正确保存类型 */
+            areatypehtml += 'linktype="' + type + '"';
+            /* 保存坐标位置 */
+            var width = ($.cbuilder.areapos.w - 6);
+            var height = ($.cbuilder.areapos.h - 6);
+            var left = $.cbuilder.areapos.x;
+            var top = $.cbuilder.areapos.y;
+            var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
+            /* 默认为a 除了倒计时 */
+            var tagname = 'a';
+            var imgpos = '<' + tagname + ' class="imgpos" style="' + position + '"  ' + areatypehtml + ' ></' + tagname + '>';
+            /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
+            var $parent = $.cbuilder.$pw.$selectedobj.parent();
+            /* 全部正确插入imgpos */
+            $parent.append(imgpos);
+            commons.clean();
+            layer.msg('保存成功', {
+                offset: '200px',
+                time: 1000
+            });
+            view.$pw.hide();
         });
     },
     /* 删除 */
@@ -134,25 +201,13 @@
         $("#area-save").on('click', function () {
             /* jcrop存在才执行保存或编辑 */
             if (typeof (jcrop_api) != "undefined") {
-                /* 坐标位置 */
-                var width = ($.cbuilder.areapos.w - 6);
-                var height = ($.cbuilder.areapos.h - 6);
-                var left = $.cbuilder.areapos.x;
-                var top = $.cbuilder.areapos.y;
-                var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
-                /* 默认为a 除了倒计时 */
-                var tagname = 'a';
-                var editarea = '<' + tagname + ' id="editarea" class="imgpos" style="' + position + '" ></' + tagname + '>';
-                /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
-                var $parent = $.cbuilder.$pw.$selectedobj.parent();
-                $parent.append(editarea);
                 $.cbuilder.$pw.trigger('propertiesWindow:areaTypeSave');
-                commons.clean();
             }
         });
     },
     domCache: function() {
         areaview.$areatype = $("#area-type");
+        areaview.$areaurl = $("#area-url");
         areaview.$croppos = $('.croppos');
     },
     struc: function () {

@@ -17,7 +17,7 @@
                             var $this = $(this);
                             $.cbuilder.$pw.$selectedobj = $this;
                             /* 初始化并没激活,所以必须再次设定激活状态 */
-                            $.cbuilder.active = $this.parents('.cb-container');
+                            $.cbuilder.active = $this.parents('.cb-container').data('cbuilder');
                             e.stopPropagation();
                             /* 移除全选范围(避免chrome双击会全选) */
                             window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();

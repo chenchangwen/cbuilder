@@ -68,6 +68,17 @@
             if ($.cbuilder.$pw.$selectedobj.hasClass("imgpos-active")) {
                 $.cbuilder.$pw.$selectedobj.remove();
             }
+        },
+        regex: {
+            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+        },
+        layer: {
+            msg: function(msg) {
+                layer.msg(msg, {
+                    time: 2e3,
+                    offset: "200px"
+                });
+            }
         }
     };
     var cbuilder = function(element, options) {
@@ -234,6 +245,7 @@
                 selector: ".cb-content img,.cb-content a",
                 callback: function(key, options) {
                     $.cbuilder.$pw.$selectedobj = this;
+                    $.cbuilder.active = $(this).parents(".cb-container").data("cbuilder");
                     $.cbuilder.$pw.trigger("propertiesWindow:show");
                 },
                 items: {
@@ -321,7 +333,7 @@
         /* 属性窗口 */
         propertiesWindow: function() {
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="pwheight"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="pwwidth"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cropwidth" class="croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cropheight" class="croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cropmarginleft" class="croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cropmargintop" class="croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="area-type"><label for="area-type1"><input id="area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="area-type2"><input id="area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label></div></div><div class="area-type area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">url:</td><td class="input"><textarea rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="area-type area-type2 pw-controls-panel"></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="pwheight"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="pwwidth"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cropwidth" class="croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cropheight" class="croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cropmarginleft" class="croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cropmargintop" class="croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="area-type"><label for="area-type1"><input id="area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="area-type2"><input id="area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="area-type3"><input id="area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="area-type area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="area-type area-type2 pw-controls-panel"><select id="area-anchor"></select></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -461,13 +473,46 @@
                         /* 类型 */
                         typeEvent: function() {
                             areaview.$areatype.delegate("input", "click", function() {
-                                var $this = $(this), id = $this.attr("id");
-                                areaview.$selecteType = $this.data("type");
+                                var $this = $(this), inputid = $this.attr("id");
+                                var type = areaview.selecteType = $this.data("type");
                                 var controls = view.$panel.find(".pw-controls-panel");
+                                var $obj = $.cbuilder.$pw.$selectedobj;
                                 /* 隐藏所有controls*/
                                 controls.hide();
-                                /* 匹配当前id的controls 并显示*/
-                                view.$panel.find(".pw-controls-panel[class*=" + id + "]").show();
+                                /* 匹配类型显示内容 */
+                                switch (type) {
+                                  case "link":
+                                    /* 默认值 */
+                                    var defaults = {
+                                        url: "",
+                                        opentype: "_blank"
+                                    };
+                                    /* 设定 */
+                                    areaview.$areaurl.val($obj.attr("href") || defaults.url);
+                                    $.cbuilder.active.$element.find('input[name="opentype"][data-value="' + ($obj.attr("target") || defaults.opentype) + '"]').trigger("click");
+                                    break;
+
+                                  case "anchor":
+                                    var $anchor = $.cbuilder.active.$element.find(clsContent).find(".cb-anchor");
+                                    var $areacnhor = $("#area-anchor");
+                                    if ($anchor.length === 0) {
+                                        $areacnhor.html("<option>没有锚点</option>");
+                                    } else {
+                                        var html = "";
+                                        $anchor.each(function() {
+                                            var anchorid = $(this).attr("id");
+                                            html += "<option value=" + anchorid + ">" + anchorid + "</option>";
+                                        });
+                                        $areacnhor.html(html);
+                                        /* 设定 */
+                                        if ($obj.attr("href")) {
+                                            $areacnhor.find("option[value='" + $obj.attr("href").replace(/#/, "") + "']").prop("selected", "selected");
+                                        }
+                                    }
+                                    break;
+                                }
+                                /* 匹配当前id的controls 并显示panel*/
+                                view.$panel.find(".pw-controls-panel[class*=" + inputid + "]").show();
                             });
                         },
                         /* 图片裁剪输入 */
@@ -550,7 +595,7 @@
                                 var $obj = $.cbuilder.$pw.$selectedobj;
                                 var linktype = $obj.attr("linktype");
                                 if (linktype) {
-                                    areaview.$areatype.find("input[data-type=" + $obj.data("type") + "]").trigger("click");
+                                    areaview.$areatype.find("input[data-type=" + linktype + "]").trigger("click");
                                 } else {
                                     areaview.$areatype.find("input:eq(0)").trigger("click");
                                 }
@@ -558,13 +603,50 @@
                             /* 事件:保存类型 */
                             view.$pw.on("propertiesWindow:areaTypeSave", function() {
                                 /* 处理当前area */
-                                var $editarea = $("#editarea");
-                                var type = areaview.$selecteType;
+                                var type = areaview.selecteType;
+                                var areatypehtml = "";
                                 switch (type) {
                                   case "link":
+                                    var url = $.trim(areaview.$areaurl.val()).toString();
+                                    var opentype = $('input[name="opentype"]:checked').data("value");
+                                    if (!url.match(commons.regex.url)) {
+                                        commons.layer.msg("保存失败:请输入正确的链接地址");
+                                        return false;
+                                    }
+                                    areatypehtml += 'target="' + opentype + '"';
+                                    areatypehtml += 'href="' + url + '"';
+                                    break;
+
+                                  case "anchor":
+                                    var $anchor = $.cbuilder.active.$element.find(clsContent).find(".cb-anchor");
+                                    if ($anchor.length === 0) {
+                                        commons.layer.msg("保存失败:请添加锚点");
+                                        return false;
+                                    }
+                                    areatypehtml += 'href="#' + $("#area-anchor").val() + '"';
                                     break;
                                 }
-                                $editarea.removeAttr("id");
+                                /* 全部正确保存类型 */
+                                areatypehtml += 'linktype="' + type + '"';
+                                /* 保存坐标位置 */
+                                var width = $.cbuilder.areapos.w - 6;
+                                var height = $.cbuilder.areapos.h - 6;
+                                var left = $.cbuilder.areapos.x;
+                                var top = $.cbuilder.areapos.y;
+                                var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
+                                /* 默认为a 除了倒计时 */
+                                var tagname = "a";
+                                var imgpos = "<" + tagname + ' class="imgpos" style="' + position + '"  ' + areatypehtml + " ></" + tagname + ">";
+                                /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
+                                var $parent = $.cbuilder.$pw.$selectedobj.parent();
+                                /* 全部正确插入imgpos */
+                                $parent.append(imgpos);
+                                commons.clean();
+                                layer.msg("保存成功", {
+                                    offset: "200px",
+                                    time: 1e3
+                                });
+                                view.$pw.hide();
                             });
                         },
                         /* 删除 */
@@ -584,25 +666,13 @@
                             $("#area-save").on("click", function() {
                                 /* jcrop存在才执行保存或编辑 */
                                 if (typeof jcrop_api != "undefined") {
-                                    /* 坐标位置 */
-                                    var width = $.cbuilder.areapos.w - 6;
-                                    var height = $.cbuilder.areapos.h - 6;
-                                    var left = $.cbuilder.areapos.x;
-                                    var top = $.cbuilder.areapos.y;
-                                    var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
-                                    /* 默认为a 除了倒计时 */
-                                    var tagname = "a";
-                                    var editarea = "<" + tagname + ' id="editarea" class="imgpos" style="' + position + '" ></' + tagname + ">";
-                                    /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
-                                    var $parent = $.cbuilder.$pw.$selectedobj.parent();
-                                    $parent.append(editarea);
                                     $.cbuilder.$pw.trigger("propertiesWindow:areaTypeSave");
-                                    commons.clean();
                                 }
                             });
                         },
                         domCache: function() {
                             areaview.$areatype = $("#area-type");
+                            areaview.$areaurl = $("#area-url");
                             areaview.$croppos = $(".croppos");
                         },
                         struc: function() {

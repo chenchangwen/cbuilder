@@ -244,6 +244,7 @@
                 selector: '.cb-content img,.cb-content a',
                 callback: function (key, options) {
                     $.cbuilder.$pw.$selectedobj = this;
+                    $.cbuilder.active = $(this).parents('.cb-container').data('cbuilder');
                     $.cbuilder.$pw.trigger('propertiesWindow:show');
                 },
                 items: {
