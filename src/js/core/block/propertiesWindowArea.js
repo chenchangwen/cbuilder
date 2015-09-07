@@ -3,24 +3,32 @@
         areaview.cropPosInputEvent();
         areaview.saveBtnEvent();
         areaview.deleteBtnEvent();
-        areaview.areaTypeEvent();
+        areaview.typeEvent();
     },
-    /* 类型*/
-    areaTypeEvent: function() {
-        $('#area-type').delegate('input', 'click', function() {
-            alert('123123');
+    /* 类型 */
+    typeEvent: function () {
+        areaview.$areatype.delegate('input', 'click', function () {
+            var $this = $(this),
+                id = $this.attr('id');
+            areaview.$selecteType = $this.data('type');
+            var controls = view.$panel.find('.pw-controls-panel');
+            /* 隐藏所有controls*/
+            controls.hide();
+            /* 匹配当前id的controls 并显示*/
+            view.$panel.find('.pw-controls-panel[class*=' + id + ']').show();
         });
     },
+ 
     /* 图片裁剪输入 */
     cropPosInputEvent: function () {
         /* 防止非数字输入 */
-        $('.croppos').on('keypress', function(event) {
+        areaview.$croppos.on('keypress', function (event) {
             if (isNaN(String.fromCharCode(event.which))) {
                 event.preventDefault();
             }
         });
         /* 数字输入则重新定位图片裁剪位置 */
-        $('.croppos').on('keyup', function (event) {
+        areaview.$croppos.on('keyup', function (event) {
             var keyCode = event.keyCode;
             if (keyCode === 32) {
                 event.returnValue = false;
@@ -67,22 +75,48 @@
         view.$pw.on("propertiesWindow:editShowEd", function (event, opname,clsstr) {
             /* 隐藏项工具 */
             $.cbuilder.$itemtools.hide();
+            var headerstr = '';
             /* 区域 */
             if (clsstr === 'area') {
                 view.setPanel('.pw-area');
-                var headerstr = '当前区域';
-                view.$pwallpanel.hide();
-                view.$panel.show();
-                view.$pwheader.text('<' + headerstr + '>');
-                $("#cropwidth").val($.cbuilder.areapos.w);
-                $("#cropheight").val($.cbuilder.areapos.h);
-                $("#cropmarginleft").val($.cbuilder.areapos.x);
-                $("#cropmargintop").val($.cbuilder.areapos.y);
+                headerstr = '当前区域';
             }
+            view.$pwallpanel.hide();
+            view.$panel.show();
+            view.$pwheader.text('<' + headerstr + '>');
+            /* 设置坐标 */
+            $("#cropwidth").val($.cbuilder.areapos.w);
+            $("#cropheight").val($.cbuilder.areapos.h);
+            $("#cropmarginleft").val($.cbuilder.areapos.x);
+            $("#cropmargintop").val($.cbuilder.areapos.y);
             /* 改变title */
             view.$panel.find('.cb-pills-title').text(opname);
+            $.cbuilder.$pw.trigger('propertiesWindow:areaTypeShow');
             /* 显示属性窗口,因为此时有可能属性窗口被关闭 */
             view.$pw.show();
+        });
+
+        /* 事件:显示类型 */
+        view.$pw.on("propertiesWindow:areaTypeShow", function () {
+            var $obj = $.cbuilder.$pw.$selectedobj;
+            var linktype = $obj.attr('linktype');
+            if (linktype) {
+                areaview.$areatype.find('input[data-type='+$obj.data('type')+']').trigger('click');
+            } else {
+                areaview.$areatype.find('input:eq(0)').trigger('click');
+            }
+        });
+        /* 事件:保存类型 */
+        view.$pw.on("propertiesWindow:areaTypeSave", function () {
+            /* 处理当前area */
+            var $editarea = $("#editarea");
+            var type = areaview.$selecteType;
+            switch (type) {
+                case 'link':
+
+                    break;
+            }
+            $editarea.removeAttr('id');
         });
     },
     /* 删除 */
@@ -98,25 +132,31 @@
     /* 保存 */
     saveBtnEvent: function() {
         $("#area-save").on('click', function () {
-            /* 坐标位置 */
-            var width = ($.cbuilder.areapos.w - 6);
-            var height = ($.cbuilder.areapos.h - 6);
-            var left = $.cbuilder.areapos.x;
-            var top = $.cbuilder.areapos.y;
-            var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
-            /* 默认为a 除了倒计时 */
-            var tagname = 'a';
-            var temparea = '<' + tagname + ' id="temparea" class="imgpos" style="' + position + '" ></' + tagname + '>';
-            /* 将位置所生成的dom 添加到父,因为我父永远有cropwrap */
-            var $parent = $.cbuilder.$pw.$selectedobj.parent();
-            $parent.append(temparea);
-            /* 处理temparea 结构 */
-            var $temparea = $("#temparea");
-            $temparea.removeAttr('id');
-            commons.clean();
+            /* jcrop存在才执行保存或编辑 */
+            if (typeof (jcrop_api) != "undefined") {
+                /* 坐标位置 */
+                var width = ($.cbuilder.areapos.w - 6);
+                var height = ($.cbuilder.areapos.h - 6);
+                var left = $.cbuilder.areapos.x;
+                var top = $.cbuilder.areapos.y;
+                var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
+                /* 默认为a 除了倒计时 */
+                var tagname = 'a';
+                var editarea = '<' + tagname + ' id="editarea" class="imgpos" style="' + position + '" ></' + tagname + '>';
+                /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
+                var $parent = $.cbuilder.$pw.$selectedobj.parent();
+                $parent.append(editarea);
+                $.cbuilder.$pw.trigger('propertiesWindow:areaTypeSave');
+                commons.clean();
+            }
         });
     },
+    domCache: function() {
+        areaview.$areatype = $("#area-type");
+        areaview.$croppos = $('.croppos');
+    },
     struc: function () {
+        areaview.domCache();
         areaview.customEvent();
         areaview.bindEvents();
     }
