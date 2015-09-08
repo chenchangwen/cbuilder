@@ -213,12 +213,7 @@
                 },
                 /* 构建 */
                 struc: function () {
-                    view.init();
-                    view.loadVendors();
-                    view.loadToolbar();
-                    view.bindEvents();
-                    view.appendHtml();
-                    view.triggerCustomEvent();
+                    commons.objectCallFunction(view, 'init', 'loadVendors', 'loadToolbar', 'bindEvents', 'appendHtml', 'triggerCustomEvent');
                 }
             };
             view.struc();
@@ -243,9 +238,16 @@
             $.contextMenu({
                 selector: '.cb-content img,.cb-content a',
                 callback: function (key, options) {
-                    $.cbuilder.$pw.$selectedobj = this;
+                    var $selectedobj = $.cbuilder.$pw.$selectedobj = this;
                     $.cbuilder.active = $(this).parents('.cb-container').data('cbuilder');
-                    $.cbuilder.$pw.trigger('propertiesWindow:show');
+                    /* 如果是区域 执行编辑 */
+                    if ($selectedobj.prop('tagName') === 'A') {
+                        /* 触发双击 */
+                        $selectedobj.trigger('dblclick');
+                    } else {
+                        /* 否则显示属性窗口 */
+                        $.cbuilder.$pw.trigger('propertiesWindow:show');
+                    }
                 },
                 items: {
                     "edit": { name: "编辑", icon: "edit" },
@@ -268,9 +270,7 @@
         },
         struc: function () {
             $(document).ready(function() {
-                onceView.propertiesWindow();
-                onceView.contextMenu();
-                onceView.itemtools();
+                commons.objectCallFunction(onceView, 'propertiesWindow', 'contextMenu', 'itemtools');
             });
         }
     }

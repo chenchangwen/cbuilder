@@ -56,6 +56,29 @@
                 }
             }
         },
+        /* 
+     * 设置变量 
+     * 将指定options转换为obj.$xxx的变量
+     */
+        setObjVariable: function(obj, options, filter) {
+            if (options != undefined) {
+                if (typeof options == "string") {
+                    options = options.split(",");
+                    for (var i = 0; i < options.length; i++) {
+                        var rpoptoin = options[i];
+                        if (filter) {
+                            rpoptoin = rpoptoin.replace(filter, "");
+                        }
+                        var tag = "#";
+                        if (options[i].indexOf(".") >= 0) {
+                            rpoptoin = rpoptoin.replace(/\./gi, "");
+                            tag = "";
+                        }
+                        obj["$" + rpoptoin] = $(tag + options[i]);
+                    }
+                }
+            }
+        },
         /* 清理 */
         clean: function() {
             /* jcrop */
@@ -67,6 +90,21 @@
             /* 如果是激活的imgpos 则删除,因为此时保存 肯定会新建新的imgpos */
             if ($.cbuilder.$pw.$selectedobj.hasClass("imgpos-active")) {
                 $.cbuilder.$pw.$selectedobj.remove();
+            }
+        },
+        /**
+     * 对象-调用对象自身函数
+     * @param1 {Object}
+     * @params {arguments}  执行的方法名
+     * @return {Array}
+     */
+        objectCallFunction: function(obj) {
+            var fn;
+            for (var i = 1; i < arguments.length; i++) {
+                fn = obj[arguments[i]];
+                if (typeof fn === "function") {
+                    fn();
+                }
             }
         },
         regex: {
@@ -218,12 +256,7 @@
                 },
                 /* 构建 */
                 struc: function() {
-                    view.init();
-                    view.loadVendors();
-                    view.loadToolbar();
-                    view.bindEvents();
-                    view.appendHtml();
-                    view.triggerCustomEvent();
+                    commons.objectCallFunction(view, "init", "loadVendors", "loadToolbar", "bindEvents", "appendHtml", "triggerCustomEvent");
                 }
             };
             view.struc();
@@ -244,9 +277,16 @@
             $.contextMenu({
                 selector: ".cb-content img,.cb-content a",
                 callback: function(key, options) {
-                    $.cbuilder.$pw.$selectedobj = this;
+                    var $selectedobj = $.cbuilder.$pw.$selectedobj = this;
                     $.cbuilder.active = $(this).parents(".cb-container").data("cbuilder");
-                    $.cbuilder.$pw.trigger("propertiesWindow:show");
+                    /* 如果是区域 执行编辑 */
+                    if ($selectedobj.prop("tagName") === "A") {
+                        /* 触发双击 */
+                        $selectedobj.trigger("dblclick");
+                    } else {
+                        /* 否则显示属性窗口 */
+                        $.cbuilder.$pw.trigger("propertiesWindow:show");
+                    }
                 },
                 items: {
                     edit: {
@@ -333,7 +373,7 @@
         /* 属性窗口 */
         propertiesWindow: function() {
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="pwheight"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="pwwidth"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cropwidth" class="croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cropheight" class="croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cropmarginleft" class="croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cropmargintop" class="croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="area-type"><label for="area-type1"><input id="area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="area-type2"><input id="area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="area-type3"><input id="area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="area-type area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="area-type area-type2 pw-controls-panel"><select id="area-anchor"></select></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">demo:</td><td class="input"><div id="cb-area-fontdemo">8&#x5929;08&#x65F6;08&#x5206;08&#x79D2;</div></td></tr><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-hidedate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr></tbody></table><input type="text" id="cb-area-fontcolor" style="display: none"></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -346,17 +386,8 @@
                     /* 全局 */
                     $.cbuilder.$pw = view.$pw = $body.find(".cb-propertiesWindow");
                     view.$pwallpanel = view.$pw.find(".pw-panel");
-                    /* 添加按钮 */
-                    $.cbuilder.$pw.AddBtn = function(opts) {
-                        var $obj = $("#" + opts.id);
-                        if ($obj.length === 0) {
-                            var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + "</button>";
-                            view.$pw.find(opts.panel + " .pw-body-footer").append(html);
-                            if (typeof opts.event === "function") {
-                                opts.event($("#" + opts.id));
-                            }
-                        }
-                    };
+                    var str1 = "cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate";
+                    commons.setObjVariable(view, str1, "cb-main-");
                 },
                 btnsEvent: function() {
                     view.setPanel(".pw-main");
@@ -365,6 +396,7 @@
                     $savebtn.on("click", function() {
                         var $selectedobj = $(view.$pw.$selectedobj);
                         var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
+                        var $cropwrap = $selectedobj.parents(".cropwrap");
                         $bodylist.each(function() {
                             var $this = $(this);
                             var text = $this.find(".text").text().replace(/:/, "");
@@ -374,6 +406,18 @@
                             } else if ($selectedobj.prop(text)) {
                                 $selectedobj.prop(text, value);
                             }
+                            /* 保存显示时间 */
+                            /* 开始时间 */
+                            var showdate = view.$showdate.val();
+                            if (showdate !== "") {
+                                $cropwrap.attr("showdate", showdate);
+                            }
+                            /* 结束时间 */
+                            var hidedate = view.$hidedate.val();
+                            if (hidedate !== "") {
+                                $cropwrap.attr("hidedate", hidedate);
+                            }
+                            commons.layer.msg("保存成功");
                         });
                     });
                     /* 删除 */
@@ -435,10 +479,20 @@
                     view.$pw.on("propertiesWindow:show", function(event) {
                         commons.clean();
                         view.$pwallpanel.hide();
-                        view.$pw.find(".pw-main .pw-header").text("<" + $.cbuilder.$pw.$selectedobj.prop("tagName") + ">");
+                        var $selectedobj = $(view.$pw.$selectedobj);
+                        view.$pw.find(".pw-main .pw-header").text("<" + $selectedobj.prop("tagName") + ">");
                         view.$pw.find(".pw-main .cb-pills li:first").trigger("click", 0 || view.$pw.selectedindex);
-                        $("#pwheight").val(view.$pw.$selectedobj.css("height").replace(/px/, ""));
-                        $("#pwwidth").val(view.$pw.$selectedobj.css("width").replace(/px/, ""));
+                        view.$height.val(view.$pw.$selectedobj.css("height").replace(/px/, ""));
+                        view.$width.val(view.$pw.$selectedobj.css("width").replace(/px/, ""));
+                        var $cropwrap = $selectedobj.parents(".cropwrap");
+                        /* 默认值 */
+                        var defaults = {
+                            showdate: "",
+                            hidedate: ""
+                        };
+                        /* 设定 */
+                        view.$showdate.val($cropwrap.attr("showdate") || defaults.showdate);
+                        view.$hidedate.val($cropwrap.attr("hidedate") || defaults.hidedate);
                     });
                 },
                 /* 设置panel */
@@ -462,6 +516,20 @@
                         view.$pw.hide();
                     });
                 },
+                /* 公开方法*/
+                publicFunction: function() {
+                    /* 添加按钮 */
+                    $.cbuilder.$pw.AddBtn = function(opts) {
+                        var $obj = $("#" + opts.id);
+                        if ($obj.length === 0) {
+                            var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + "</button>";
+                            view.$pw.find(opts.panel + " .pw-body-footer").append(html);
+                            if (typeof opts.event === "function") {
+                                opts.event($("#" + opts.id));
+                            }
+                        }
+                    };
+                },
                 blockInit: function() {
                     var areaview = {
                         bindEvents: function() {
@@ -472,12 +540,12 @@
                         },
                         /* 类型 */
                         typeEvent: function() {
-                            areaview.$areatype.delegate("input", "click", function() {
+                            areaview.$type.delegate("input", "click", function() {
                                 var $this = $(this), inputid = $this.attr("id");
                                 var type = areaview.selecteType = $this.data("type");
                                 var controls = view.$panel.find(".pw-controls-panel");
                                 var $obj = $.cbuilder.$pw.$selectedobj;
-                                /* 隐藏所有controls*/
+                                /* 隐藏所有controls */
                                 controls.hide();
                                 /* 匹配类型显示内容 */
                                 switch (type) {
@@ -488,13 +556,13 @@
                                         opentype: "_blank"
                                     };
                                     /* 设定 */
-                                    areaview.$areaurl.val($obj.attr("href") || defaults.url);
+                                    areaview.$url.val($obj.attr("href") || defaults.url);
                                     $.cbuilder.active.$element.find('input[name="opentype"][data-value="' + ($obj.attr("target") || defaults.opentype) + '"]').trigger("click");
                                     break;
 
                                   case "anchor":
                                     var $anchor = $.cbuilder.active.$element.find(clsContent).find(".cb-anchor");
-                                    var $areacnhor = $("#area-anchor");
+                                    var $areacnhor = areaview.$anchor;
                                     if ($anchor.length === 0) {
                                         $areacnhor.html("<option>没有锚点</option>");
                                     } else {
@@ -531,10 +599,10 @@
                                 } else if (keyCode >= 48 && keyCode <= 57 || keyCode >= 96 && keyCode <= 105 || keyCode === 8 || keyCode === 46) {
                                     event.returnValue = true;
                                     setTimeout(function() {
-                                        var w = parseInt($("#cropwidth").val());
-                                        var h = parseInt($("#cropheight").val());
-                                        var x = parseInt($("#cropmarginleft").val());
-                                        var y = parseInt($("#cropmargintop").val());
+                                        var w = parseInt(areaview.$width.val());
+                                        var h = parseInt(areaview.$height.val());
+                                        var x = parseInt(areaview.$marginleft.val());
+                                        var y = parseInt(areaview.$margintop.val());
                                         var $target = $(event.target);
                                         var name = $target.data("name");
                                         var value = parseInt(event.target.value) || 0;
@@ -580,10 +648,10 @@
                                 view.$panel.show();
                                 view.$pwheader.text("<" + headerstr + ">");
                                 /* 设置坐标 */
-                                $("#cropwidth").val($.cbuilder.areapos.w);
-                                $("#cropheight").val($.cbuilder.areapos.h);
-                                $("#cropmarginleft").val($.cbuilder.areapos.x);
-                                $("#cropmargintop").val($.cbuilder.areapos.y);
+                                areaview.$width.val($.cbuilder.areapos.w);
+                                areaview.$height.val($.cbuilder.areapos.h);
+                                areaview.$marginleft.val($.cbuilder.areapos.x);
+                                areaview.$margintop.val($.cbuilder.areapos.y);
                                 /* 改变title */
                                 view.$panel.find(".cb-pills-title").text(opname);
                                 $.cbuilder.$pw.trigger("propertiesWindow:areaTypeShow");
@@ -595,9 +663,9 @@
                                 var $obj = $.cbuilder.$pw.$selectedobj;
                                 var linktype = $obj.attr("linktype");
                                 if (linktype) {
-                                    areaview.$areatype.find("input[data-type=" + linktype + "]").trigger("click");
+                                    areaview.$type.find("input[data-type=" + linktype + "]").trigger("click");
                                 } else {
-                                    areaview.$areatype.find("input:eq(0)").trigger("click");
+                                    areaview.$type.find("input:eq(0)").trigger("click");
                                 }
                             });
                             /* 事件:保存类型 */
@@ -607,7 +675,7 @@
                                 var areatypehtml = "";
                                 switch (type) {
                                   case "link":
-                                    var url = $.trim(areaview.$areaurl.val()).toString();
+                                    var url = $.trim(areaview.$url.val()).toString();
                                     var opentype = $('input[name="opentype"]:checked').data("value");
                                     if (!url.match(commons.regex.url)) {
                                         commons.layer.msg("保存失败:请输入正确的链接地址");
@@ -623,7 +691,7 @@
                                         commons.layer.msg("保存失败:请添加锚点");
                                         return false;
                                     }
-                                    areatypehtml += 'href="#' + $("#area-anchor").val() + '"';
+                                    areatypehtml += 'href="#' + areaview.$anchor.val() + '"';
                                     break;
                                 }
                                 /* 全部正确保存类型 */
@@ -671,37 +739,33 @@
                             });
                         },
                         domCache: function() {
-                            areaview.$areatype = $("#area-type");
-                            areaview.$areaurl = $("#area-url");
-                            areaview.$croppos = $(".croppos");
+                            var str1 = "cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor";
+                            commons.setObjVariable(areaview, str1, "cb-area-");
                         },
                         struc: function() {
-                            areaview.domCache();
-                            areaview.customEvent();
-                            areaview.bindEvents();
+                            commons.objectCallFunction(areaview, "domCache", "customEvent", "bindEvents");
                         }
                     };
                     areaview.struc();
                 },
                 bindEvents: function() {
-                    view.customEvent();
-                    view.closeEvent();
-                    view.backEvent();
-                    view.pillsEvent();
+                    commons.objectCallFunction(view, "customEvent", "closeEvent", "backEvent", "pillsEvent");
+                },
+                init: function() {
+                    var vendors = [ /* 日期 */
+                    "../../../../lib/My97DatePicker/WdatePicker.js", /* 颜色 */
+                    "../../../../vendor/spectrum/spectrum.js", "../../../../vendor/spectrum/spectrum.css" ];
+                    commons.loadFile(vendors);
                 },
                 struc: function() {
-                    view.domCache();
-                    view.bindEvents();
-                    view.blockInit();
+                    commons.objectCallFunction(view, "init", "domCache", "publicFunction", "bindEvents", "blockInit");
                 }
             };
             view.struc();
         },
         struc: function() {
             $(document).ready(function() {
-                onceView.propertiesWindow();
-                onceView.contextMenu();
-                onceView.itemtools();
+                commons.objectCallFunction(onceView, "propertiesWindow", "contextMenu", "itemtools");
             });
         }
     };

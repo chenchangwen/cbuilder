@@ -13,6 +13,29 @@
             }
         }
     },
+    /* 
+     * 设置变量 
+     * 将指定options转换为obj.$xxx的变量
+     */
+    setObjVariable: function (obj,options,filter) {
+        if (options != undefined) {
+            if (typeof options == "string") {
+                options = options.split(',');
+                for (var i = 0; i < options.length; i++) {
+                    var rpoptoin = options[i];
+                    if (filter) {
+                        rpoptoin =rpoptoin.replace(filter, '');
+                    }
+                    var tag = '#';
+                    if (options[i].indexOf('.') >= 0) {
+                        rpoptoin = rpoptoin.replace(/\./ig, '');
+                        tag = '';
+                    }
+                    obj["$" + rpoptoin] = $(tag + options[i]);
+                }
+            }
+        }
+    },
     /* 清理 */
     clean: function () {
         /* jcrop */
@@ -24,6 +47,21 @@
         /* 如果是激活的imgpos 则删除,因为此时保存 肯定会新建新的imgpos */
         if ($.cbuilder.$pw.$selectedobj.hasClass('imgpos-active')) {
             $.cbuilder.$pw.$selectedobj.remove();
+        }
+    },
+    /**
+     * 对象-调用对象自身函数
+     * @param1 {Object}
+     * @params {arguments}  执行的方法名
+     * @return {Array}
+     */
+    objectCallFunction: function (obj) {
+        var fn;
+        for (var i = 1; i < arguments.length; i++) {
+            fn = obj[arguments[i]];
+            if (typeof fn === 'function') {
+                fn();
+            }
         }
     },
     regex: {

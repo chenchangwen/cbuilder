@@ -29,14 +29,32 @@
                             <tr>
                                 <td class="text">height:</td>
                                 <td class="input">
-                                    <input type="text" id="pwheight">
-                                </td>
-                            </tr><tr>
-                                <td class="text">width:</td>
-                                <td class="input">
-                                    <input type="text" id="pwwidth">
+                                    <input type="text" id="cb-main-height">
                                 </td>
                             </tr>
+                            <tr>
+                                <td class="text">width:</td>
+                                <td class="input">
+                                    <input type="text" id="cb-main-width">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <h1 class="pw-body-content-header">显示时间</h1>
+                        <table class="pw-body-content-list">
+                            <tbody>
+                                <tr>
+                                    <td class="text">开始:</td>
+                                    <td class="input">
+                                        <input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'cb-main-hidedate\')||\'2030-10-01\'}' }) ">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text">结束:</td>
+                                    <td class="input">
+                                        <input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '#F{$dp.$D(\'cb-main-showdate\')}', maxDate: '2030-10-01' }) ">
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                         <hr class="cb-article-divider">
@@ -68,25 +86,25 @@
                             <tr>
                                 <td class="text">width:</td>
                                 <td class="input">
-                                    <input id="cropwidth" class="croppos" data-name="width"  maxlength="4" type="text">
+                                    <input id="cb-area-width" class="cb-area-croppos" data-name="width"  maxlength="4" type="text">
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text">height:</td>
                                 <td class="input">
-                                    <input id="cropheight" class="croppos" data-name="height" maxlength="4" type="text">
+                                    <input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text">
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text">margin-left:</td>
                                 <td class="input">
-                                    <input id="cropmarginleft" class="croppos" data-name="left" maxlength="4" type="text">
+                                    <input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text">
                                 </td>
                             </tr>
                             <tr>
                                 <td class="text">margin-top:</td>
                                 <td class="input">
-                                    <input id="cropmargintop" class="croppos" data-name="top" maxlength="4" type="text">
+                                    <input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text">
                                 </td>
                             </tr>
                             </tbody>
@@ -94,28 +112,28 @@
                         <hr class="cb-article-divider">
                         <h1 class="pw-body-content-header">类型</h1>
                         <div class="pw-body-content-controls">
-                            <div id="area-type">
-                                <label for="area-type1">
-                                    <input id="area-type1" data-type="link" type="radio" name="areatype">
+                            <div id="cb-area-type">
+                                <label for="cb-area-type1">
+                                    <input id="cb-area-type1" data-type="link" type="radio" name="areatype">
                                     链接
                                 </label>
-                                <label for="area-type2">
-                                    <input id="area-type2" data-type="anchor" type="radio" name="areatype">
+                                <label for="cb-area-type2">
+                                    <input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">
                                     锚点
                                 </label>
-                                <label for="area-type3">
-                                    <input id="area-type3" data-type="countdown" type="radio" name="areatype">
+                                <label for="cb-area-type3">
+                                    <input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">
                                     倒计时
                                 </label>
                             </div>
                         </div>
-                        <div class="area-type area-type1 pw-controls-panel">
+                        <div class="cb-area-type cb-area-type1 pw-controls-panel">
                             <table class="pw-body-content-list">
                                 <tbody>
                                     <tr>
                                         <td class="text">链接地址:</td>
                                         <td class="input">
-                                            <textarea id="area-url" rows="3" cols="30" style="width: 100%"></textarea>
+                                            <textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea>
                                         </td>
                                     </tr>
                                     <tr>
@@ -134,10 +152,49 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="area-type area-type2 pw-controls-panel">
-                            <select id="area-anchor">
-                                
+                        <div class="cb-area-type cb-area-type2 pw-controls-panel">
+                            <select id="cb-area-anchor">
+
                             </select>
+                        </div>
+                        <div class="cb-area-type cb-area-type3 pw-controls-panel">
+                            <table class="pw-body-content-list">
+                                <tbody>
+                                <tr>
+                                    <td class="text">demo:</td>
+                                    <td class="input">
+                                        <div id="cb-area-fontdemo">
+                                            8天08时08分08秒
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text">字体:</td>
+                                    <td class="input">
+                                        <select id="cb-area-fontfamily"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text">字体大小:</td>
+                                    <td class="input">
+                                        <select id="cb-area-fontsize"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text">开始时间:</td>
+                                    <td class="input">
+                                        <input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'cb-area-hidedate\')||\'2030-10-01\'}' }) ">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text">结束时间:</td>
+                                    <td class="input">
+                                        <input type="text" id="cb-area-hidedate" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'cb-area-startdate\')||\'2030-10-01\'}' }) ">
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <input type='text' id="cb-area-fontcolor" style="display: none" />
                         </div>
                         <hr class="cb-article-divider">
                     </div>

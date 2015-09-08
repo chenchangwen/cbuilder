@@ -7,13 +7,13 @@
     },
     /* 类型 */
     typeEvent: function () {
-        areaview.$areatype.delegate('input', 'click', function () {
+        areaview.$type.delegate('input', 'click', function () {
             var $this = $(this),
                 inputid = $this.attr('id');
             var type = areaview.selecteType = $this.data('type');
             var controls = view.$panel.find('.pw-controls-panel');
             var $obj = $.cbuilder.$pw.$selectedobj;
-            /* 隐藏所有controls*/
+            /* 隐藏所有controls */
             controls.hide();
             /* 匹配类型显示内容 */
             switch (type) {
@@ -24,12 +24,12 @@
                         opentype:'_blank'
                     }
                     /* 设定 */
-                    areaview.$areaurl.val($obj.attr('href') || defaults.url);
+                    areaview.$url.val($obj.attr('href') || defaults.url);
                     $.cbuilder.active.$element.find('input[name="opentype"][data-value="' + ($obj.attr('target') || defaults.opentype) + '"]').trigger('click');
                     break;
                 case 'anchor':
                     var $anchor = $.cbuilder.active.$element.find(clsContent).find('.cb-anchor');
-                    var $areacnhor = $("#area-anchor");
+                    var $areacnhor = areaview.$anchor;
                     if ($anchor.length === 0) {
                         $areacnhor.html('<option>没有锚点</option>');
                     } else {
@@ -68,10 +68,10 @@
             else if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || keyCode === 8 || keyCode === 46) {
                 event.returnValue = true;
                 setTimeout(function() {
-                    var w = parseInt($("#cropwidth").val());
-                    var h = parseInt($("#cropheight").val());
-                    var x = parseInt($("#cropmarginleft").val());
-                    var y = parseInt($("#cropmargintop").val());
+                    var w = parseInt(areaview.$width.val());
+                    var h = parseInt(areaview.$height.val());
+                    var x = parseInt(areaview.$marginleft.val());
+                    var y = parseInt(areaview.$margintop.val());
                     var $target = $(event.target);
                     var name = $target.data('name');
                     var value = parseInt(event.target.value) || 0;;
@@ -117,10 +117,10 @@
             view.$panel.show();
             view.$pwheader.text('<' + headerstr + '>');
             /* 设置坐标 */
-            $("#cropwidth").val($.cbuilder.areapos.w);
-            $("#cropheight").val($.cbuilder.areapos.h);
-            $("#cropmarginleft").val($.cbuilder.areapos.x);
-            $("#cropmargintop").val($.cbuilder.areapos.y);
+            areaview.$width.val($.cbuilder.areapos.w);
+            areaview.$height.val($.cbuilder.areapos.h);
+            areaview.$marginleft.val($.cbuilder.areapos.x);
+            areaview.$margintop.val($.cbuilder.areapos.y);
             /* 改变title */
             view.$panel.find('.cb-pills-title').text(opname);
             $.cbuilder.$pw.trigger('propertiesWindow:areaTypeShow');
@@ -133,9 +133,9 @@
             var $obj = $.cbuilder.$pw.$selectedobj;
             var linktype = $obj.attr('linktype');
             if (linktype) {
-                areaview.$areatype.find('input[data-type=' + linktype + ']').trigger('click');
+                areaview.$type.find('input[data-type=' + linktype + ']').trigger('click');
             } else {
-                areaview.$areatype.find('input:eq(0)').trigger('click');
+                areaview.$type.find('input:eq(0)').trigger('click');
             }
         });
         /* 事件:保存类型 */
@@ -145,7 +145,7 @@
             var areatypehtml = '';
             switch (type) {
                 case 'link':
-                    var url = $.trim(areaview.$areaurl.val()).toString();
+                    var url = $.trim(areaview.$url.val()).toString();
                     var opentype = $('input[name="opentype"]:checked').data('value');
                     if (!url.match(commons.regex.url)) {
                         commons.layer.msg('保存失败:请输入正确的链接地址');
@@ -160,7 +160,7 @@
                         commons.layer.msg('保存失败:请添加锚点');
                         return false;
                     }
-                    areatypehtml += 'href="#' + $("#area-anchor").val() + '"';
+                    areatypehtml += 'href="#' + areaview.$anchor.val() + '"';
                     break;
             }
             /* 全部正确保存类型 */
@@ -205,15 +205,14 @@
             }
         });
     },
-    domCache: function() {
-        areaview.$areatype = $("#area-type");
-        areaview.$areaurl = $("#area-url");
-        areaview.$croppos = $('.croppos');
+    domCache: function () {
+        var str1 = 'cb-area-type,cb-area-url,.cb-area-croppos,' +
+            'cb-area-width,cb-area-height,cb-area-marginleft,' +
+            'cb-area-margintop,cb-area-anchor';
+        commons.setObjVariable(areaview,str1, 'cb-area-');
     },
     struc: function () {
-        areaview.domCache();
-        areaview.customEvent();
-        areaview.bindEvents();
+        commons.objectCallFunction(areaview, 'domCache', 'customEvent', 'bindEvents');
     }
 };
 areaview.struc();

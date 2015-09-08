@@ -8,17 +8,9 @@ var view = {
         /* 全局 */
         $.cbuilder.$pw = view.$pw = $body.find('.cb-propertiesWindow');
         view.$pwallpanel = view.$pw.find('.pw-panel');
-        /* 添加按钮 */
-        $.cbuilder.$pw.AddBtn = function (opts) {
-            var $obj = $('#' + opts.id);
-            if ($obj.length === 0) {
-                var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + '</button>';
-                view.$pw.find(opts.panel+ ' .pw-body-footer').append(html);
-                if (typeof opts.event === "function") {
-                    opts.event($('#' + opts.id));
-                }
-            }
-        }
+        var str1 = 'cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate';
+        commons.setObjVariable(view, str1, 'cb-main-');
+
     },
     btnsEvent: function() {
         view.setPanel('.pw-main');
@@ -27,6 +19,7 @@ var view = {
         $savebtn.on('click', function () {
             var $selectedobj = $(view.$pw.$selectedobj);
             var $bodylist = view.$pwcontent.find('.pw-body-content-list tr');
+            var $cropwrap = $selectedobj.parents('.cropwrap');
             $bodylist.each(function () {
                 var $this = $(this);
                 var text = $this.find('.text').text().replace(/:/, '');
@@ -36,6 +29,18 @@ var view = {
                 } else if ($selectedobj.prop(text)) {
                     $selectedobj.prop(text, value);
                 }
+                /* 保存显示时间 */
+                /* 开始时间 */
+                var showdate = view.$showdate.val();
+                if (showdate !== '') {
+                    $cropwrap.attr('showdate', showdate);
+                }
+                /* 结束时间 */
+                var hidedate = view.$hidedate.val();
+                if (hidedate !== '') {
+                    $cropwrap.attr('hidedate', hidedate);
+                }
+                commons.layer.msg('保存成功');
             });
         });
         /* 删除 */
@@ -107,10 +112,21 @@ var view = {
         view.$pw.on("propertiesWindow:show", function (event) {
             commons.clean();
             view.$pwallpanel.hide();
-            view.$pw.find('.pw-main .pw-header').text('<' + $.cbuilder.$pw.$selectedobj.prop('tagName') + '>');
+            var $selectedobj = $(view.$pw.$selectedobj);
+
+            view.$pw.find('.pw-main .pw-header').text('<' + $selectedobj.prop('tagName') + '>');
             view.$pw.find('.pw-main .cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
-            $("#pwheight").val(view.$pw.$selectedobj.css('height').replace(/px/, ''));
-            $("#pwwidth").val(view.$pw.$selectedobj.css('width').replace(/px/, ''));
+            view.$height.val(view.$pw.$selectedobj.css('height').replace(/px/, ''));
+            view.$width.val(view.$pw.$selectedobj.css('width').replace(/px/, ''));
+            var $cropwrap = $selectedobj.parents('.cropwrap');
+            /* 默认值 */
+            var defaults= {
+                showdate: '',
+                hidedate:'',
+            }
+            /* 设定 */
+            view.$showdate.val($cropwrap.attr('showdate') || defaults.showdate);
+            view.$hidedate.val($cropwrap.attr('hidedate') || defaults.hidedate);
         });
     },
     /* 设置panel */
@@ -134,19 +150,38 @@ var view = {
             view.$pw.hide();
         });
     },
+    /* 公开方法*/
+    publicFunction: function() {
+        /* 添加按钮 */
+        $.cbuilder.$pw.AddBtn = function (opts) {
+            var $obj = $('#' + opts.id);
+            if ($obj.length === 0) {
+                var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + '</button>';
+                view.$pw.find(opts.panel + ' .pw-body-footer').append(html);
+                if (typeof opts.event === "function") {
+                    opts.event($('#' + opts.id));
+                }
+            }
+        }
+    },
     blockInit: function() {
         ~~include('../../core/block/propertiesWindowArea.js')
     },
     bindEvents: function() {
-        view.customEvent();
-        view.closeEvent();
-        view.backEvent();
-        view.pillsEvent();
+        commons.objectCallFunction(view, 'customEvent', 'closeEvent', 'backEvent', 'pillsEvent');
+    },
+    init: function () {
+        var vendors = [
+            /* 日期 */
+            '../../../../lib/My97DatePicker/WdatePicker.js',
+            /* 颜色 */
+            '../../../../vendor/spectrum/spectrum.js',
+            '../../../../vendor/spectrum/spectrum.css'
+        ];
+        commons.loadFile(vendors);
     },
     struc: function () {
-        view.domCache();
-        view.bindEvents();
-        view.blockInit();
+        commons.objectCallFunction(view, 'init','domCache','publicFunction','bindEvents','blockInit');
     }
 };
 view.struc();

@@ -54,7 +54,7 @@
                         $.cbuilder.$pw.$selectedobj = $selectedobj;
                         if ($selectedobj.prop('tagName') === 'IMG') {
                             var options = {
-                                id: 'addarea',
+                                id: 'cb-main-addarea',
                                 text: '新建区域',
                                 panel: '.pw-main',
                                 event: function(obj) {
@@ -65,9 +65,9 @@
                                 }
                             };
                             $.cbuilder.$pw.AddBtn(options);
-                            $("#addarea").show();
+                            $("#cb-main-addarea").show();
                         } else {
-                            $("#addarea").hide();
+                            $("#cb-main-addarea").hide();
                         }
                     });
                 },
@@ -119,10 +119,10 @@
                 },
                 /* 保存裁剪位置 */
                 saveJcropPosition: function () {
-                    $("#cropwidth").val($.cbuilder.areapos.w);
-                    $("#cropheight").val($.cbuilder.areapos.h);
-                    $("#cropmarginleft").val($.cbuilder.areapos.x);
-                    $("#cropmargintop").val($.cbuilder.areapos.y);
+                    $('#cb-area-width').val($.cbuilder.areapos.w);
+                    $('#cb-area-height').val($.cbuilder.areapos.h);
+                    $('#cb-area-marginleft').val($.cbuilder.areapos.x);
+                    $('#cb-area-margintop').val($.cbuilder.areapos.y);
                 },
                 bindEvents: function () {
                     this.onContentReadyEvent();
