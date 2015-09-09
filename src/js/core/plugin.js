@@ -255,8 +255,8 @@
                     //"copy": { name: "Copy", icon: "copy" },
                     //"paste": { name: "Paste", icon: "paste" },
                     //"delete": { name: "Delete", icon: "delete" },
-                    "sep1": "---------",
-                    "quit": { name: "退出", icon: "quit" }
+                    //"sep1": "---------",
+                    //"quit": { name: "退出", icon: "quit" }
                 }
             });
         },

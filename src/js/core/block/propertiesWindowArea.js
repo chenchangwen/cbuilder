@@ -1,10 +1,4 @@
 ﻿var areaview = {
-    bindEvents: function () {
-        areaview.cropPosInputEvent();
-        areaview.saveBtnEvent();
-        areaview.deleteBtnEvent();
-        areaview.typeEvent();
-    },
     /* 类型 */
     typeEvent: function () {
         areaview.$type.delegate('input', 'click', function () {
@@ -13,13 +7,16 @@
             var type = areaview.selecteType = $this.data('type');
             var controls = view.$panel.find('.pw-controls-panel');
             var $obj = $.cbuilder.$pw.$selectedobj;
+            var html = '';
+            /* 默认值 */
+            var defaults= {
+            }
             /* 隐藏所有controls */
             controls.hide();
             /* 匹配类型显示内容 */
             switch (type) {
                 case 'link':
-                    /* 默认值 */
-                    var defaults= {
+                    defaults= {
                         url: '',
                         opentype:'_blank'
                     }
@@ -33,7 +30,6 @@
                     if ($anchor.length === 0) {
                         $areacnhor.html('<option>没有锚点</option>');
                     } else {
-                        var html = '';
                         $anchor.each(function() {
                             var anchorid = $(this).attr('id');
                             html += '<option value=' + anchorid + '>' + anchorid + '</option>';
@@ -44,6 +40,61 @@
                             $areacnhor.find("option[value='" + $obj.attr('href').replace(/#/, '') + "']").prop("selected", "selected");
                         }
                     }
+                    break;
+                case 'countdown':
+                    /* 初始化字体大小 */
+                    for (var i = 14; i < 52; i+=2) {
+                        html += '<option value="' + i + '">' + i + 'px' + '</option>';
+                    }
+                    areaview.$fontsize.html(html);
+
+                    /* 设定字体大小 */
+                    if ($obj.prop('style').cssText.toString().match(/font-size/) !== null) {
+                        var fontsize = $obj.css("font-size");
+                        areaview.$fontsize.find("option[value=" + fontsize.replace(/px/, '') + "]").prop("selected", "selected");
+                        areaview.$fontdemo.css("font-size", fontsize);
+                    }
+
+                    defaults = {
+                        color: '#000',
+                        startdate: '',
+                        enddate:''
+                    }
+                    /* 开始,结束 时间 */
+                    areaview.$startdate.val($obj.attr('startdate') || defaults.startdate);
+                    areaview.$enddate.val($obj.attr('enddate') || defaults.enddate);
+
+                    /* 字体 */
+                    if ($obj.prop('style').cssText.toString().match(/font-family/) !== null) {
+                        var fontfamily = $obj.css("font-family");
+                        areaview.$fontfamily.find("option[value=\"" + fontfamily + "\"]").prop("selected", "selected");
+                        areaview.$fontdemo.css("font-family", fontfamily);
+                    }
+                    /* 字体颜色 */
+                    areaview.$fontcolor.spectrum({
+                        showPalette: true,
+                        color: $obj.css('color') || defaults.color,
+                        showInput: true,
+                        preferredFormat: "hex",
+                        hideAfterPaletteSelect: true,
+                        clickoutFiresChange: true,
+                        showButtons: true,
+                        chooseText: "选择",
+                        cancelText: "取消",
+                        palette: [
+                           ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
+                           ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
+                           ["#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc"],
+                           ["#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd"],
+                           ["#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0"],
+                           ["#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79"],
+                           ["#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47"],
+                           ["#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130"]
+                        ],
+                        change: function (color) {
+                            areaview.$fontdemo.css('color', color.toHexString());
+                        }
+                    });
                     break;
             }
             /* 匹配当前id的controls 并显示panel*/
@@ -142,7 +193,11 @@
         view.$pw.on("propertiesWindow:areaTypeSave", function () {
             /* 处理当前area */
             var type = areaview.selecteType;
-            var areatypehtml = '';
+            var areatypehtml = ''; 
+            /* 保存成功回调数组 */
+            var successcb;
+            /* 标签:默认为a */
+            var tagname = 'a';
             switch (type) {
                 case 'link':
                     var url = $.trim(areaview.$url.val()).toString();
@@ -162,22 +217,45 @@
                     }
                     areatypehtml += 'href="#' + areaview.$anchor.val() + '"';
                     break;
+                case 'countdown':
+                    successcb = function () {
+                        tagname = 'div';
+                        var $imgpos = $("#newimgpos");
+                        /* 字体,大小,颜色 */
+                        $imgpos.css("font-family", areaview.$fontfamily.val());
+                        $imgpos.css("font-size", areaview.$fontsize.val());
+                        $imgpos.css("color", areaview.$fontcolor.spectrum("get").toHexString());
+                        /* 开始,结束 时间 */
+                        var startdate = areaview.$startdate.val();
+                        if (startdate !== '') {
+                            $imgpos.attr('startdate', startdate);
+                        }
+                        var enddate = areaview.$enddate.val();
+                        if (enddate !== '') {
+                            $imgpos.attr('enddate', enddate);
+                        }
+                    }
+                    break;
             }
             /* 全部正确保存类型 */
-            areatypehtml += 'linktype="' + type + '"';
+            areatypehtml += ' linktype="' + type + '"';
             /* 保存坐标位置 */
             var width = ($.cbuilder.areapos.w - 6);
             var height = ($.cbuilder.areapos.h - 6);
             var left = $.cbuilder.areapos.x;
             var top = $.cbuilder.areapos.y;
             var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
-            /* 默认为a 除了倒计时 */
-            var tagname = 'a';
-            var imgpos = '<' + tagname + ' class="imgpos" style="' + position + '"  ' + areatypehtml + ' ></' + tagname + '>';
+           
+            var imgpos = '<' + tagname + ' class="imgpos" id="newimgpos" style="' + position + '"  ' + areatypehtml + ' ></' + tagname + '>';
             /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
             var $parent = $.cbuilder.$pw.$selectedobj.parent();
             /* 全部正确插入imgpos */
             $parent.append(imgpos);
+            if (typeof successcb === 'function') {
+                successcb();
+                /* 删除临时操作的id */
+                $('#newimgpos').removeAttr('id');
+            }
             commons.clean();
             layer.msg('保存成功', {
                 offset: '200px',
@@ -188,7 +266,7 @@
     },
     /* 删除 */
     deleteBtnEvent: function () {
-        $("#area-delete").on('click', function () {
+        areaview.$delete.on('click', function () {
             layer.confirm('确定删除<当前区域>?', { icon: 3 }, function (index) {
                 commons.clean();
                 view.$pw.hide();
@@ -197,19 +275,38 @@
         });
     },
     /* 保存 */
-    saveBtnEvent: function() {
-        $("#area-save").on('click', function () {
+    saveBtnEvent: function () {
+        areaview.$save.on('click', function () {
             /* jcrop存在才执行保存或编辑 */
             if (typeof (jcrop_api) != "undefined") {
                 $.cbuilder.$pw.trigger('propertiesWindow:areaTypeSave');
             }
         });
     },
+    /* 倒计时 */
+    countDownEvent: function () {
+        /* 字体 */
+        areaview.$fontfamily.change(function () {
+            areaview.$fontdemo.css('font-family', $(this).val());
+        });
+
+        /* 字体大小 */
+        areaview.$fontsize.change(function () {
+            areaview.$fontdemo.css('font-size', $(this).val() + 'px');
+            areaview.$fontdemo.css('line-height', $(this).val() + 'px');
+        });
+    },
+    bindEvents: function () {
+        commons.objectCallFunction(areaview, 'cropPosInputEvent', 'saveBtnEvent', 'deleteBtnEvent', 'typeEvent', 'countDownEvent');
+    },
     domCache: function () {
-        var str1 = 'cb-area-type,cb-area-url,.cb-area-croppos,' +
+        var vmain = 'cb-area-type,cb-area-url,.cb-area-croppos,' +
             'cb-area-width,cb-area-height,cb-area-marginleft,' +
             'cb-area-margintop,cb-area-anchor';
-        commons.setObjVariable(areaview,str1, 'cb-area-');
+        var vbtn = ',cb-area-save,cb-area-delete';
+        var vtypecountdown = ',cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate';
+        vmain += vbtn + vtypecountdown;
+        commons.setObjVariable(areaview, vmain,'cb-area-');
     },
     struc: function () {
         commons.objectCallFunction(areaview, 'domCache', 'customEvent', 'bindEvents');

@@ -91,6 +91,8 @@
             if ($.cbuilder.$pw.$selectedobj.hasClass("imgpos-active")) {
                 $.cbuilder.$pw.$selectedobj.remove();
             }
+            /* 删除jcrop 生成的属性 */
+            $.cbuilder.active.$element.find("img").css("visibility", "");
         },
         /**
      * 对象-调用对象自身函数
@@ -292,15 +294,6 @@
                     edit: {
                         name: "编辑",
                         icon: "edit"
-                    },
-                    //"cut": { name: "Cut", icon: "cut" },
-                    //"copy": { name: "Copy", icon: "copy" },
-                    //"paste": { name: "Paste", icon: "paste" },
-                    //"delete": { name: "Delete", icon: "delete" },
-                    sep1: "---------",
-                    quit: {
-                        name: "退出",
-                        icon: "quit"
                     }
                 }
             });
@@ -373,7 +366,7 @@
         /* 属性窗口 */
         propertiesWindow: function() {
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">demo:</td><td class="input"><div id="cb-area-fontdemo">8&#x5929;08&#x65F6;08&#x5206;08&#x79D2;</div></td></tr><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-hidedate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr></tbody></table><input type="text" id="cb-area-fontcolor" style="display: none"></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<div class="cb-propertiesWindow"><!-- 主面板 --><div class="pw-main pw-panel" style="display: block"><div class="pw-header"></div><div class="pw-operate"><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel"><div class="pw-header"></div><div class="pw-operate"><a class="back" href="javascript:;"></a><a class="close" href="javascript:;"></a></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">demo:</td><td class="input"><div id="cb-area-fontdemo">8&#x5929;08&#x65F6;08&#x5206;08&#x79D2;</div></td></tr><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-enddate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -532,12 +525,6 @@
                 },
                 blockInit: function() {
                     var areaview = {
-                        bindEvents: function() {
-                            areaview.cropPosInputEvent();
-                            areaview.saveBtnEvent();
-                            areaview.deleteBtnEvent();
-                            areaview.typeEvent();
-                        },
                         /* 类型 */
                         typeEvent: function() {
                             areaview.$type.delegate("input", "click", function() {
@@ -545,13 +532,15 @@
                                 var type = areaview.selecteType = $this.data("type");
                                 var controls = view.$panel.find(".pw-controls-panel");
                                 var $obj = $.cbuilder.$pw.$selectedobj;
+                                var html = "";
+                                /* 默认值 */
+                                var defaults = {};
                                 /* 隐藏所有controls */
                                 controls.hide();
                                 /* 匹配类型显示内容 */
                                 switch (type) {
                                   case "link":
-                                    /* 默认值 */
-                                    var defaults = {
+                                    defaults = {
                                         url: "",
                                         opentype: "_blank"
                                     };
@@ -566,7 +555,6 @@
                                     if ($anchor.length === 0) {
                                         $areacnhor.html("<option>没有锚点</option>");
                                     } else {
-                                        var html = "";
                                         $anchor.each(function() {
                                             var anchorid = $(this).attr("id");
                                             html += "<option value=" + anchorid + ">" + anchorid + "</option>";
@@ -577,6 +565,50 @@
                                             $areacnhor.find("option[value='" + $obj.attr("href").replace(/#/, "") + "']").prop("selected", "selected");
                                         }
                                     }
+                                    break;
+
+                                  case "countdown":
+                                    /* 初始化字体大小 */
+                                    for (var i = 14; i < 52; i += 2) {
+                                        html += '<option value="' + i + '">' + i + "px" + "</option>";
+                                    }
+                                    areaview.$fontsize.html(html);
+                                    /* 设定字体大小 */
+                                    if ($obj.prop("style").cssText.toString().match(/font-size/) !== null) {
+                                        var fontsize = $obj.css("font-size");
+                                        areaview.$fontsize.find("option[value=" + fontsize.replace(/px/, "") + "]").prop("selected", "selected");
+                                        areaview.$fontdemo.css("font-size", fontsize);
+                                    }
+                                    defaults = {
+                                        color: "#000",
+                                        startdate: "",
+                                        enddate: ""
+                                    };
+                                    /* 开始,结束 时间 */
+                                    areaview.$startdate.val($obj.attr("startdate") || defaults.startdate);
+                                    areaview.$enddate.val($obj.attr("enddate") || defaults.enddate);
+                                    /* 字体 */
+                                    if ($obj.prop("style").cssText.toString().match(/font-family/) !== null) {
+                                        var fontfamily = $obj.css("font-family");
+                                        areaview.$fontfamily.find('option[value="' + fontfamily + '"]').prop("selected", "selected");
+                                        areaview.$fontdemo.css("font-family", fontfamily);
+                                    }
+                                    /* 字体颜色 */
+                                    areaview.$fontcolor.spectrum({
+                                        showPalette: true,
+                                        color: $obj.css("color") || defaults.color,
+                                        showInput: true,
+                                        preferredFormat: "hex",
+                                        hideAfterPaletteSelect: true,
+                                        clickoutFiresChange: true,
+                                        showButtons: true,
+                                        chooseText: "选择",
+                                        cancelText: "取消",
+                                        palette: [ [ "#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff" ], [ "#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f" ], [ "#f4cccc", "#fce5cd", "#fff2cc", "#d9ead3", "#d0e0e3", "#cfe2f3", "#d9d2e9", "#ead1dc" ], [ "#ea9999", "#f9cb9c", "#ffe599", "#b6d7a8", "#a2c4c9", "#9fc5e8", "#b4a7d6", "#d5a6bd" ], [ "#e06666", "#f6b26b", "#ffd966", "#93c47d", "#76a5af", "#6fa8dc", "#8e7cc3", "#c27ba0" ], [ "#c00", "#e69138", "#f1c232", "#6aa84f", "#45818e", "#3d85c6", "#674ea7", "#a64d79" ], [ "#900", "#b45f06", "#bf9000", "#38761d", "#134f5c", "#0b5394", "#351c75", "#741b47" ], [ "#600", "#783f04", "#7f6000", "#274e13", "#0c343d", "#073763", "#20124d", "#4c1130" ] ],
+                                        change: function(color) {
+                                            areaview.$fontdemo.css("color", color.toHexString());
+                                        }
+                                    });
                                     break;
                                 }
                                 /* 匹配当前id的controls 并显示panel*/
@@ -673,6 +705,10 @@
                                 /* 处理当前area */
                                 var type = areaview.selecteType;
                                 var areatypehtml = "";
+                                /* 保存成功回调数组 */
+                                var successcb;
+                                /* 标签:默认为a */
+                                var tagname = "a";
                                 switch (type) {
                                   case "link":
                                     var url = $.trim(areaview.$url.val()).toString();
@@ -693,22 +729,45 @@
                                     }
                                     areatypehtml += 'href="#' + areaview.$anchor.val() + '"';
                                     break;
+
+                                  case "countdown":
+                                    successcb = function() {
+                                        tagname = "div";
+                                        var $imgpos = $("#newimgpos");
+                                        /* 字体,大小,颜色 */
+                                        $imgpos.css("font-family", areaview.$fontfamily.val());
+                                        $imgpos.css("font-size", areaview.$fontsize.val());
+                                        $imgpos.css("color", areaview.$fontcolor.spectrum("get").toHexString());
+                                        /* 开始,结束 时间 */
+                                        var startdate = areaview.$startdate.val();
+                                        if (startdate !== "") {
+                                            $imgpos.attr("startdate", startdate);
+                                        }
+                                        var enddate = areaview.$enddate.val();
+                                        if (enddate !== "") {
+                                            $imgpos.attr("enddate", enddate);
+                                        }
+                                    };
+                                    break;
                                 }
                                 /* 全部正确保存类型 */
-                                areatypehtml += 'linktype="' + type + '"';
+                                areatypehtml += ' linktype="' + type + '"';
                                 /* 保存坐标位置 */
                                 var width = $.cbuilder.areapos.w - 6;
                                 var height = $.cbuilder.areapos.h - 6;
                                 var left = $.cbuilder.areapos.x;
                                 var top = $.cbuilder.areapos.y;
                                 var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
-                                /* 默认为a 除了倒计时 */
-                                var tagname = "a";
-                                var imgpos = "<" + tagname + ' class="imgpos" style="' + position + '"  ' + areatypehtml + " ></" + tagname + ">";
+                                var imgpos = "<" + tagname + ' class="imgpos" id="newimgpos" style="' + position + '"  ' + areatypehtml + " ></" + tagname + ">";
                                 /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
                                 var $parent = $.cbuilder.$pw.$selectedobj.parent();
                                 /* 全部正确插入imgpos */
                                 $parent.append(imgpos);
+                                if (typeof successcb === "function") {
+                                    successcb();
+                                    /* 删除临时操作的id */
+                                    $("#newimgpos").removeAttr("id");
+                                }
                                 commons.clean();
                                 layer.msg("保存成功", {
                                     offset: "200px",
@@ -719,7 +778,7 @@
                         },
                         /* 删除 */
                         deleteBtnEvent: function() {
-                            $("#area-delete").on("click", function() {
+                            areaview.$delete.on("click", function() {
                                 layer.confirm("确定删除<当前区域>?", {
                                     icon: 3
                                 }, function(index) {
@@ -731,16 +790,34 @@
                         },
                         /* 保存 */
                         saveBtnEvent: function() {
-                            $("#area-save").on("click", function() {
+                            areaview.$save.on("click", function() {
                                 /* jcrop存在才执行保存或编辑 */
                                 if (typeof jcrop_api != "undefined") {
                                     $.cbuilder.$pw.trigger("propertiesWindow:areaTypeSave");
                                 }
                             });
                         },
+                        /* 倒计时 */
+                        countDownEvent: function() {
+                            /* 字体 */
+                            areaview.$fontfamily.change(function() {
+                                areaview.$fontdemo.css("font-family", $(this).val());
+                            });
+                            /* 字体大小 */
+                            areaview.$fontsize.change(function() {
+                                areaview.$fontdemo.css("font-size", $(this).val() + "px");
+                                areaview.$fontdemo.css("line-height", $(this).val() + "px");
+                            });
+                        },
+                        bindEvents: function() {
+                            commons.objectCallFunction(areaview, "cropPosInputEvent", "saveBtnEvent", "deleteBtnEvent", "typeEvent", "countDownEvent");
+                        },
                         domCache: function() {
-                            var str1 = "cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor";
-                            commons.setObjVariable(areaview, str1, "cb-area-");
+                            var vmain = "cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor";
+                            var vbtn = ",cb-area-save,cb-area-delete";
+                            var vtypecountdown = ",cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate";
+                            vmain += vbtn + vtypecountdown;
+                            commons.setObjVariable(areaview, vmain, "cb-area-");
                         },
                         struc: function() {
                             commons.objectCallFunction(areaview, "domCache", "customEvent", "bindEvents");
