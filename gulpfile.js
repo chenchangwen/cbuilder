@@ -38,7 +38,8 @@ gulp.task("default", ["clean"], function() {
     gulp.start("template", "js", "less", "watch");
 });
 
-
+var stackTrace = require('stack-trace');
+var err = new Error('something went wrong');
 gulp.task("watch", function () {
     gulp.watch([path.dev.tplhtml], ["template","js"]).on("change", function (event) {
         console.log("tpl文件变更: " + event.path + " was " + event.type);
@@ -66,10 +67,10 @@ gulp.task('template', function () {
         .pipe(html2js())
         .pipe(uglify({ compress: true }))
         .pipe(replace(/\s{2,}/ig, ''))
-        .pipe(gulp.dest(path.src.tpl))
-        //.pipe(notify({
-        //    message: "--template 任务 完成 --"
-        //}));
+        .pipe(gulp.dest(path.src.tpl));
+    //.pipe(notify({
+    //    message: "--template 任务 完成 --"
+    //}));
 });
 
 //脚本
