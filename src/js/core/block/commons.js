@@ -50,6 +50,9 @@
         }
         /* 删除jcrop 生成的属性 */
         $.cbuilder.active.$element.find('img').css('visibility', '');
+
+        /* 删除临时操作的id */
+        $('#tempimgpos').removeAttr('id');
     },
     /**
      * 对象-调用对象自身函数

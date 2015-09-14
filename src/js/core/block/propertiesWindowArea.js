@@ -43,7 +43,7 @@
                     break;
                 case 'countdown':
                     /* 初始化字体大小 */
-                    for (var i = 14; i < 52; i+=2) {
+                    for (var i = 14; i < 40; i+=2) {
                         html += '<option value="' + i + '">' + i + 'px' + '</option>';
                     }
                     areaview.$fontsize.html(html);
@@ -60,6 +60,7 @@
                         startdate: '',
                         enddate:''
                     }
+                    debugger;
                     /* 开始,结束 时间 */
                     areaview.$startdate.val($obj.attr('startdate') || defaults.startdate);
                     areaview.$enddate.val($obj.attr('enddate') || defaults.enddate);
@@ -194,7 +195,7 @@
             /* 处理当前area */
             var type = areaview.selecteType;
             var areatypehtml = ''; 
-            /* 保存成功回调数组 */
+            /* 保存成功回调 */
             var successcb;
             /* 标签:默认为a */
             var tagname = 'a';
@@ -218,24 +219,28 @@
                     areatypehtml += 'href="#' + areaview.$anchor.val() + '"';
                     break;
                 case 'countdown':
+                    areaview.startdate = areaview.$startdate.val();
+                    areaview.enddate = areaview.$enddate.val();
+                    if (areaview.startdate === '') {
+                        commons.layer.msg('保存失败:请选择开始时间');
+                        return false;
+                    }
+                    else 
+                        if (areaview.enddate === '') {
+                        commons.layer.msg('保存失败:请选择结束时间');
+                        return false;
+                    }
                     successcb = function () {
                         tagname = 'div';
-                        var $imgpos = $("#newimgpos");
+                        var $imgpos = $("#tempimgpos");
                         /* 字体,大小,颜色 */
                         $imgpos.css("font-family", areaview.$fontfamily.val());
                         $imgpos.css("font-size", areaview.$fontsize.val());
                         $imgpos.css("color", areaview.$fontcolor.spectrum("get").toHexString());
                         /* 开始,结束 时间 */
-                        var startdate = areaview.$startdate.val();
-                        if (startdate !== '') {
-                            $imgpos.attr('startdate', startdate);
-                        }
-                        var enddate = areaview.$enddate.val();
-                        if (enddate !== '') {
-                            $imgpos.attr('enddate', enddate);
-                        }
+                        $imgpos.attr('startdate', areaview.startdate);
+                        $imgpos.attr('enddate', areaview.enddate);
                     }
-                    break;
             }
             /* 全部正确保存类型 */
             areatypehtml += ' linktype="' + type + '"';
@@ -245,16 +250,13 @@
             var left = $.cbuilder.areapos.x;
             var top = $.cbuilder.areapos.y;
             var position = "left:" + left + "px;top:" + top + "px;width:" + width + "px;height:" + height + "px;";
-           
-            var imgpos = '<' + tagname + ' class="imgpos" id="newimgpos" style="' + position + '"  ' + areatypehtml + ' ></' + tagname + '>';
+            var imgpos = '<' + tagname + ' class="imgpos" id="tempimgpos" style="' + position + '"  ' + areatypehtml + ' ></' + tagname + '>';
             /* 将位置所生成的dom 添加到父,因为父永远有cropwrap */
             var $parent = $.cbuilder.$pw.$selectedobj.parent();
             /* 全部正确插入imgpos */
             $parent.append(imgpos);
             if (typeof successcb === 'function') {
                 successcb();
-                /* 删除临时操作的id */
-                $('#newimgpos').removeAttr('id');
             }
             commons.clean();
             layer.msg('保存成功', {

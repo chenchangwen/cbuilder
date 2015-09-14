@@ -38,8 +38,7 @@ gulp.task("default", ["clean"], function() {
     gulp.start("template", "js", "less", "watch");
 });
 
-var stackTrace = require('stack-trace');
-var err = new Error('something went wrong');
+
 gulp.task("watch", function () {
     gulp.watch([path.dev.tplhtml], ["template","js"]).on("change", function (event) {
         console.log("tpl文件变更: " + event.path + " was " + event.type);
