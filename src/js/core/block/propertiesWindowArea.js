@@ -60,7 +60,7 @@
                         startdate: '',
                         enddate:''
                     }
-                    debugger;
+
                     /* 开始,结束 时间 */
                     areaview.$startdate.val($obj.attr('startdate') || defaults.startdate);
                     areaview.$enddate.val($obj.attr('enddate') || defaults.enddate);
@@ -102,7 +102,12 @@
             view.$panel.find('.pw-controls-panel[class*=' + inputid + ']').show();
         });
     },
- 
+    backEvent: function () {
+        /* 后退按钮 */
+        view.$pw.find('.pw-area .back').on('click', function () {
+            $.cbuilder.$pw.trigger('propertiesWindow:show');
+        });
+    },
     /* 图片裁剪输入 */
     cropPosInputEvent: function () {
         /* 防止非数字输入 */
@@ -177,7 +182,7 @@
             view.$panel.find('.cb-pills-title').text(opname);
             $.cbuilder.$pw.trigger('propertiesWindow:areaTypeShow');
             /* 显示属性窗口,因为此时有可能属性窗口被关闭 */
-            view.$pw.show();
+            commons.propertiesWindow.show();
         });
 
         /* 事件:显示类型 */
@@ -193,6 +198,7 @@
         /* 事件:保存类型 */
         view.$pw.on("propertiesWindow:areaTypeSave", function () {
             /* 处理当前area */
+            debugger;
             var type = areaview.selecteType;
             var areatypehtml = ''; 
             /* 保存成功回调 */
@@ -263,7 +269,7 @@
                 offset: '200px',
                 time: 1000
             });
-            view.$pw.hide();
+            commons.propertiesWindow.hide();
         });
     },
     /* 删除 */
@@ -271,7 +277,7 @@
         areaview.$delete.on('click', function () {
             layer.confirm('确定删除<当前区域>?', { icon: 3 }, function (index) {
                 commons.clean();
-                view.$pw.hide();
+                commons.propertiesWindow.hide();
                 layer.close(index);
             });
         });
@@ -304,7 +310,7 @@
     domCache: function () {
         var vmain = 'cb-area-type,cb-area-url,.cb-area-croppos,' +
             'cb-area-width,cb-area-height,cb-area-marginleft,' +
-            'cb-area-margintop,cb-area-anchor';
+            'cb-area-margintop,cb-area-anchor,pw-area';
         var vbtn = ',cb-area-save,cb-area-delete';
         var vtypecountdown = ',cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate';
         vmain += vbtn + vtypecountdown;

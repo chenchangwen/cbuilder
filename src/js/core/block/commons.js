@@ -79,5 +79,19 @@
                 offset: '200px'
             });
         }
+    },
+    propertiesWindow: {
+        show: function () {
+            var $pw = $('body').find('.cb-propertiesWindow');
+            $pw.css({ right: '0px' });
+        },
+        hide: function (pixel) {
+            var $pw = $('body').find('.cb-propertiesWindow');
+            if (pixel !== undefined) {
+                $pw.css({ right: pixel });
+            } else {
+                $pw.css({ right: '-385px' });
+            }
+        }
     }
 }

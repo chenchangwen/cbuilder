@@ -7,218 +7,223 @@
 <body>
 <div id="templates">
     <div id="propertiesWindow">
-        <div class="cb-propertiesWindow">
-            <!-- 主面板 -->
-            <div class="pw-main pw-panel" style="display: block">
-                <div class="pw-header">
-                </div>
-                <div class="pw-operate">
-                    <a class="close" href="javascript:;"></a>
-                </div>
-                <div class="pw-body">
-                    <hr class="cb-article-divider">
-                    <ul class="cb-pills">
-                        <li><a href="javascript:;" class="cb-pills-title">编辑</a></li>
-                    </ul>
+    <div class="cb-propertiesWindow">
+    <div class="cb-pw-openner">
+        属<br />
+        性<br />
+        菜<br />
+        单<br />
+    </div>
+    <!-- 主面板 -->
+    <div class="pw-main pw-panel" style="display: block">
+        <div class="pw-header">
+        </div>
+        <div class="pw-operate">
+            
+        </div>
+        <div class="pw-body">
+            <hr class="cb-article-divider">
+            <ul class="cb-pills">
+                <li><a href="javascript:;" class="cb-pills-title">编辑</a></li>
+            </ul>
 
-                    <hr class="cb-article-divider">
-                    <div class="pw-body-content">
-                        <h1 class="pw-body-content-header">属性</h1>
-                        <table class="pw-body-content-list">
-                            <tbody>
-                            <tr>
-                                <td class="text">height:</td>
-                                <td class="input">
-                                    <input type="text" id="cb-main-height">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text">width:</td>
-                                <td class="input">
-                                    <input type="text" id="cb-main-width">
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <h1 class="pw-body-content-header">显示时间</h1>
-                        <table class="pw-body-content-list">
-                            <tbody>
-                                <tr>
-                                    <td class="text">开始:</td>
-                                    <td class="input">
-                                        <input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'cb-main-hidedate\')||\'2030-10-01\'}' }) ">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text">结束:</td>
-                                    <td class="input">
-                                        <input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '#F{$dp.$D(\'cb-main-showdate\')}', maxDate: '2030-10-01' }) ">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <hr class="cb-article-divider">
-                    </div>
-                    <div class="pw-body-footer">
-                        <button type="button" class="btn primary save">保 存</button>
-                        <button type="button" class="btn primary delete">删 除</button>
-                    </div>
-                </div>
+            <hr class="cb-article-divider">
+            <div class="pw-body-content">
+                <h1 class="pw-body-content-header">属性</h1>
+                <table class="pw-body-content-list">
+                    <tbody>
+                    <tr>
+                        <td class="text">height:</td>
+                        <td class="input">
+                            <input type="text" id="cb-main-height">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text">width:</td>
+                        <td class="input">
+                            <input type="text" id="cb-main-width">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <h1 class="pw-body-content-header">显示时间</h1>
+                <table class="pw-body-content-list">
+                    <tbody>
+                    <tr>
+                        <td class="text">开始:</td>
+                        <td class="input">
+                            <input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'cb-main-hidedate\')||\'2030-10-01\'}' }) ">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text">结束:</td>
+                        <td class="input">
+                            <input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '#F{$dp.$D(\'cb-main-showdate\')}', maxDate: '2030-10-01' }) ">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr class="cb-article-divider">
             </div>
-            <!-- 区域 -->
-            <div class="pw-area pw-panel">
-                <div class="pw-header">
-                </div>
-                <div class="pw-operate">
-                    <a class="back" href="javascript:;"></a>
-                    <a class="close" href="javascript:;"></a>
-                </div>
-                <div class="pw-body">
-                    <hr class="cb-article-divider">
-                    <ul class="cb-pills">
-                        <li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li>
-                    </ul>
-                    <hr class="cb-article-divider">
-                    <div class="pw-body-content">
-                        <h1 class="pw-body-content-header">位置</h1>
-                        <table class="pw-body-content-list">
-                            <tbody>
-                            <tr>
-                                <td class="text">width:</td>
-                                <td class="input">
-                                    <input id="cb-area-width" class="cb-area-croppos" data-name="width"  maxlength="4" type="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text">height:</td>
-                                <td class="input">
-                                    <input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text">margin-left:</td>
-                                <td class="input">
-                                    <input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text">margin-top:</td>
-                                <td class="input">
-                                    <input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text">
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <hr class="cb-article-divider">
-                        <h1 class="pw-body-content-header">类型</h1>
-                        <div class="pw-body-content-controls">
-                            <div id="cb-area-type">
-                                <label for="cb-area-type1">
-                                    <input id="cb-area-type1" data-type="link" type="radio" name="areatype">
-                                    链接
-                                </label>
-                                <label for="cb-area-type2">
-                                    <input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">
-                                    锚点
-                                </label>
-                                <label for="cb-area-type3">
-                                    <input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">
-                                    倒计时
-                                </label>
-                            </div>
-                        </div>
-                        <div class="cb-area-type cb-area-type1 pw-controls-panel">
-                            <table class="pw-body-content-list">
-                                <tbody>
-                                    <tr>
-                                        <td class="text">链接地址:</td>
-                                        <td class="input">
-                                            <textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text">打开方式:</td>
-                                        <td class="input">
-                                            <label for="open-type1">
-                                                <input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">
-                                                新建窗口
-                                            </label>
-                                            <label for="open-type2">
-                                                <input id="open-type2" data-value="_self" type="radio" name="opentype">
-                                                当前窗口
-                                            </label>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="cb-area-type cb-area-type2 pw-controls-panel">
-                            <select id="cb-area-anchor">
-
-                            </select>
-                        </div>
-                        <div class="cb-area-type cb-area-type3 pw-controls-panel">
-                            <table class="pw-body-content-list">
-                                <tbody>
-                                <tr>
-                                    <td class="input" colspan="2">
-                                        <div id="cb-area-fontdemo">
-                                            8天08时08分08秒
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text">字体:</td>
-                                    <td class="input">
-                                        <select id="cb-area-fontfamily">
-                                            <option value="宋体">宋体</option>
-                                            <option value="楷体">楷体</option>
-                                            <option value="微软雅黑">微软雅黑</option>
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text">字体大小:</td>
-                                    <td class="input">
-                                        <select id="cb-area-fontsize">
-
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text">字体颜色:</td>
-                                    <td class="input">
-                                        <input type='text' id="cb-area-fontcolor" style="display: none" />
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <td class="text">开始时间:</td>
-                                    <td class="input">
-                                        <input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'cb-area-enddate\')||\'2030-10-01\'}' }) ">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text">结束时间:</td>
-                                    <td class="input">
-                                        <input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '#F{$dp.$D(\'cb-area-startdate\')}', maxDate: '2030-10-01' }) ">
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                           
-                        </div>
-                        <hr class="cb-article-divider">
+            <div class="pw-body-footer">
+                <button type="button" class="btn primary save">保 存</button>
+                <button type="button" class="btn primary delete">删 除</button>
+            </div>
+        </div>
+    </div>
+    <!-- 区域 -->
+    <div class="pw-area pw-panel">
+        <div class="pw-header">
+        </div>
+        <div class="pw-operate">
+<!--            <a class="back" href="javascript:;"></a>-->
+        </div>
+        <div class="pw-body">
+            <hr class="cb-article-divider">
+            <ul class="cb-pills">
+                <li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li>
+            </ul>
+            <hr class="cb-article-divider">
+            <div class="pw-body-content">
+                <h1 class="pw-body-content-header">位置</h1>
+                <table class="pw-body-content-list">
+                    <tbody>
+                    <tr>
+                        <td class="text">width:</td>
+                        <td class="input">
+                            <input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text">height:</td>
+                        <td class="input">
+                            <input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text">margin-left:</td>
+                        <td class="input">
+                            <input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text">margin-top:</td>
+                        <td class="input">
+                            <input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <hr class="cb-article-divider">
+                <h1 class="pw-body-content-header">类型</h1>
+                <div class="pw-body-content-controls">
+                    <div id="cb-area-type">
+                        <label for="cb-area-type1">
+                            <input id="cb-area-type1" data-type="link" type="radio" name="areatype">
+                            链接
+                        </label>
+                        <label for="cb-area-type2">
+                            <input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">
+                            锚点
+                        </label>
+                        <label for="cb-area-type3">
+                            <input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">
+                            倒计时
+                        </label>
                     </div>
-                    <div class="pw-body-footer">
-                        <div class="pw-body-footer">
-                            <button type="button" id="cb-area-save" class="btn primary ">保 存</button>
-                            <button type="button" id="cb-area-delete" class="btn primary delete">删 除</button>
-                        </div>
-                    </div>
+                </div>
+                <div class="cb-area-type cb-area-type1 pw-controls-panel">
+                    <table class="pw-body-content-list">
+                        <tbody>
+                        <tr>
+                            <td class="text">链接地址:</td>
+                            <td class="input">
+                                <textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text">打开方式:</td>
+                            <td class="input">
+                                <label for="open-type1">
+                                    <input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">
+                                    新建窗口
+                                </label>
+                                <label for="open-type2">
+                                    <input id="open-type2" data-value="_self" type="radio" name="opentype">
+                                    当前窗口
+                                </label>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="cb-area-type cb-area-type2 pw-controls-panel">
+                    <select id="cb-area-anchor">
+
+                    </select>
+                </div>
+                <div class="cb-area-type cb-area-type3 pw-controls-panel">
+                    <table class="pw-body-content-list">
+                        <tbody>
+                        <tr>
+                            <td class="input" colspan="2">
+                                <div id="cb-area-fontdemo">
+                                    8天08时08分08秒
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text">字体:</td>
+                            <td class="input">
+                                <select id="cb-area-fontfamily">
+                                    <option value="宋体">宋体</option>
+                                    <option value="楷体">楷体</option>
+                                    <option value="微软雅黑">微软雅黑</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text">字体大小:</td>
+                            <td class="input">
+                                <select id="cb-area-fontsize">
+
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text">字体颜色:</td>
+                            <td class="input">
+                                <input type='text' id="cb-area-fontcolor" style="display: none"/>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="text">开始时间:</td>
+                            <td class="input">
+                                <input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', maxDate: '#F{$dp.$D(\'cb-area-enddate\')||\'2030-10-01\'}' }) ">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text">结束时间:</td>
+                            <td class="input">
+                                <input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss', minDate: '#F{$dp.$D(\'cb-area-startdate\')}', maxDate: '2030-10-01' }) ">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <hr class="cb-article-divider">
+            </div>
+            <div class="pw-body-footer">
+                <div class="pw-body-footer">
+                    <button type="button" id="cb-area-save" class="btn primary ">保 存</button>
+                    <button type="button" id="cb-area-delete" class="btn primary delete">删 除</button>
                 </div>
             </div>
         </div>
+    </div>
+    </div>
     </div>
     <div id="bodycontentheader">
         <h1 class="pw-body-content-header">#value</h1>

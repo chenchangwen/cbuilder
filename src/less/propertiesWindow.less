@@ -1,6 +1,31 @@
 ﻿@import "global.less";
 
 .cb-propertiesWindow {
+    .cb-pw-openner{
+        position: absolute;
+        left: -40px;
+        top: 50%;
+        font-size: 18px;
+        color: white;
+        top: 50%;
+        padding: 10px 0 10px 10px;
+        background: #000;
+        width: 30px;
+        -moz-border-radius: 8px 0 8px 0;
+        -webkit-border-top-left-radius: 8px;
+        -webkit-border-top-right-radius: 0;
+        -webkit-border-bottom-left-radius: 8px;
+        -webkit-border-bottom-right-radius: 0;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 8px;
+        border-bottom-right-radius: 0;
+        -moz-box-shadow: -2px 0 5px #999;
+        -webkit-box-shadow: -2px 0 5px #999;
+        box-shadow: -2px 0 5px #999;
+        cursor:pointer;
+        font-family: 'trebuchet MS', verdana, sans-serif;
+    }
     .pw-panel,.pw-controls-panel{
        display:none;
     }
@@ -14,8 +39,12 @@
     padding: 5px;
     position: fixed;
     border-radius: 3px;
-    display:none;
     z-index:10001;
+    position:fixed;
+    right:-385px;
+    -webkit-transition: all 0.3s ease;
+    -moz-transition: all 0.3s ease;
+    transition: all 0.3s ease;
     .pw-header{
         font-family: Arial;
         color:#fff;

@@ -10,7 +10,6 @@ var view = {
         view.$pwallpanel = view.$pw.find('.pw-panel');
         var str1 = 'cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate';
         commons.setObjVariable(view, str1, 'cb-main-');
-
     },
     btnsEvent: function() {
         view.setPanel('.pw-main');
@@ -69,9 +68,20 @@ var view = {
                     }
                 }
                 $deleteobj.detach();
-                view.$pw.hide();
+                commons.propertiesWindow.hide();
                 layer.close(index);
             });
+        });
+        
+    },
+    /* 收放按钮 */
+    opennerEvent: function() {
+        view.$pw.find('.cb-pw-openner').on('click', function () {
+            if (view.$pw.css('right') !== '0px') {
+                commons.propertiesWindow.show();
+            } else {
+                commons.propertiesWindow.hide('-345px');
+            }
         });
     },
     pillsEvent: function () {
@@ -85,27 +95,15 @@ var view = {
             if ($panel.hasClass('pw-main')) {
                 showselector = '.pw-main';
                 view.setPanel(showselector);
-                //if (index === 0) {
-                //    view.$pwfooter.find('.btn').hide();
-                //    view.$pwfooter.find('.delete,.btn[id]').show();
-                //}
-                //else
-                ///* 操作 */
-                //if (index === 1) {
-                //    /* 其他按钮 */
-                //    view.$pwfooter.find('.btn').hide();
-                //    view.$pwfooter.find('.delete,.btn[id]').show();
-                //}
             }
             /* 事件:编辑页显示中 */
             $.cbuilder.$pw.trigger('propertiesWindow:editShowing', view.$pw.$selectedobj);
             $this.parent().find('li').removeClass(stractive).eq(index).addClass(stractive);
             view.$pw.selectedindex = index;
             view.$pw.find(showselector).show();
-            view.$pw.show();
+            commons.propertiesWindow.show();
         });
         view.btnsEvent();
-
     },
     customEvent: function () {
         /* 事件:显示 */
@@ -113,7 +111,6 @@ var view = {
             commons.clean();
             view.$pwallpanel.hide();
             var $selectedobj = $(view.$pw.$selectedobj);
-
             view.$pw.find('.pw-main .pw-header').text('<' + $selectedobj.prop('tagName') + '>');
             view.$pw.find('.pw-main .cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
             view.$height.val(view.$pw.$selectedobj.css('height').replace(/px/, ''));
@@ -137,20 +134,7 @@ var view = {
         view.$pwfooter = $panel.find('.pw-body-footer');
         view.$pwheader = $panel.find('.pw-header');
     },
-    backEvent: function () {
-        /* 后退按钮 */
-        view.$pw.find('.back').on('click', function () {
-            $.cbuilder.$pw.trigger('propertiesWindow:show');
-        });
-    },
-    closeEvent: function () {
-        /* 关闭属性窗口 */
-        view.$pw.find('.close').on('click', function () {
-            commons.clean();
-            view.$pw.hide();
-        });
-    },
-    /* 公开方法*/
+    /* 公开方法 */
     publicFunction: function() {
         /* 添加按钮 */
         $.cbuilder.$pw.AddBtn = function (opts) {
@@ -168,7 +152,7 @@ var view = {
         ~~include('../../core/block/propertiesWindowArea.js')
     },
     bindEvents: function() {
-        commons.objectCallFunction(view, 'customEvent', 'closeEvent', 'backEvent', 'pillsEvent');
+        commons.objectCallFunction(view, 'customEvent','opennerEvent', 'pillsEvent');
     },
     init: function () {
         var vendors = [
