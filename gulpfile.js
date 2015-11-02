@@ -20,22 +20,25 @@ var gulp = require("gulp"),
 var path = {
     dev: {
         js: ["src/js/core/plugin.js"],
-        less: ["src/less/**/*.less"],
+        js_parser: ["src/js/parser/**.js"],
+        less: ["src/less/*.less"],
+        less_parser: ["src/less/parser/**.less"],
         tplhtml: ["src/tplhtml/*.html"]
     },
     src: {
+        root:'./src/',
         js: "src/js",
-        tpl: "src/js/tpl"
+        tpl: "src/js/tpl",
+        css:'src/css/'
     },
     dist: {
-        js: "./dist/js",
-        // css: './dist/css',
-        css: "src/css"
+        css_parser: './dist/',
+        js_parser: "./dist/"
     }
 };
 
-gulp.task("default", ["clean"], function() {
-    gulp.start("template", "js", "less", "watch");
+gulp.task("default", function() {
+    gulp.start("template", "js", "less","less_parser","js_parser", "watch");
 });
 
 
@@ -46,19 +49,27 @@ gulp.task("watch", function () {
     gulp.watch([path.dev.js, 'src/js/core/block/*.js'], ["js"]).on("change", function (event) {
         console.log("js文件变更: " + event.path + " was " + event.type);
     });
+
+    gulp.watch([path.dev.js_parser],["js_parser"]).on("change", function (event) {
+        console.log("js_parser文件变更: " + event.path + " was " + event.type);
+    });
+
     gulp.watch([path.dev.less], ["less"]).on("change", function(event) {
         console.log("less文件变更: " + event.path + " was " + event.type);
+    });
+    gulp.watch([path.dev.less_parser], ["less_parser"]).on("change", function (event) {
+        console.log("less_parser文件变更: " + event.path + " was " + event.type);
     });
 });
 
 
-//初始化
+/* init */
 gulp.task('init', function () {
     gulp.start("template");
 });
 
 
-//模板
+/* html template */
 var replace = require('gulp-replace');
 gulp.task('template', function () {
     return gulp.src(path.dev.tplhtml)
@@ -67,13 +78,24 @@ gulp.task('template', function () {
         .pipe(uglify({ compress: true }))
         .pipe(replace(/\s{2,}/ig, ''))
         .pipe(gulp.dest(path.src.tpl));
-    //.pipe(notify({
-    //    message: "--template 任务 完成 --"
-    //}));
 });
 
-//脚本
-gulp.task("js", ['template'],function() {
+/* js_parser */
+gulp.task("js_parser", function () {
+    gulp.src(path.dev.js_parser)
+        .pipe(plumber())
+        .pipe(concat("jquery.cbuilder.parser.js"))
+        .pipe(gulp.dest(path.src.js))
+        .pipe(uglify())
+        .pipe(concat("cbuilder_parser.js"))
+        .pipe(rename({
+            suffix: ".min"
+        }))
+        .pipe(gulp.dest(path.dist.js_parser));
+});
+
+/* js */
+gulp.task("js", ['template'], function () {
     gulp.src(path.dev.js)
         .pipe(plumber())
         .pipe(fileinclude({
@@ -82,40 +104,47 @@ gulp.task("js", ['template'],function() {
         }))
         /* 引用文件 合并源代码 */
         .pipe(uglify({ output: { beautify: true, comments: true }, mangle: false, compress: false }))
-        .pipe(rename({
-            suffix: ".min"
-        }))
         .pipe(concat("jquery.cbuilder.js"))
         .pipe(gulp.dest(path.src.js))
-        //.pipe(jshint())
-        //.pipe(jshint.reporter("default"))
-        //.pipe(stripDebug())
-        //.pipe(notify({
-        //    message: "--js 任务 完成 --"
-        //}));
+        .pipe(concat("jquery.cbuilder.js"))
+        .pipe(rename({
+            suffix: ".min"
+         }))
+        .pipe(uglify())
+        .pipe(gulp.dest(path.src.js));
 });
 
-
-//less
-gulp.task("less", function() {
-    gulp.src(path.dev.less)
+/* less_parser */
+gulp.task("less_parser", function () {
+    gulp.src(path.dev.less_parser)
         .pipe(plumber())
-        .pipe(concat("cbuilder.css"))
+        .pipe(concat("cbuilder_parser.css"))
         .pipe(less())
         .pipe(rename({
             suffix: ".min"
         }))
         .pipe(minifycss())
-        .pipe(gulp.dest(path.dist.css))
-        //.pipe(notify({
-        //    message: "--less 任务 完成 --"
-        //}));
+        .pipe(gulp.dest(path.dist.css_parser));
+});
+
+/* less */
+gulp.task("less", function () {
+    gulp.src(path.dev.less)
+        .pipe(plumber())
+        .pipe(concat("cbuilder.css"))
+        .pipe(less())
+        .pipe(gulp.dest(path.src.css))
+        .pipe(rename({
+            suffix: ".min"
+        }))
+        .pipe(minifycss())
+        .pipe(gulp.dest(path.src.css));
 });
 
 
-//清理生产目录文件
+/* clean dist directory */
 gulp.task("clean", function() {
-    return gulp.src([path.dist.js, path.dist.css], {
+    return gulp.src([path.dist.js_parser, path.dist.css_parser], {
             read: false
     })
     .pipe(plumber())

@@ -44,6 +44,7 @@
                             });
                             return html;
                         }
+                        debugger;
                         $.cbuilder.active._content = clean();
                     });
                 },
