@@ -198,7 +198,6 @@
         /* 事件:保存类型 */
         view.$pw.on("propertiesWindow:areaTypeSave", function () {
             /* 处理当前area */
-            debugger;
             var type = areaview.selecteType;
             var areatypehtml = ''; 
             /* 保存成功回调 */
@@ -225,6 +224,7 @@
                     areatypehtml += 'href="#' + areaview.$anchor.val() + '"';
                     break;
                 case 'countdown':
+                    tagname = 'div';
                     areaview.startdate = areaview.$startdate.val();
                     areaview.enddate = areaview.$enddate.val();
                     if (areaview.startdate === '') {
@@ -237,7 +237,6 @@
                         return false;
                     }
                     successcb = function () {
-                        tagname = 'div';
                         var $imgpos = $("#tempimgpos");
                         /* 字体,大小,颜色 */
                         $imgpos.css("font-family", areaview.$fontfamily.val());

@@ -112,7 +112,7 @@
             }
         },
         regex: {
-            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/
+            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
         },
         layer: {
             msg: function(msg) {
@@ -728,7 +728,6 @@
                             /* 事件:保存类型 */
                             view.$pw.on("propertiesWindow:areaTypeSave", function() {
                                 /* 处理当前area */
-                                debugger;
                                 var type = areaview.selecteType;
                                 var areatypehtml = "";
                                 /* 保存成功回调 */
@@ -757,6 +756,7 @@
                                     break;
 
                                   case "countdown":
+                                    tagname = "div";
                                     areaview.startdate = areaview.$startdate.val();
                                     areaview.enddate = areaview.$enddate.val();
                                     if (areaview.startdate === "") {
@@ -767,7 +767,6 @@
                                         return false;
                                     }
                                     successcb = function() {
-                                        tagname = "div";
                                         var $imgpos = $("#tempimgpos");
                                         /* 字体,大小,颜色 */
                                         $imgpos.css("font-family", areaview.$fontfamily.val());

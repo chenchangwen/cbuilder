@@ -1,1 +1,1 @@
-.cropwrap{position:relative}.cropwrap .imgpos,.cropwrap a{position:absolute}.cropwrap a:hover{cursor:default}.cropwrap .imgpos{border:2px solid #00f}.cropwrap .imgpos-active{border:2px dashed red}
+.cropwrap{position:relative}.cropwrap>img{z-index:1;display:block}.cropwrap a,.cropwrap div{text-decoration:none;outline:0;border:0!important;background:url(#)}.cropwrap a.imgpos,.cropwrap div.imgpos{z-index:10;border:0}.cropwrap .imgpos{border:0;position:absolute}.cropwrap a,.cropwrap a:active,.cropwrap a:focus{outline:0;noFocusLine:expression(this.hideFocus=true)\9}

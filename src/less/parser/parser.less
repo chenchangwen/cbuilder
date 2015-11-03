@@ -1,20 +1,30 @@
-﻿.cropwrap {
+﻿
+.cropwrap {
     position: relative;
+    > img{
+        z-index: 1;
+        display: block;
+    }
 
-    a { 
-        position: absolute;
-
-        &:hover {
-            cursor: default;
+    a,div{
+        text-decoration: none;
+        outline:none;
+        border: 0 none !important; 
+        background:url(#);
+        &.imgpos{
+            z-index: 10;
+            border: 0;
         }
     }
 
     .imgpos {
-        border: 2px solid blue;
+        border:0px;
         position: absolute;
     }
 
-    .imgpos-active {
-        border: 2px dashed red;
+    /* IE样式 */
+    a,a:active, a:focus{
+       outline: none;
+       noFocusLine: ~"expression(this.hideFocus=true) \9";
     }
 }
