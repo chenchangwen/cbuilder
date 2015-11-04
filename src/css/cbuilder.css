@@ -54,9 +54,9 @@
 }
 .btn {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 6px 10px;
   margin-bottom: 0;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 400;
   line-height: 1.42857143;
   text-align: center;
@@ -327,7 +327,7 @@
   line-height: 1.6;
   color: #333;
   border: 1px #cccccc dashed;
-  overflow: hidden;
+  overflow-y: auto;
   border-radius: 3px;
 }
 .cb-container hr {
@@ -476,9 +476,9 @@ legend {
 }
 .btn {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 6px 10px;
   margin-bottom: 0;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 400;
   line-height: 1.42857143;
   text-align: center;

@@ -14,7 +14,7 @@
     var defaults = {
         height: "100%",
         width:"99%",
-        toolbar: ["upload", 'mupload', 'test','countdown','clean', 'anchor', 'preview', 'picture'],
+        toolbar: ["upload", 'mupload', 'test','clean', 'anchor', 'preview', 'picture'],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
@@ -87,7 +87,18 @@
         },
         getContent: function () {
             $.cbuilder.active._trigger('cbuilder:onGetContentBefore');
-            return '<div class="' + strcbuilder + '">' + $.cbuilder.active._content + '</div>';
+            var html = '';
+            if ($.cbuilder.active._content) {
+                html = '<div class="' + strcbuilder + '">' + $.cbuilder.active._content + '</div>';
+            } else {
+                html =this._getItemsObject().html();
+            }
+            return html;
+        },
+        _getItemsObject: function() {
+            var clonecontents = $.cbuilder.active.$element.clone();
+            var $items = clonecontents.find('.cb-body');
+            return $items;
         }
     }
 
@@ -210,6 +221,12 @@
                             return handle.className === 'item-move';
                         }
                     });
+                    /* 内容加载完毕 */
+                    that.$element.on('cbuilder:onContentReady', function (e) {
+//                        $(clsContent).delegate('*', 'dblclick', function (e) {
+//                           // alert('')
+//                        });
+                    });
                 },
                 /* 构建 */
                 struc: function () {
@@ -228,38 +245,6 @@
 
     /* 执行一次 */
     var onceView = {
-        /* 菜单 */
-        contextMenu: function () {
-            var vendors = [
-                '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js',
-                '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css'
-            ];
-            commons.loadFile(vendors);
-            $.contextMenu({
-                selector: '.cb-content img,.cb-content a',
-                callback: function (key, options) {
-                    var $selectedobj = $.cbuilder.$pw.$selectedobj = this;
-                    $.cbuilder.active = $(this).parents('.cb-container').data('cbuilder');
-                    /* 如果是区域 执行编辑 */
-                    if ($selectedobj.prop('tagName') === 'A') {
-                        /* 触发双击 */
-                        $selectedobj.trigger('dblclick');
-                    } else {
-                        /* 否则显示属性窗口 */
-                        $.cbuilder.$pw.trigger('propertiesWindow:show');
-                    }
-                },
-                items: {
-                    "edit": { name: "编辑", icon: "edit" },
-                    //"cut": { name: "Cut", icon: "cut" },
-                    //"copy": { name: "Copy", icon: "copy" },
-                    //"paste": { name: "Paste", icon: "paste" },
-                    //"delete": { name: "Delete", icon: "delete" },
-                    //"sep1": "---------",
-                    //"quit": { name: "退出", icon: "quit" }
-                }
-            });
-        },
         /* 工具 */
         itemtools: function() {
             ~~include('./block/itemtools.js')
@@ -270,7 +255,7 @@
         },
         struc: function () {
             $(document).ready(function() {
-                commons.objectCallFunction(onceView, 'propertiesWindow', 'contextMenu', 'itemtools');
+                commons.objectCallFunction(onceView, 'propertiesWindow', 'itemtools');
             });
         }
     }

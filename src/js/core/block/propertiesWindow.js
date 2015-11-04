@@ -40,6 +40,7 @@ var view = {
                     $cropwrap.attr('hidedate', hidedate);
                 }
                 commons.layer.msg('保存成功');
+                commons.propertiesWindow.hide();
             });
         });
         /* 删除 */

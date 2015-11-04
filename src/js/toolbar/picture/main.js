@@ -13,17 +13,21 @@
                 onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
                         /* 图片双击事件 */
-                        $('.cb-content').undelegate('dblclick').delegate('.imgpos', 'dblclick', function (e) {
+                        $('.cb-content').undelegate('dblclick').delegate('.imgpos,img', 'dblclick', function (e) {
                             var $this = $(this);
+                            var tagName = $this.prop('tagName');
                             $.cbuilder.$pw.$selectedobj = $this;
                             /* 初始化并没激活,所以必须再次设定激活状态 */
                             $.cbuilder.active = $this.parents('.cb-container').data('cbuilder');
                             e.stopPropagation();
                             /* 移除全选范围(避免chrome双击会全选) */
                             window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
-                            
-                            view.loadJcrop($(this).parent().find('img'),'edit');
-                            $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
+                            if (tagName === 'IMG') {
+                                $.cbuilder.$pw.trigger('propertiesWindow:show');
+                            } else {
+                                view.loadJcrop($(this).parent().find('img'), 'edit');
+                                $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
+                            }
                         });
                         /* 阻止A点击跳转 */
                         $('.cb-content').undelegate('click').delegate('a', 'click', function () {
@@ -33,18 +37,18 @@
                 },
                 onGetContentBeforeEvent: function() {
                     $element.on('cbuilder:onGetContentBefore', function () {
-                        /* 清理 */
-                        var clean = function () {
-                            var html = '';
-                            var clonecontents = $.cbuilder.active.$element.clone();
-                            var $contents = clonecontents.find('.cb-content');
-                            $contents.each(function () {
-                                $(this).find('.areapos').css('border', '');
-                                html += $(this).html();
-                            });
-                            return html;
-                        }
-                        $.cbuilder.active._content = clean();
+//                        /* 清理 */
+//                        var clean = function () {
+//                            var html = '';
+//                            var $items = $.cbuilder._getItemsObject();
+//                            $items.each(function () {
+//                                /* 删除border */
+//                                $(this).find('.imgpos').css('border', '');
+//                                html += $(this).html();
+//                            });
+//                            return html;
+//                        }
+//                        $.cbuilder.active._content = $.cbuilder._getItemsObject().html();
                     });
                 },
                 pwEditShowing: function () {
