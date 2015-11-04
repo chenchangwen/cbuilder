@@ -411,7 +411,7 @@
                     $savebtn.on("click", function() {
                         var $selectedobj = $(view.$pw.$selectedobj);
                         var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
-                        var $cropwrap = $selectedobj.parents(".cropwrap");
+                        var $cropwrap = $selectedobj.parents(".cb-cropwrap");
                         $bodylist.each(function() {
                             var $this = $(this);
                             var text = $this.find(".text").text().replace(/:/, "");
@@ -445,7 +445,7 @@
                         }, function(index) {
                             var $deleteobj = "";
                             /* 如果是image */
-                            var $pimage = $selectedobj.parent(".cropwrap");
+                            var $pimage = $selectedobj.parent(".cb-cropwrap");
                             if ($pimage.length !== 0) {
                                 if ($pimage.children().length === 1 || $selectedobj.prop("tagName") === "IMG") {
                                     $deleteobj = $pimage.parents(".cb-item");
@@ -509,7 +509,7 @@
                         view.$pw.find(".pw-main .cb-pills li:first").trigger("click", 0 || view.$pw.selectedindex);
                         view.$height.val(view.$pw.$selectedobj.css("height").replace(/px/, ""));
                         view.$width.val(view.$pw.$selectedobj.css("width").replace(/px/, ""));
-                        var $cropwrap = $selectedobj.parents(".cropwrap");
+                        var $cropwrap = $selectedobj.parents(".cb-cropwrap");
                         /* 默认值 */
                         var defaults = {
                             showdate: "",

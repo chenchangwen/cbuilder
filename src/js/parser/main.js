@@ -1,4 +1,4 @@
-/* 全局定义 */
+﻿/* 全局定义 */
 var cbuilder = {};
 (function () {
 

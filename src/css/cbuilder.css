@@ -337,23 +337,23 @@
   border: 0;
   border-top: 1px solid #e5e5e5;
 }
-.cb-container .cropwrap {
+.cb-container .cb-cropwrap {
   position: relative;
 }
-.cb-container .cropwrap a {
+.cb-container .cb-cropwrap a {
   position: absolute;
 }
-.cb-container .cropwrap a:hover {
+.cb-container .cb-cropwrap a:hover {
   cursor: default;
 }
-.cb-container .cropwrap .imgpos {
+.cb-container .cb-cropwrap .imgpos {
   border: 2px solid #000000;
   position: absolute;
 }
-.cb-container .cropwrap .imgpos:hover {
+.cb-container .cb-cropwrap .imgpos:hover {
   border: 2px solid #cd0200;
 }
-.cb-container .cropwrap .imgpos-active {
+.cb-container .cb-cropwrap .imgpos-active {
   border: 2px dashed red;
 }
 .cb-article-divider {
