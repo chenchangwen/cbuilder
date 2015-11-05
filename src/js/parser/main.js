@@ -4,6 +4,7 @@ var cbuilder = {};
 
     var isshow = false,
         serverTime;
+    var strimg = 'img';
     /* 通用 */
     var commons = {
         /* 
@@ -87,41 +88,6 @@ var cbuilder = {};
             view.$imgpos = view.$cropwrap.find('.imgpos');
             serverTime = commons.stringToDate($('div[data-nowtime]').data('nowtime')) / 1000 || new Date().getTime() / 1000;
         },
-        /* cropwrap事件 */
-        cropWrapEvent: function () {
-            view.$cropwrap.each(function () {
-                var timenow = serverTime * 1000;
-                var $this = $(this);
-                var showdate = commons.stringToDate($this.attr('showdate'));
-                var hidedate = commons.stringToDate($this.attr('hidedate'));
-                /* 没有设置 开始,结束时间 */
-                if (showdate === undefined && hidedate === undefined) {
-                    isshow = true;
-                } else {
-                    if (showdate != undefined && hidedate === undefined) {
-                        if (new Date(showdate) < timenow) {
-                            isshow = true;
-                        }
-                    }
-                    if (hidedate != undefined && showdate === undefined) {
-                        if (timenow < new Date(hidedate)) {
-                            isshow = true;
-                        }
-                    }
-                    if (showdate != undefined && hidedate != undefined) {
-                        isshow = new Date(showdate) < timenow && timenow < new Date(hidedate);
-                    }
-                }
-                if (isshow) {
-                    $this.find('img').show();
-                } else {
-                    $this.hide();
-                    $this.find('img').hide();
-                }
-                //$this.removeAttr('showdate').removeAttr('hidedate');
-                view.countdownEvent($this);
-            });
-        },
         /* 容器事件*/
         tabContainerEvent: function () {
             $(".tabcontainer").each(function () {
@@ -129,133 +95,6 @@ var cbuilder = {};
                 var $alltab = $('div[tabcontainer="' + $this.attr('id') + '"][tabname]');
                 $this.append($alltab);
             });
-        },
-        /* 倒计时事件 */
-        countdownEvent: function (cropwrap) {
-            var timeDistance; //时间差
-            var $this = cropwrap;
-            var startdate = $this.attr("startdate");
-            var enddate = $this.attr("enddate");
-            $this.removeAttr('dayhours');
-            if (startdate != undefined) {
-                startdate = new Date(commons.stringToDate(startdate));
-            }
-            if (enddate != undefined) {
-                enddate = new Date(commons.stringToDate(enddate));
-            }
-            $this.data('startdate', startdate).data('enddate', enddate);
-            $this.removeAttr('startdate').removeAttr('enddate');
-
-            var $countdown = $this.find(".imgpos[linktype='countdown']");
-            $countdown.each(function () {
-                var $this = $(this);
-                var html = '';
-                var iscdsuffix = false;
-                html += "<span class='edtip'></span>";
-                if ($this.attr("cdsuffix") === 'true') {
-                    html += "<span class='edh'></span>" + "<span>时</span>";
-                    html += "<span class='edm'></span>" + "<span>分</span>";
-                    html += "<span class='eds'></span>" + "<span>秒</span>";
-                    iscdsuffix = true;
-                } else {
-                    html += "<span class='edh'></span>";
-                    html += "<span class='edm'></span>";
-                    html += "<span class='eds'></span>";
-                    $this.data('cdsuffix', 'false');
-                }
-                $this.removeAttr('cdsuffix');
-                $this.html(html);
-                $this.data('cdsuffix', iscdsuffix);
-            });
-            $this.data('time', serverTime);
-            var $hour = $this.find(".edh"),
-            $minute = $this.find(".edm"),
-            $tip = $this.find(".edtip"),
-            $second = $this.find(".eds");
-
-            function countDown() {
-                var timenow = $this.data('time') * 1000;
-                var cdsuffix = $hour.parent().data("cdsuffix");
-                var tip = '';
-                startdate = $this.data('startdate');
-                enddate = $this.data('enddate');
-
-                if (startdate > timenow && timenow < enddate || startdate > timenow && enddate == undefined) {
-                    tip = '距离开始时间还有: ';
-                    timeDistance = startdate - timenow;
-                }
-                else if (startdate == undefined && timenow <= enddate || timenow <= enddate) {
-                    tip = '距离结束时间还有: ';
-                    timeDistance = enddate - timenow;
-                }
-
-                var day, hour, minute, second, maxhour;
-                if (timeDistance >= 0) {
-                    // 相减的差数换算成天数   
-                    day = Math.floor(timeDistance / 86400000);
-                    timeDistance -= day * 86400000;
-                    // 相减的差数换算成小时
-                    hour = Math.floor(timeDistance / 3600000);
-                    //alert(intHour)
-                    timeDistance -= hour * 3600000;
-                    // 相减的差数换算成分钟   
-                    minute = Math.floor(timeDistance / 60000);
-                    timeDistance -= minute * 60000;
-                    // 相减的差数换算成秒数  
-                    second = Math.floor(timeDistance / 1000); //判断小时小于10时，前面加0进行占位
-                    if (hour < 10)
-                        hour = "0" + hour;
-                    // 判断分钟小于10时，前面加0进行占位      
-                    if (minute < 10)
-                        minute = "0" + minute;
-                    // 判断秒数小于10时，前面加0进行占位 
-                    if (second < 10)
-                        second = "0" + second;
-                    //转换后:最大小时
-                    maxhour = parseInt(hour) + (day * 24);
-                    //如果剩余天数大于1,并且开启天数转换
-                    //if (day > 0 && dayhours === "true" && maxhour >= 24) {
-                    if (day > 0 && maxhour >= 24) {
-                        $hour.html(day + "天" + hour);
-                        //if (cdsuffix === 'true') {
-                        //    $hour.html(day + "天" + hour);
-                        //} else {
-                        //    $hour.html(day + "天 " + hour + ' ');
-                        //}
-                    } else {
-                        $hour.html(maxhour);
-                        //intHour = parseInt(intHour) + (intDay * 24);
-                        //if (cdsuffix === 'true') {
-                        //    $hour.html(maxhour);
-                        //} else {
-                        //    $hour.html(maxhour + ':');
-                        //}
-                    }
-                    $tip.html(tip + ' ');
-                    $minute.html(minute);
-                    $second.html(second);
-                    //if (cdsuffix === 'true') {
-                    //    $tip.html(tip);
-                    //    $minute.html(minute);
-                    //    $second.html(second);
-                    //} else {
-                    //    $tip.html(tip + ' ');
-                    //    $minute.html(minute);
-                    //    $second.html(second);
-                    //}
-
-                    var time = cropwrap.data('time') + 1;
-                    cropwrap.data('time', time);
-                    /* 多实例 所以必须 以此命名 */
-                    cropwrap['cdtimeout'] = setTimeout(countDown, 1000);
-
-                } else {
-                    if (typeof cropwrap['cdtimeout'] != "undefined")
-                        clearTimeout(cropwrap['cdtimeout']);
-                    $this.find(".imgpos[linktype='countdown']").remove();
-                }
-            }
-            countDown();
         },
         /* tab事件 */
         tabEvent: function () {
@@ -325,8 +164,8 @@ var cbuilder = {};
                 showGoodIdAry = [];
             var patterns = [/goods_id=\d+/, /\d+.html/ig, /goods-\d+/];
             var hotlink = {
-                /* 校验状态:是否售罄并显示图标 */
-                checkState: function() {
+                /* 校验Icon状态 */
+                checkIconState: function() {
                     view.$imgpos.each(function (i) {
                         var $this = $(this);
                         var str = $this.attr("href");
@@ -352,9 +191,45 @@ var cbuilder = {};
                         if (i === (view.$imgpos.length - 1)) {
                             hotlink.showStateIcon();
                         }
+                    });  
+                },
+                /* 校验倒计时状态 */
+                checkCountDownState: function() {
+                    view.$cropwrap.each(function () {
+                        var timenow = serverTime * 1000;
+                        var $this = $(this);
+                        var showdate = commons.stringToDate($this.attr('showdate'));
+                        var hidedate = commons.stringToDate($this.attr('hidedate'));
+                        /* 没有设置 开始,结束时间 */
+                        if (showdate === undefined && hidedate === undefined) {
+                            isshow = true;
+                        } else {
+                            if (showdate != undefined && hidedate === undefined) {
+                                if (new Date(showdate) < timenow) {
+                                    isshow = true;
+                                }
+                            }
+                            if (hidedate != undefined && showdate === undefined) {
+                                if (timenow < new Date(hidedate)) {
+                                    isshow = true;
+                                }
+                            }
+                            if (showdate != undefined && hidedate != undefined) {
+                                isshow = new Date(showdate) < timenow && timenow < new Date(hidedate);
+                            }
+                        }
+                        /* 条件正确显示图片 */
+                        if (isshow) {
+                            $this.find(strimg).show();
+                        } else {
+                            $this.hide();
+                            $this.find(strimg).hide();
+                        }
+                        //$this.removeAttr('showdate').removeAttr('hidedate');
+                        view.countdownEvent($this);
                     });
                 },
-                /* 显示状态icon*/
+                /* 显示状态Icon*/
                 showStateIcon: function() {
                     /* 商品id都没就不用检测了 */
                     if (goodIdAry.length === 0)
@@ -403,20 +278,147 @@ var cbuilder = {};
                             }
                         }
                     });
+                    return false;
                 },
-                /* 校验倒计时 */
-                checkCountDown: function() {
-                    
+                /* 显示倒计时 */
+                showCountDown: function (cropwrap) {
+                    /* 时间差 */
+                    var timeDistance; 
+                    var $this = cropwrap;
+                    var startdate = $this.attr("startdate");
+                    var enddate = $this.attr("enddate");
+                    $this.removeAttr('dayhours');
+                    if (startdate != undefined) {
+                        startdate = new Date(commons.stringToDate(startdate));
+                    }
+                    if (enddate != undefined) {
+                        enddate = new Date(commons.stringToDate(enddate));
+                    }
+                    $this.data('startdate', startdate).data('enddate', enddate);
+                    $this.removeAttr('startdate').removeAttr('enddate');
+
+                    var $countdown = $this.find(".imgpos[linktype='countdown']");
+                    $countdown.each(function () {
+                        var $this = $(this);
+                        var html = '';
+                        var iscdsuffix = false;
+                        html += "<span class='edtip'></span>";
+                        if ($this.attr("cdsuffix") === 'true') {
+                            html += "<span class='edh'></span>" + "<span>时</span>";
+                            html += "<span class='edm'></span>" + "<span>分</span>";
+                            html += "<span class='eds'></span>" + "<span>秒</span>";
+                            iscdsuffix = true;
+                        } else {
+                            html += "<span class='edh'></span>";
+                            html += "<span class='edm'></span>";
+                            html += "<span class='eds'></span>";
+                            $this.data('cdsuffix', 'false');
+                        }
+                        $this.removeAttr('cdsuffix');
+                        $this.html(html);
+                        $this.data('cdsuffix', iscdsuffix);
+                    });
+                    $this.data('time', serverTime);
+                    var $hour = $this.find(".edh"),
+                    $minute = $this.find(".edm"),
+                    $tip = $this.find(".edtip"),
+                    $second = $this.find(".eds");
+
+                    function countDown() {
+                        var timenow = $this.data('time') * 1000;
+                        var cdsuffix = $hour.parent().data("cdsuffix");
+                        var tip = '';
+                        startdate = $this.data('startdate');
+                        enddate = $this.data('enddate');
+
+                        if (startdate > timenow && timenow < enddate || startdate > timenow && enddate == undefined) {
+                            tip = '距离开始时间还有: ';
+                            timeDistance = startdate - timenow;
+                        }
+                        else if (startdate == undefined && timenow <= enddate || timenow <= enddate) {
+                            tip = '距离结束时间还有: ';
+                            timeDistance = enddate - timenow;
+                        }
+
+                        var day, hour, minute, second, maxhour;
+                        if (timeDistance >= 0) {
+                            // 相减的差数换算成天数   
+                            day = Math.floor(timeDistance / 86400000);
+                            timeDistance -= day * 86400000;
+                            // 相减的差数换算成小时
+                            hour = Math.floor(timeDistance / 3600000);
+                            //alert(intHour)
+                            timeDistance -= hour * 3600000;
+                            // 相减的差数换算成分钟   
+                            minute = Math.floor(timeDistance / 60000);
+                            timeDistance -= minute * 60000;
+                            // 相减的差数换算成秒数  
+                            second = Math.floor(timeDistance / 1000); //判断小时小于10时，前面加0进行占位
+                            if (hour < 10)
+                                hour = "0" + hour;
+                            // 判断分钟小于10时，前面加0进行占位      
+                            if (minute < 10)
+                                minute = "0" + minute;
+                            // 判断秒数小于10时，前面加0进行占位 
+                            if (second < 10)
+                                second = "0" + second;
+                            //转换后:最大小时
+                            maxhour = parseInt(hour) + (day * 24);
+                            //如果剩余天数大于1,并且开启天数转换
+                            //if (day > 0 && dayhours === "true" && maxhour >= 24) {
+                            if (day > 0 && maxhour >= 24) {
+                                $hour.html(day + "天" + hour);
+                                //if (cdsuffix === 'true') {
+                                //    $hour.html(day + "天" + hour);
+                                //} else {
+                                //    $hour.html(day + "天 " + hour + ' ');
+                                //}
+                            } else {
+                                $hour.html(maxhour);
+                                //intHour = parseInt(intHour) + (intDay * 24);
+                                //if (cdsuffix === 'true') {
+                                //    $hour.html(maxhour);
+                                //} else {
+                                //    $hour.html(maxhour + ':');
+                                //}
+                            }
+                            $tip.html(tip + ' ');
+                            $minute.html(minute);
+                            $second.html(second);
+                            //if (cdsuffix === 'true') {
+                            //    $tip.html(tip);
+                            //    $minute.html(minute);
+                            //    $second.html(second);
+                            //} else {
+                            //    $tip.html(tip + ' ');
+                            //    $minute.html(minute);
+                            //    $second.html(second);
+                            //}
+                            var time = cropwrap.data('time') + 1;
+                            cropwrap.data('time', time);
+                            /* 多实例 所以必须 以此命名 */
+                            cropwrap['cdtimeout'] = setTimeout(countDown, 1000);
+
+                        } else {
+                            if (typeof cropwrap['cdtimeout'] != "undefined")
+                                clearTimeout(cropwrap['cdtimeout']);
+                            $this.find(".imgpos[linktype='countdown']").remove();
+                        }
+                    }
+                    countDown();
                 },
                 init: function() {
-                    hotlink.checkState();
+                    commons.objectCallFunction(view, 'checkIconState', 'checkCountDownState');
                 }
             };
             hotlink.init();
         },
+        /* asdf1234 */
+        _ComponentsCustomEvent: function () {
+            
+        },
         /* 解析组件 */
         _parseComponents: function () {
-            view._domCache();
             commons.objectCallFunction(view, '_domCache', '_HotLinkComponent');
         },
         init: function () {

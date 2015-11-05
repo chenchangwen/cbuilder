@@ -212,7 +212,6 @@
                             /* 增加 cb-item div */
                             $this.wrap(that.options.tpl.body_item);
                             $.cbuilder.active = that;
-                            that._trigger('cbuilder:onToolsReady');
                         });
                     });
                     /* 拖拽 */

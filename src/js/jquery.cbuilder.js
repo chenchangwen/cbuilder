@@ -112,7 +112,7 @@
             }
         },
         regex: {
-            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/
+            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
         },
         layer: {
             msg: function(msg) {
@@ -279,7 +279,6 @@
                             /* 增加 cb-item div */
                             $this.wrap(that.options.tpl.body_item);
                             $.cbuilder.active = that;
-                            that._trigger("cbuilder:onToolsReady");
                         });
                     });
                     /* 拖拽 */

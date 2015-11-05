@@ -33,6 +33,11 @@
                         $('.cb-content').undelegate('click').delegate('a', 'click', function () {
                             return false;
                         });
+                        console.log('picture: onContentReady');
+                    });
+
+                    $element.on('cbuilder:onToolsReady', function (e) {
+                        console.log('picture: onToolsReady');
                     });
                 },
                 onGetContentBeforeEvent: function() {
