@@ -2,8 +2,7 @@
 var cbuilder = {};
 (function () {
 
-    var isshow = false,
-        serverTime;
+    var serverTime;
     var strimg = 'img';
     /* 通用 */
     var commons = {
@@ -78,6 +77,118 @@ var cbuilder = {};
                     }
                 }
             });
+        }
+    }
+    
+    /* 倒计时 */
+    var countdown = function ($element) {
+        this.element = $element;
+    };
+    countdown.prototype = {
+        /* 开始 */
+        start: function () {
+            this.init();
+            this.appendHtml();
+
+            /* 缓存当前时间 */
+            var $this = this.element;
+            $this.data('time', serverTime);
+            var $hour = $this.find(".cdh"),
+            $minute = $this.find(".cdm"),
+            $tip = $this.find(".cdtip"),
+            $second = $this.find(".cds");
+
+            /* 倒计时执行方法 */
+            function countDown() {
+                var timenow = $this.data('time') * 1000;
+                var tip = '';
+                var startdate = $this.data('startdate');
+                var enddate = $this.data('enddate');
+                var isdayunit = $this.data('isdayunit');
+                var timeDistance = 0;
+
+                if (startdate > timenow && timenow < enddate || startdate > timenow && enddate == undefined) {
+                    tip = '距离开始时间还有:';
+                    timeDistance = startdate - timenow;
+                }
+                else if (startdate == undefined && timenow <= enddate || timenow <= enddate) {
+                    tip = '距离结束时间还有:';
+                    timeDistance = enddate - timenow;
+                }
+
+                var day, hour, minute, second, maxhour;
+                if (timeDistance >= 0) {
+                    // 相减的差数换算成天数   
+                    day = Math.floor(timeDistance / 86400000);
+                    timeDistance -= day * 86400000;
+                    // 相减的差数换算成小时
+                    hour = Math.floor(timeDistance / 3600000);
+                    //alert(intHour)
+                    timeDistance -= hour * 3600000;
+                    // 相减的差数换算成分钟   
+                    minute = Math.floor(timeDistance / 60000);
+                    timeDistance -= minute * 60000;
+                    // 相减的差数换算成秒数  
+                    second = Math.floor(timeDistance / 1000); //判断小时小于10时，前面加0进行占位
+                    if (hour < 10)
+                        hour = "0" + hour;
+                    // 判断分钟小于10时，前面加0进行占位      
+                    if (minute < 10)
+                        minute = "0" + minute;
+                    // 判断秒数小于10时，前面加0进行占位 
+                    if (second < 10)
+                        second = "0" + second;
+                    //转换后:最大小时
+                    maxhour = parseInt(hour) + (day * 24);
+                    //如果剩余天数大于1,并且开启天数转换
+                    if (day > 0 && isdayunit === "true" && maxhour >= 24) {
+                        $hour.html(day + "天" + hour + '时');
+                    } else {
+                        $hour.html(maxhour+'时');
+                    }
+                    $tip.html(tip);
+                    $minute.html(minute+'分');
+                    $second.html(second+'秒');
+                    var time = $this.data('time') + 1;
+                    $this.data('time', time);
+                    /* 多实例 所以必须 以此命名 */
+                    $this['cdtimeout'] = setTimeout(countDown, 1000);
+
+                } else {
+                    if (typeof $this['cdtimeout'] != "undefined")
+                        clearTimeout($this['cdtimeout']);
+                    $this.remove();
+                }
+            }
+            countDown();
+        },
+        /* 初始化 */
+        init: function () {
+            var $this = this.element;
+            /* 开始时间 */
+            var startdate = $this.attr("startdate");
+            /* 结束时间 */
+            var enddate = $this.attr("enddate");
+            /* 是否天为单位 */
+            var isdayunit = $this.attr("isdayunit");
+            if (startdate != undefined) {
+                startdate = new Date(commons.stringToDate(startdate));
+            }
+            if (enddate != undefined) {
+                enddate = new Date(commons.stringToDate(enddate));
+            }
+            $this.data('startdate', startdate).data('enddate', enddate).data('isdayunit', isdayunit);
+            $this.removeAttr('startdate').removeAttr('enddate').removeAttr('isdayunit');
+        },
+        /* 添加html */
+        appendHtml: function() {
+            var html = '';
+            var $this = this.element;
+            html += "<span class='cdtip'></span>";
+            html += "<span class='cdh'></span>";
+            html += "<span class='cdm'></span>";
+            html += "<span class='cds'></span>";
+            $this.html(html);
         }
     }
 
@@ -160,8 +271,11 @@ var cbuilder = {};
         },
         /* 热点组件 */
         _HotLinkComponent: function () {
+            /* 商品数组 */
             var goodIdAry = [],
+            /* 需要显示商品的数组 */
                 showGoodIdAry = [];
+            /* 商品链接正则 */
             var patterns = [/goods_id=\d+/, /\d+.html/ig, /goods-\d+/];
             var hotlink = {
                 /* 校验Icon状态 */
@@ -187,18 +301,21 @@ var cbuilder = {};
                                 }
                             }
                         }
-                        /* 如果是最后一个,则显示图片tip */
+                        /* 如果是最后一个,则显示图片Icon */
                         if (i === (view.$imgpos.length - 1)) {
                             hotlink.showStateIcon();
                         }
                     });  
                 },
                 /* 校验倒计时状态 */
-                checkCountDownState: function() {
+                checkCountDownState: function () {
+                    var isshow = false;
                     view.$cropwrap.each(function () {
                         var timenow = serverTime * 1000;
                         var $this = $(this);
+                        /* 显示时间 */
                         var showdate = commons.stringToDate($this.attr('showdate'));
+                        /* 结束时间 */
                         var hidedate = commons.stringToDate($this.attr('hidedate'));
                         /* 没有设置 开始,结束时间 */
                         if (showdate === undefined && hidedate === undefined) {
@@ -221,12 +338,16 @@ var cbuilder = {};
                         /* 条件正确显示图片 */
                         if (isshow) {
                             $this.find(strimg).show();
+                            var $countdown = $this.find(".imgpos[linktype='countdown']");
+                            $countdown.each(function() {
+                                var cd = new countdown($(this));
+                                cd.start();
+                                $(this).removeAttr('linktype');
+                            });
                         } else {
                             $this.hide();
                             $this.find(strimg).hide();
                         }
-                        //$this.removeAttr('showdate').removeAttr('hidedate');
-                        view.countdownEvent($this);
                     });
                 },
                 /* 显示状态Icon*/
@@ -280,140 +401,12 @@ var cbuilder = {};
                     });
                     return false;
                 },
-                /* 显示倒计时 */
-                showCountDown: function (cropwrap) {
-                    /* 时间差 */
-                    var timeDistance; 
-                    var $this = cropwrap;
-                    var startdate = $this.attr("startdate");
-                    var enddate = $this.attr("enddate");
-                    $this.removeAttr('dayhours');
-                    if (startdate != undefined) {
-                        startdate = new Date(commons.stringToDate(startdate));
-                    }
-                    if (enddate != undefined) {
-                        enddate = new Date(commons.stringToDate(enddate));
-                    }
-                    $this.data('startdate', startdate).data('enddate', enddate);
-                    $this.removeAttr('startdate').removeAttr('enddate');
-
-                    var $countdown = $this.find(".imgpos[linktype='countdown']");
-                    $countdown.each(function () {
-                        var $this = $(this);
-                        var html = '';
-                        var iscdsuffix = false;
-                        html += "<span class='edtip'></span>";
-                        if ($this.attr("cdsuffix") === 'true') {
-                            html += "<span class='edh'></span>" + "<span>时</span>";
-                            html += "<span class='edm'></span>" + "<span>分</span>";
-                            html += "<span class='eds'></span>" + "<span>秒</span>";
-                            iscdsuffix = true;
-                        } else {
-                            html += "<span class='edh'></span>";
-                            html += "<span class='edm'></span>";
-                            html += "<span class='eds'></span>";
-                            $this.data('cdsuffix', 'false');
-                        }
-                        $this.removeAttr('cdsuffix');
-                        $this.html(html);
-                        $this.data('cdsuffix', iscdsuffix);
-                    });
-                    $this.data('time', serverTime);
-                    var $hour = $this.find(".edh"),
-                    $minute = $this.find(".edm"),
-                    $tip = $this.find(".edtip"),
-                    $second = $this.find(".eds");
-
-                    function countDown() {
-                        var timenow = $this.data('time') * 1000;
-                        var cdsuffix = $hour.parent().data("cdsuffix");
-                        var tip = '';
-                        startdate = $this.data('startdate');
-                        enddate = $this.data('enddate');
-
-                        if (startdate > timenow && timenow < enddate || startdate > timenow && enddate == undefined) {
-                            tip = '距离开始时间还有: ';
-                            timeDistance = startdate - timenow;
-                        }
-                        else if (startdate == undefined && timenow <= enddate || timenow <= enddate) {
-                            tip = '距离结束时间还有: ';
-                            timeDistance = enddate - timenow;
-                        }
-
-                        var day, hour, minute, second, maxhour;
-                        if (timeDistance >= 0) {
-                            // 相减的差数换算成天数   
-                            day = Math.floor(timeDistance / 86400000);
-                            timeDistance -= day * 86400000;
-                            // 相减的差数换算成小时
-                            hour = Math.floor(timeDistance / 3600000);
-                            //alert(intHour)
-                            timeDistance -= hour * 3600000;
-                            // 相减的差数换算成分钟   
-                            minute = Math.floor(timeDistance / 60000);
-                            timeDistance -= minute * 60000;
-                            // 相减的差数换算成秒数  
-                            second = Math.floor(timeDistance / 1000); //判断小时小于10时，前面加0进行占位
-                            if (hour < 10)
-                                hour = "0" + hour;
-                            // 判断分钟小于10时，前面加0进行占位      
-                            if (minute < 10)
-                                minute = "0" + minute;
-                            // 判断秒数小于10时，前面加0进行占位 
-                            if (second < 10)
-                                second = "0" + second;
-                            //转换后:最大小时
-                            maxhour = parseInt(hour) + (day * 24);
-                            //如果剩余天数大于1,并且开启天数转换
-                            //if (day > 0 && dayhours === "true" && maxhour >= 24) {
-                            if (day > 0 && maxhour >= 24) {
-                                $hour.html(day + "天" + hour);
-                                //if (cdsuffix === 'true') {
-                                //    $hour.html(day + "天" + hour);
-                                //} else {
-                                //    $hour.html(day + "天 " + hour + ' ');
-                                //}
-                            } else {
-                                $hour.html(maxhour);
-                                //intHour = parseInt(intHour) + (intDay * 24);
-                                //if (cdsuffix === 'true') {
-                                //    $hour.html(maxhour);
-                                //} else {
-                                //    $hour.html(maxhour + ':');
-                                //}
-                            }
-                            $tip.html(tip + ' ');
-                            $minute.html(minute);
-                            $second.html(second);
-                            //if (cdsuffix === 'true') {
-                            //    $tip.html(tip);
-                            //    $minute.html(minute);
-                            //    $second.html(second);
-                            //} else {
-                            //    $tip.html(tip + ' ');
-                            //    $minute.html(minute);
-                            //    $second.html(second);
-                            //}
-                            var time = cropwrap.data('time') + 1;
-                            cropwrap.data('time', time);
-                            /* 多实例 所以必须 以此命名 */
-                            cropwrap['cdtimeout'] = setTimeout(countDown, 1000);
-
-                        } else {
-                            if (typeof cropwrap['cdtimeout'] != "undefined")
-                                clearTimeout(cropwrap['cdtimeout']);
-                            $this.find(".imgpos[linktype='countdown']").remove();
-                        }
-                    }
-                    countDown();
-                },
                 init: function() {
-                    commons.objectCallFunction(view, 'checkIconState', 'checkCountDownState');
+                    commons.objectCallFunction(hotlink, 'checkIconState', 'checkCountDownState');
                 }
             };
             hotlink.init();
         },
-        /* asdf1234 */
         _ComponentsCustomEvent: function () {
             
         },

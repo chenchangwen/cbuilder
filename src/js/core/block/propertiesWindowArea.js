@@ -58,7 +58,8 @@
                     defaults = {
                         color: '#000',
                         startdate: '',
-                        enddate:''
+                        enddate: '',
+                        isdayunit: 'true'
                     }
 
                     /* 开始,结束 时间 */
@@ -71,6 +72,7 @@
                         areaview.$fontfamily.find("option[value=\"" + fontfamily + "\"]").prop("selected", "selected");
                         areaview.$fontdemo.css("font-family", fontfamily);
                     }
+
                     /* 字体颜色 */
                     areaview.$fontcolor.spectrum({
                         showPalette: true,
@@ -96,6 +98,17 @@
                             areaview.$fontdemo.css('color', color.toHexString());
                         }
                     });
+
+                    /* 是否天为单位 */
+                    if (typeof $obj.attr("isdayunit") === "undefined") {
+                        areaview.$isdayunit.prop('checked', 'true');
+                    }
+                    else if ($obj.attr('isdayunit') === 'true') {
+                        areaview.$isdayunit.prop('checked', 'true');
+                    } else {
+                        areaview.$isdayunit.prop('checked', '');
+                    }
+
                     break;
             }
             /* 匹配当前id的controls 并显示panel*/
@@ -227,6 +240,7 @@
                     tagname = 'div';
                     areaview.startdate = areaview.$startdate.val();
                     areaview.enddate = areaview.$enddate.val();
+                    areaview.isdayunit = areaview.$isdayunit.prop('checked');
                     if (areaview.startdate === '') {
                         commons.layer.msg('保存失败:请选择开始时间');
                         return false;
@@ -240,11 +254,13 @@
                         var $imgpos = $("#tempimgpos");
                         /* 字体,大小,颜色 */
                         $imgpos.css("font-family", areaview.$fontfamily.val());
-                        $imgpos.css("font-size", areaview.$fontsize.val());
+                        $imgpos.css("font-size", areaview.$fontsize.val() + 'px');
                         $imgpos.css("color", areaview.$fontcolor.spectrum("get").toHexString());
                         /* 开始,结束 时间 */
                         $imgpos.attr('startdate', areaview.startdate);
                         $imgpos.attr('enddate', areaview.enddate);
+                        /* 是否天为单位 */
+                        $imgpos.attr('isdayunit', areaview.isdayunit);
                     }
             }
             /* 全部正确保存类型 */
@@ -311,7 +327,7 @@
             'cb-area-width,cb-area-height,cb-area-marginleft,' +
             'cb-area-margintop,cb-area-anchor,pw-area';
         var vbtn = ',cb-area-save,cb-area-delete';
-        var vtypecountdown = ',cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate';
+        var vtypecountdown = ',cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate,cb-area-isdayunit';
         vmain += vbtn + vtypecountdown;
         commons.setObjVariable(areaview, vmain,'cb-area-');
     },
