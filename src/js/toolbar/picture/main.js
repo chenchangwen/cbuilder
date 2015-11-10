@@ -2,7 +2,7 @@
     var exports = {
         isToolbar: false,
         onLoaded: function () {
-            var view = {
+            var view = { 
                 init: function() {
                     var vendors = [
                         '../../vendor/jcrop/js/jquery.Jcrop.min.js',

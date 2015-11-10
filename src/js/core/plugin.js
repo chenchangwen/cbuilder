@@ -32,20 +32,6 @@
         return currentScript.replace(currentScriptFile, '');
     }
 
-    (function (win) {
-        var Store = {},
-                DOMCache = {
-                    get: function (selector, force) {
-                        if (Store[selector] && !force) {
-                            return Store[selector];
-                        }
-
-                        return (Store[selector] = $(selector));
-                    }
-                };
-        win.DOMCache = DOMCache;
-    }(window));
-
     var clsContainer = ".cb-container",
         clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
@@ -57,7 +43,6 @@
         
     ~~include('./block/commons.js')
 
-   
 
     var cbuilder = function(element, options) {
         this.options = $.extend({}, defaults, options);
@@ -234,7 +219,7 @@
             };
             view.struc();
         },
-        _trigger: function (event, cb, params) {
+        _trigger: function (event, cb, params) { 
             this.$element.trigger(event, params || '');
             if (cb) {
                 cb.call(this.$element);
@@ -250,7 +235,7 @@
         },
         /* 属性窗口 */
         propertiesWindow: function () {
-            ~~include('./propertiesWindow.js')
+            ~~include('./block/propertiesWindow.js')
         },
         struc: function () {
             $(document).ready(function() {

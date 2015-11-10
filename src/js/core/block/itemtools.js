@@ -1,15 +1,15 @@
 ﻿~~include("../../tpl/itemtools.js");
-var view = {
+var itemtoolsview = {
     domCache: function() {
         var $element = $("body");
         $element.append(templates.itemtools);
         /* 全局 */
-        $.cbuilder.$itemtools = view.$itemtools = $element.find(".cb-itemtools");
-        view.$contianer = $(".cb-container");
-        view.$itemdelete = $(".item-delete");
+        $.cbuilder.$itemtools = itemtoolsview.$itemtools = $element.find(".cb-itemtools");
+        itemtoolsview.$contianer = $(".cb-container");
+        itemtoolsview.$itemdelete = $(".item-delete");
     },
     mouseOverEvent: function() {
-        view.$contianer.mouseover(function(e) {
+        itemtoolsview.$contianer.mouseover(function(e) {
             var $target = $(e.target);
             var $content = $target.parents(clsContent);
             if ($('.cb-itemtools').length === 0) {
@@ -27,7 +27,7 @@ var view = {
                 }
             }
         });
-        view.$contianer.mouseout(function (e) {
+        itemtoolsview.$contianer.mouseout(function (e) {
             var $target = $(e.target);
             var $content = $target.parents(clsContent);
             if ($content.length === 0) {
@@ -45,14 +45,14 @@ var view = {
         });
     },
     bindEvents: function() {
-        view.mouseOverEvent();
-        view.deleteEvent();
+        itemtoolsview.mouseOverEvent();
+        itemtoolsview.deleteEvent();
     },
     struc: function() {
         $(document).ready(function() {
-            view.domCache();
-            view.bindEvents();
+            itemtoolsview.domCache();
+            itemtoolsview.bindEvents();
         });
     }
 };
-view.struc();
+itemtoolsview.struc();
