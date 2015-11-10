@@ -24,7 +24,8 @@
     "uikit": "~2.18.0",
     "spectrum": "~1.6.2",
     "dragula.js": "~1.5.1",
-    "layer": "https://github.com/sentsin/layer.git",
-    "jQuery-contextMenu": "~1.6.7"
+    "jQuery-contextMenu": "~1.6.7",
+    "layer": "*",
+    "bootstrap": "~3.3.5"
   }
 }

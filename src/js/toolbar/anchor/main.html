@@ -1,23 +1,23 @@
 ﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title></title>
-    <link href="../../../../vendor/uikit/css/uikit.gradient.min.css" rel="stylesheet" />
-    <link href="../../../../vendor/uikit/css/components/notify.gradient.css" rel="stylesheet"/>
     <script data-main="anchor.js" src="../../../../vendor/requirejs/require.js"></script>
+    <style type="text/css">
+        body {
+            padding: 15px;
+        }
+    </style>
+	<meta charset="utf-8" />
 </head>
 <body>
-<div class="uk-container uk-container-center" style="margin-top: 10px">
-    <form class="uk-form uk-form-horizontal">
-        <div class="uk-form-row">
-            <div class="uk-form-controls">
-                <input type="text" class="uk-width-1-1" placeholder="名称"  id="name">
-            </div>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="anchorname">锚点名称</label>
+            <input type="email" class="form-control" id="anchorname" placeholder="锚点名称">
         </div>
-        <div class="uk-form-row">
-            <button class="uk-button uk-button-primary" type="button" id="confirm">确定</button>
-        </div>
+        <button type="submit" class="btn btn-primary">保存</button>
     </form>
 </div>
 </body>

@@ -20,6 +20,7 @@ var gulp = require("gulp"),
 var path = {
     dev: {
         js: ["src/js/core/plugin.js"],
+        js_block:["src/js/core/block/propertiesWindow/**.js"],
         js_parser: ["src/js/parser/**.js"],
         less: ["src/less/*.less"],
         less_parser: ["src/less/parser/**.less"],
@@ -29,24 +30,25 @@ var path = {
         root:'./src/',
         js: "src/js",
         tpl: "src/js/tpl",
-        css:'src/css/'
+        css:'src/css/',
+        js_core:"src/js/core/"
     },
     dist: {
         css_parser: './dist/',
-        js_parser: "./dist/"
+        js_parser: './dist/'
     }
 };
 
 gulp.task("default", function() {
-    gulp.start("template", "js", "less","less_parser","js_parser", "watch");
+   gulp.start("template","js_block","js", "less","less_parser","js_parser", "watch");
 });
 
 
 gulp.task("watch", function () {
-    gulp.watch([path.dev.tplhtml], ["template","js"]).on("change", function (event) {
+    gulp.watch([path.dev.tplhtml], ["template","js_block"]).on("change", function (event) {
         console.log("tpl文件变更: " + event.path + " was " + event.type);
     });
-    gulp.watch([path.dev.js, 'src/js/core/block/*.js'], ["js"]).on("change", function (event) {
+    gulp.watch([path.dev.js, 'src/js/core/block/*.js',path.dev.js_block], ["js"]).on("change", function (event) {
         console.log("js文件变更: " + event.path + " was " + event.type);
     });
 
@@ -68,6 +70,19 @@ gulp.task('init', function () {
     gulp.start("template");
 });
 
+/* js_block */
+gulp.task("js_block", ['template'], function () {
+    gulp.src(path.dev.js_block)
+        .pipe(plumber())
+        .pipe(fileinclude({
+            prefix: "~~",
+            basedev: "~file"
+        }))
+        /* 引用文件 合并源代码 */
+        .pipe(uglify({ output: { beautify: true, comments: true }, mangle: false, compress: false }))
+        .pipe(concat("propertiesWindow.js"))
+        .pipe(gulp.dest(path.src.js_core))
+});
 
 /* html template */
 var replace = require('gulp-replace');
@@ -95,7 +110,7 @@ gulp.task("js_parser", function () {
 });
 
 /* js */
-gulp.task("js", ['template'], function () {
+gulp.task("js", ['template','js_block'], function () {
     gulp.src(path.dev.js)
         .pipe(plumber())
         .pipe(fileinclude({

@@ -250,7 +250,7 @@
         },
         /* 属性窗口 */
         propertiesWindow: function () {
-            ~~include('./block/propertiesWindow.js')
+            ~~include('./propertiesWindow.js')
         },
         struc: function () {
             $(document).ready(function() {

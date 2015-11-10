@@ -1,5 +1,5 @@
 ﻿require(["../require.config"], function () {
-    require(['jquery', 'uikitextend'], function ($,uikitextend) {
+    require(['jquery'], function ($) {
         $(document).ready(function() {
             $('#confirm').on('click', function () {
                 var val = $.trim($("#name").val());

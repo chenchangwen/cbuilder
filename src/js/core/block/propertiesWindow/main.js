@@ -1,8 +1,8 @@
-﻿~~include('../../tpl/propertiesWindow.js')
+﻿~~include('../../../tpl/propertiesWindow.js')
 /* 属性窗口 */
 var view = {
     /* dom缓存 */
-    domCache: function() {
+    domCache: function () {
         var $body = $('body');
         $body.append(templates.propertiesWindow);
         /* 全局 */
@@ -11,7 +11,7 @@ var view = {
         var str1 = 'cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate';
         commons.setObjVariable(view, str1, 'cb-main-');
     },
-    btnsEvent: function() {
+    btnsEvent: function () {
         view.setPanel('.pw-main');
         /* 保存 */
         var $savebtn = view.$pwfooter.find('.save');
@@ -73,10 +73,10 @@ var view = {
                 layer.close(index);
             });
         });
-        
+
     },
     /* 收放按钮 */
-    opennerEvent: function() {
+    opennerEvent: function () {
         view.$pw.find('.cb-pw-openner').on('click', function () {
             if (view.$pw.css('right') !== '0px') {
                 commons.propertiesWindow.show();
@@ -118,9 +118,9 @@ var view = {
             view.$width.val(view.$pw.$selectedobj.css('width').replace(/px/, ''));
             var $cropwrap = $selectedobj.parents('.cb-cropwrap');
             /* 默认值 */
-            var defaults= {
+            var defaults = {
                 showdate: '',
-                hidedate:'',
+                hidedate: '',
             }
             /* 设定 */
             view.$showdate.val($cropwrap.attr('showdate') || defaults.showdate);
@@ -128,7 +128,7 @@ var view = {
         });
     },
     /* 设置panel */
-    setPanel: function(selecotr) {
+    setPanel: function (selecotr) {
         var $panel = $(selecotr);
         view.$panel = $panel;
         view.$pwcontent = $panel.find('.pw-body-content');
@@ -136,7 +136,7 @@ var view = {
         view.$pwheader = $panel.find('.pw-header');
     },
     /* 公开方法 */
-    publicFunction: function() {
+    publicFunction: function () {
         /* 添加按钮 */
         $.cbuilder.$pw.AddBtn = function (opts) {
             var $obj = $('#' + opts.id);
@@ -149,11 +149,11 @@ var view = {
             }
         }
     },
-    blockInit: function() {
-        ~~include('../../core/block/propertiesWindowArea.js')
+    blockInit: function () {
+        ~~include('../../block/propertiesWindow/area.js')
     },
-    bindEvents: function() {
-        commons.objectCallFunction(view, 'customEvent','opennerEvent', 'pillsEvent');
+    bindEvents: function () {
+        commons.objectCallFunction(view, 'customEvent', 'opennerEvent', 'pillsEvent');
     },
     init: function () {
         var vendors = [
@@ -166,16 +166,7 @@ var view = {
         commons.loadFile(vendors);
     },
     struc: function () {
-        commons.objectCallFunction(view, 'init','domCache','publicFunction','bindEvents','blockInit');
+        commons.objectCallFunction(view, 'init', 'domCache', 'publicFunction', 'bindEvents', 'blockInit');
     }
 };
 view.struc();
-
-//var attrs = [];
-//$.each($selectedobj.prop('attributes'), function () {
-//    if (this.specified) {
-//        if ($selectedobj.prop(this.name) ===undefined)
-//        attrs.push({ name: this.name, value: this.value });
-//    }
-//});
-//html += buildList($selectedobj, '属性', attrs);

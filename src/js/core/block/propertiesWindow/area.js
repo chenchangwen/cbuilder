@@ -9,16 +9,16 @@
             var $obj = $.cbuilder.$pw.$selectedobj;
             var html = '';
             /* 默认值 */
-            var defaults= {
+            var defaults = {
             }
             /* 隐藏所有controls */
             controls.hide();
             /* 匹配类型显示内容 */
             switch (type) {
                 case 'link':
-                    defaults= {
+                    defaults = {
                         url: '',
-                        opentype:'_blank'
+                        opentype: '_blank'
                     }
                     /* 设定 */
                     areaview.$url.val($obj.attr('href') || defaults.url);
@@ -30,7 +30,7 @@
                     if ($anchor.length === 0) {
                         $areacnhor.html('<option>没有锚点</option>');
                     } else {
-                        $anchor.each(function() {
+                        $anchor.each(function () {
                             var anchorid = $(this).attr('id');
                             html += '<option value=' + anchorid + '>' + anchorid + '</option>';
                         });
@@ -43,7 +43,7 @@
                     break;
                 case 'countdown':
                     /* 初始化字体大小 */
-                    for (var i = 14; i < 40; i+=2) {
+                    for (var i = 14; i < 40; i += 2) {
                         html += '<option value="' + i + '">' + i + 'px' + '</option>';
                     }
                     areaview.$fontsize.html(html);
@@ -137,7 +137,7 @@
             }
             else if ((keyCode >= 48 && keyCode <= 57) || (keyCode >= 96 && keyCode <= 105) || keyCode === 8 || keyCode === 46) {
                 event.returnValue = true;
-                setTimeout(function() {
+                setTimeout(function () {
                     var w = parseInt(areaview.$width.val());
                     var h = parseInt(areaview.$height.val());
                     var x = parseInt(areaview.$marginleft.val());
@@ -172,7 +172,7 @@
             }
         });
     },
-    customEvent: function() {
+    customEvent: function () {
         /* 事件:编辑页显示完 */
         view.$pw.on("propertiesWindow:editShowEd", function (event, opname, clsstr) {
             /* 隐藏项工具 */
@@ -212,7 +212,7 @@
         view.$pw.on("propertiesWindow:areaTypeSave", function () {
             /* 处理当前area */
             var type = areaview.selecteType;
-            var areatypehtml = ''; 
+            var areatypehtml = '';
             /* 保存成功回调 */
             var successcb;
             /* 标签:默认为a */
@@ -245,11 +245,11 @@
                         commons.layer.msg('保存失败:请选择开始时间');
                         return false;
                     }
-                    else 
+                    else
                         if (areaview.enddate === '') {
-                        commons.layer.msg('保存失败:请选择结束时间');
-                        return false;
-                    }
+                            commons.layer.msg('保存失败:请选择结束时间');
+                            return false;
+                        }
                     successcb = function () {
                         var $imgpos = $("#tempimgpos");
                         /* 字体,大小,颜色 */
@@ -329,7 +329,7 @@
         var vbtn = ',cb-area-save,cb-area-delete';
         var vtypecountdown = ',cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate,cb-area-isdayunit';
         vmain += vbtn + vtypecountdown;
-        commons.setObjVariable(areaview, vmain,'cb-area-');
+        commons.setObjVariable(areaview, vmain, 'cb-area-');
     },
     struc: function () {
         commons.objectCallFunction(areaview, 'domCache', 'customEvent', 'bindEvents');
