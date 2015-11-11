@@ -142,6 +142,9 @@
   transition: all 0.3s ease;
   /*display: none;*/
 }
+.cb-propertiesWindow .cb-title-panel {
+  display: none;
+}
 .cb-propertiesWindow .cb-pw-openner {
   position: absolute;
   left: -40px;
@@ -533,6 +536,9 @@ legend {
   -moz-transition: all 0.3s ease;
   transition: all 0.3s ease;
   /*display: none;*/
+}
+.cb-propertiesWindow .cb-title-panel {
+  display: none;
 }
 .cb-propertiesWindow .cb-pw-openner {
   position: absolute;

@@ -75,7 +75,7 @@
     layer: {
         msg: function(msg) {
             layer.msg(msg, {
-                time: 2000,
+                time: 1000,
                 offset: '200px'
             });
         }

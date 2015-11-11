@@ -1,8 +1,8 @@
 ﻿(function() {
-    /* 属性窗口 */
+    /* 图片窗口 */
     var view = {
         /* dom缓存 */
-        domCache: function () {
+        _domCache: function () {
             var str1 = 'cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate';
             view.$pw = $('#pwpicture');
             view.$pw.savebtn = view.$pw.find('.pw-body-footer .save');
@@ -10,11 +10,10 @@
             commons.setObjVariable(view, str1, 'cb-main-');
         },
         /* 保存按钮 */
-        saveBtnEvent: function() {
+        _saveBtnEvent: function() {
             view.$pw.savebtn.on('click', function () {
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                 var $bodylist = view.$pw.find('.pw-body-content-list tr');
-                var $cropwrap = $selectedobj.parents('.cb-cropwrap');
                 $bodylist.each(function () {
                     var $this = $(this);
                     var text = $this.find('.text').text().replace(/:/, '');
@@ -24,24 +23,25 @@
                     } else if ($selectedobj.prop(text)) {
                         $selectedobj.prop(text, value);
                     }
-                    /* 保存显示时间 */
-                    /* 开始时间 */
-                    var showdate = view.$showdate.val();
-                    if (showdate !== '') {
-                        $cropwrap.attr('showdate', showdate);
-                    }
-                    /* 结束时间 */
-                    var hidedate = view.$hidedate.val();
-                    if (hidedate !== '') {
-                        $cropwrap.attr('hidedate', hidedate);
-                    }
-                    commons.layer.msg('保存成功');
-                    $.cbuilder.propertiesWindow.hide();
                 });
+                var $cropwrap = $selectedobj.parents('.cb-cropwrap');
+                /* 保存显示时间 */
+                /* 开始时间 */
+                var showdate = view.$showdate.val();
+                if (showdate !== '') {
+                    $cropwrap.attr('showdate', showdate);
+                }
+                /* 结束时间 */
+                var hidedate = view.$hidedate.val();
+                if (hidedate !== '') {
+                    $cropwrap.attr('hidedate', hidedate);
+                }
+                commons.layer.msg('保存成功');
+                $.cbuilder.propertiesWindow.hide();
             });
         },
         /* 删除按钮 */
-        deleteBtnEvent: function () {
+        _deleteBtnEvent: function () {
             view.$pw.deletebtn.on('click', function () {
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                 var tip = '确定删除&lt;' + $selectedobj.prop('tagName') + '&gt;?';
@@ -72,7 +72,7 @@
             });
         },
         /* 自定义 propertiesWindow:Showing 事件 */
-        showingEvent: function () {
+        _showingEvent: function () {
             view.$pw.on("propertiesWindow:Showing", function (event) {
                 commons.clean();
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
@@ -89,32 +89,10 @@
                 view.$hidedate.val($cropwrap.attr('hidedate') || defaults.hidedate);
             });
         },
-        /* 设置panel */
-        setPanel: function (selecotr) {
-            var $panel = $(selecotr);
-            view.$panel = $panel;
-            view.$pwcontent = $panel.find('.pw-body-content');
-            view.$pwfooter = $panel.find('.pw-body-footer');
-            view.$pwheader = $panel.find('.pw-header');
+        _bindEvents: function () {
+            commons.objectCallFunction(view, '_showingEvent', '_saveBtnEvent', '_deleteBtnEvent');
         },
-        /* 公开方法 */
-        publicFunction: function () {
-            /* 添加按钮 */
-            $.cbuilder.$pw.AddBtn = function (opts) {
-                var $obj = $('#' + opts.id);
-                if ($obj.length === 0) {
-                    var html = '<button type="button" id="' + opts.id + '" class="btn primary">' + opts.text + '</button>';
-                    view.$pw.find(opts.panel + ' .pw-body-footer').append(html);
-                    if (typeof opts.event === "function") {
-                        opts.event($('#' + opts.id));
-                    }
-                }
-            }
-        },
-        bindEvents: function () {
-            commons.objectCallFunction(view, 'showingEvent', 'saveBtnEvent', 'deleteBtnEvent');
-        },
-        init: function () {
+        _init: function () {
             var vendors = [
                 /* 日期 */
                 '../../../../lib/My97DatePicker/WdatePicker.js',
@@ -124,9 +102,9 @@
             ];
             commons.loadFile(vendors);
         },
-        struc: function () {
-            commons.objectCallFunction(view, 'init', 'domCache', 'bindEvents');
+        _struc: function () {
+            commons.objectCallFunction(view, '_init', '_domCache', '_bindEvents');
         }
     };
-    view.struc();
+    view._struc();
 })();

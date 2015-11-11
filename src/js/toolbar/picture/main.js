@@ -23,10 +23,17 @@
                             /* 移除全选范围(避免chrome双击会全选) */
                             window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
                             if (tagName === 'IMG') {
-                                $.cbuilder.propertiesWindow.show('pwpicture');
+                                $.cbuilder.propertiesWindow.show({
+                                    name:'pwpicture',
+                                    pillstitle:'编辑元素'
+                                });
                             } else {
                                 view.loadJcrop($(this).parent().find('img'), 'edit');
-                                $.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
+                                //$.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
+                                $.cbuilder.propertiesWindow.show({
+                                    name: 'pwarea',
+                                    pillstitle: '编辑区域'
+                                });
                             }
                         });
                         /* 阻止A点击跳转 */

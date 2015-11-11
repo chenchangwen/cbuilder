@@ -14,25 +14,38 @@ $("#pwopenner").on('click', function () {
 $.cbuilder.propertiesWindow = {
     /* 自身$对象 */
     $self: $('body').find('.cb-propertiesWindow'),
-    $panel:$('body').find('.cb-propertiesWindow').find('.pw-panel'),
+    $panel: $('body').find('.cb-propertiesWindow').find('.pw-panel'),
+    $titlepanel: $('#cb-title-panel'),
     /* 已选择的对象 */
-    $selectedobj:'',
-    show: function (name) {
-        if (name !== undefined) {
-            var $pw = $('#' + name);
+    $selectedobj: '',
+    /* 当前属性窗口 */
+    $currentpw: '',
+    /* 显示 */
+    show: function (options) {
+        /* 隐藏项工具 */
+        $.cbuilder.$itemtools.hide();
+        if (options !== undefined) {
+            this.$currentpw = $('#' + options['name']);
             this.$self.find('.pw-panel').hide();
-            $pw.show();
+            /* 设置元素Title */
+            this.$titlepanel.find('.pw-header').text('<' + this.$selectedobj.prop('tagName') + '>');
+            this.$titlepanel.find('.cb-pills-title').text(options['pillstitle']);
+            this.$currentpw.prepend(this.$titlepanel);
+            this.$currentpw.show();
             this.$self.css({ right: '0px' });
-            $pw.trigger('propertiesWindow:Showing');
+            this.$currentpw.trigger('propertiesWindow:Showing');
         } else {
             this.$self.css({ right: '0px' });
         }
     },
+    /* 隐藏 */
     hide: function() {
         $.cbuilder.propertiesWindow.$self.css({ right: '-385px' });
     }
 };
 ~~include('../block/propertiesWindow/picture.js')
+~~include('../block/propertiesWindow/area.js')
+
 
  
 
