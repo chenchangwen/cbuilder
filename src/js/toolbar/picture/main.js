@@ -16,28 +16,23 @@
                         $('.cb-content').undelegate('dblclick').delegate('.imgpos,img', 'dblclick', function (e) {
                             var $this = $(this);
                             var tagName = $this.prop('tagName');
-                            $.cbuilder.$pw.$selectedobj = $this;
+                            $.cbuilder.propertiesWindow.$selectedobj = $this;
                             /* 初始化并没激活,所以必须再次设定激活状态 */
                             $.cbuilder.active = $this.parents('.cb-container').data('cbuilder');
                             e.stopPropagation();
                             /* 移除全选范围(避免chrome双击会全选) */
                             window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
                             if (tagName === 'IMG') {
-                                $.cbuilder.$pw.trigger('propertiesWindow:show');
+                                $.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:show');
                             } else {
                                 view.loadJcrop($(this).parent().find('img'), 'edit');
-                                $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
+                                $.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
                             }
                         });
                         /* 阻止A点击跳转 */
                         $('.cb-content').undelegate('click').delegate('a', 'click', function () {
                             return false;
                         });
-                        console.log('picture: onContentReady');
-                    });
-
-                    $element.on('cbuilder:onToolsReady', function (e) {
-                        console.log('picture: onToolsReady');
                     });
                 },
                 onGetContentBeforeEvent: function() {
@@ -57,10 +52,10 @@
                     });
                 },
                 pwEditShowing: function () {
-                    $.cbuilder.$pw.on('propertiesWindow:editShowing', function (event, opobj) {
+                    $.cbuilder.propertiesWindow.$self.on('propertiesWindow:editShowing', function (event, opobj) {
                         /* 将当前选择的对象(img)设为 pw的选择对象 */
                         var $selectedobj = $(opobj);
-                        $.cbuilder.$pw.$selectedobj = $selectedobj;
+                        $.cbuilder.propertiesWindow.$selectedobj = $selectedobj;
                         if ($selectedobj.prop('tagName') === 'IMG') {
                             var options = {
                                 id: 'cb-main-addarea',
@@ -68,8 +63,8 @@
                                 panel: '.pw-main',
                                 event: function(obj) {
                                     obj.on('click', function() {
-                                        view.loadJcrop($.cbuilder.$pw.$selectedobj, 'create');
-                                        $.cbuilder.$pw.trigger('propertiesWindow:editShowEd', ['新建区域', 'area']);
+                                        view.loadJcrop($.cbuilder.propertiesWindow.$selectedobj, 'create');
+                                        $.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['新建区域', 'area']);
                                     });
                                 }
                             };

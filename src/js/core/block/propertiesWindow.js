@@ -1,16 +1,19 @@
-
+/* html模板 */
 ~~include('../../tpl/propertiesWindow.js')
 $('body').append(templates.propertiesWindow);
-var $pw = $('body').find('.cb-propertiesWindow');
 var _propertiesWindow = {
     show: function() {
         
     },
     hide: function() {
-        $.cbuilder.$pw.hide();
+        
     }
 }
 $.cbuilder.propertiesWindow = {
+    /* 自身$对象 */
+    $self: $('body').find('.cb-propertiesWindow'),
+    /* 当前选择的对象 */
+    $selectedobj:'',
     show: function() {
         
     },
@@ -18,7 +21,7 @@ $.cbuilder.propertiesWindow = {
         
     }
 };
-~~include('../block/propertiesWindow/main.js')
+~~include('../block/propertiesWindow/picture.js')
 
  
 
