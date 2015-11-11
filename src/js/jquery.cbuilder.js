@@ -77,8 +77,8 @@
                 delete jcrop_api;
             }
             /* 如果是激活的imgpos 则删除,因为此时保存 肯定会新建新的imgpos */
-            if ($.cbuilder.$pw.$selectedobj.hasClass("imgpos-active")) {
-                $.cbuilder.$pw.$selectedobj.remove();
+            if ($.cbuilder.propertiesWindow.$selectedobj.hasClass("imgpos-active")) {
+                $.cbuilder.propertiesWindow.$selectedobj.remove();
             }
             /* 删除jcrop 生成的属性 */
             $.cbuilder.active.$element.find("img").css("visibility", "");
@@ -109,26 +109,6 @@
                     time: 2e3,
                     offset: "200px"
                 });
-            }
-        },
-        propertiesWindow: {
-            show: function() {
-                var $pw = $("body").find(".cb-propertiesWindow");
-                $pw.css({
-                    right: "0px"
-                });
-            },
-            hide: function(pixel) {
-                var $pw = $("body").find(".cb-propertiesWindow");
-                if (pixel !== undefined) {
-                    $pw.css({
-                        right: pixel
-                    });
-                } else {
-                    $pw.css({
-                        right: "-385px"
-                    });
-                }
             }
         }
     };
@@ -364,39 +344,64 @@
         propertiesWindow: function() {
             /* htmlģ�� */
             var templates = {
-                propertiesWindow: '<div class="cb-propertiesWindow"><div class="cb-pw-openner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture" style="display: block"><div class="pw-header"></div><div class="pw-operate"></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li><a href="javascript:;" class="cb-pills-title">&#x7F16;&#x8F91;</a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-header"></div><div class="pw-operate"></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="input" colspan="2"><div id="cb-area-fontdemo">8&#x5929;08&#x65F6;08&#x5206;08&#x79D2;</div></td></tr><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-enddate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr><!--<tr>--><!--<td class="text">是否显示时分秒:</td>--><!--<td class="input">--><!--<input type=\'checkbox\' id="cb-area-issuffix"/>--><!--</td>--><!--</tr>--></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary ">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-header">< IMG ></div><div class="pw-body"><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-header"></div><div class="pw-operate"></div><div class="pw-body"><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="input" colspan="2"><div id="cb-area-fontdemo">8&#x5929;08&#x65F6;08&#x5206;08&#x79D2;</div></td></tr><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-enddate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
             $("body").append(templates.propertiesWindow);
-            var _propertiesWindow = {
-                show: function() {},
-                hide: function() {}
-            };
+            $("#pwopenner").on("click", function() {
+                var right = $.cbuilder.propertiesWindow.$self.css("right");
+                if (right !== "0px" || right === "-345px") {
+                    $.cbuilder.propertiesWindow.show();
+                } else {
+                    $.cbuilder.propertiesWindow.$self.css({
+                        right: "-345px"
+                    });
+                }
+            });
             $.cbuilder.propertiesWindow = {
                 /* ����$���� */
                 $self: $("body").find(".cb-propertiesWindow"),
-                /* ��ǰѡ���Ķ��� */
+                $panel: $("body").find(".cb-propertiesWindow").find(".pw-panel"),
+                /* ��ѡ���Ķ��� */
                 $selectedobj: "",
-                show: function() {},
-                hide: function() {}
+                show: function(name) {
+                    if (name !== undefined) {
+                        var $pw = $("#" + name);
+                        this.$self.find(".pw-panel").hide();
+                        $pw.show();
+                        this.$self.css({
+                            right: "0px"
+                        });
+                        $pw.trigger("propertiesWindow:Showing");
+                    } else {
+                        this.$self.css({
+                            right: "0px"
+                        });
+                    }
+                },
+                hide: function() {
+                    $.cbuilder.propertiesWindow.$self.css({
+                        right: "-385px"
+                    });
+                }
             };
             (function() {
                 /* 属性窗口 */
                 var view = {
                     /* dom缓存 */
                     domCache: function() {
-                        view.$pwallpanel = view.$pw.find(".pw-panel");
                         var str1 = "cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate";
+                        view.$pw = $("#pwpicture");
+                        view.$pw.savebtn = view.$pw.find(".pw-body-footer .save");
+                        view.$pw.deletebtn = view.$pw.find(".pw-body-footer .delete");
                         commons.setObjVariable(view, str1, "cb-main-");
                     },
-                    btnsEvent: function() {
-                        view.setPanel(".pw-main");
-                        /* 保存 */
-                        var $savebtn = view.$pwfooter.find(".save");
-                        $savebtn.on("click", function() {
-                            var $selectedobj = $(view.$pw.$selectedobj);
-                            var $bodylist = view.$pwcontent.find(".pw-body-content-list tr");
+                    /* 保存按钮 */
+                    saveBtnEvent: function() {
+                        view.$pw.savebtn.on("click", function() {
+                            var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
+                            var $bodylist = view.$pw.find(".pw-body-content-list tr");
                             var $cropwrap = $selectedobj.parents(".cb-cropwrap");
                             $bodylist.each(function() {
                                 var $this = $(this);
@@ -419,13 +424,14 @@
                                     $cropwrap.attr("hidedate", hidedate);
                                 }
                                 commons.layer.msg("保存成功");
-                                commons.propertiesWindow.hide();
+                                $.cbuilder.propertiesWindow.hide();
                             });
                         });
-                        /* 删除 */
-                        var $btndel = view.$pwfooter.find(".delete");
-                        $btndel.on("click", function() {
-                            var $selectedobj = $(view.$pw.$selectedobj);
+                    },
+                    /* 删除按钮 */
+                    deleteBtnEvent: function() {
+                        view.$pw.deletebtn.on("click", function() {
+                            var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                             var tip = "确定删除&lt;" + $selectedobj.prop("tagName") + "&gt;?";
                             layer.confirm(tip, {
                                 icon: 3
@@ -450,52 +456,18 @@
                                     }
                                 }
                                 $deleteobj.detach();
-                                commons.propertiesWindow.hide();
+                                $.cbuilder.propertiesWindow.hide();
                                 layer.close(index);
                             });
                         });
                     },
-                    /* 收放按钮 */
-                    opennerEvent: function() {
-                        view.$pw.find(".cb-pw-openner").on("click", function() {
-                            if (view.$pw.css("right") !== "0px") {
-                                commons.propertiesWindow.show();
-                            } else {
-                                commons.propertiesWindow.hide("-345px");
-                            }
-                        });
-                    },
-                    pillsEvent: function() {
-                        view.$pw.find("ul").delegate("li", "click", function(event, objindex) {
-                            var $this = $(this);
-                            var stractive = "cb-active";
-                            var index = objindex || $this.index();
-                            /* 找当前li的 父 panel */
-                            var $panel = $this.parents(".pw-panel");
-                            var showselector = "";
-                            if ($panel.hasClass("pw-main")) {
-                                showselector = ".pw-main";
-                                view.setPanel(showselector);
-                            }
-                            /* 事件:编辑页显示中 */
-                            $.cbuilder.$pw.trigger("propertiesWindow:editShowing", view.$pw.$selectedobj);
-                            $this.parent().find("li").removeClass(stractive).eq(index).addClass(stractive);
-                            view.$pw.selectedindex = index;
-                            view.$pw.find(showselector).show();
-                            commons.propertiesWindow.show();
-                        });
-                        view.btnsEvent();
-                    },
-                    customEvent: function() {
-                        /* 事件:显示 */
-                        view.$pw.on("propertiesWindow:show", function(event) {
+                    /* 自定义 propertiesWindow:Showing 事件 */
+                    showingEvent: function() {
+                        view.$pw.on("propertiesWindow:Showing", function(event) {
                             commons.clean();
-                            view.$pwallpanel.hide();
-                            var $selectedobj = $(view.$pw.$selectedobj);
-                            view.$pw.find(".pw-main .pw-header").text("<" + $selectedobj.prop("tagName") + ">");
-                            view.$pw.find(".pw-main .cb-pills li:first").trigger("click", 0 || view.$pw.selectedindex);
-                            view.$height.val(view.$pw.$selectedobj.css("height").replace(/px/, ""));
-                            view.$width.val(view.$pw.$selectedobj.css("width").replace(/px/, ""));
+                            var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
+                            view.$height.val($selectedobj.css("height").replace(/px/, ""));
+                            view.$width.val($selectedobj.css("width").replace(/px/, ""));
                             var $cropwrap = $selectedobj.parents(".cb-cropwrap");
                             /* 默认值 */
                             var defaults = {
@@ -529,9 +501,8 @@
                             }
                         };
                     },
-                    blockInit: function() {},
                     bindEvents: function() {
-                        commons.objectCallFunction(view, "customEvent", "opennerEvent", "pillsEvent");
+                        commons.objectCallFunction(view, "showingEvent", "saveBtnEvent", "deleteBtnEvent");
                     },
                     init: function() {
                         var vendors = [ /* 日期 */
@@ -540,10 +511,10 @@
                         commons.loadFile(vendors);
                     },
                     struc: function() {
-                        commons.objectCallFunction(view, "init", "domCache", "publicFunction", "bindEvents", "blockInit");
+                        commons.objectCallFunction(view, "init", "domCache", "bindEvents");
                     }
                 };
-                $.cbuilder.propertiesWindow.pwpicture = view;
+                view.struc();
             })();
         },
         struc: function() {

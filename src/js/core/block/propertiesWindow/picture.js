@@ -3,17 +3,17 @@
     var view = {
         /* dom缓存 */
         domCache: function () {
-            view.$pwallpanel = view.$pw.find('.pw-panel');
             var str1 = 'cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate';
+            view.$pw = $('#pwpicture');
+            view.$pw.savebtn = view.$pw.find('.pw-body-footer .save');
+            view.$pw.deletebtn = view.$pw.find('.pw-body-footer .delete');
             commons.setObjVariable(view, str1, 'cb-main-');
         },
-        btnsEvent: function () {
-            view.setPanel('.pw-main');
-            /* 保存 */
-            var $savebtn = view.$pwfooter.find('.save');
-            $savebtn.on('click', function () {
-                var $selectedobj = $(view.$pw.$selectedobj);
-                var $bodylist = view.$pwcontent.find('.pw-body-content-list tr');
+        /* 保存按钮 */
+        saveBtnEvent: function() {
+            view.$pw.savebtn.on('click', function () {
+                var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
+                var $bodylist = view.$pw.find('.pw-body-content-list tr');
                 var $cropwrap = $selectedobj.parents('.cb-cropwrap');
                 $bodylist.each(function () {
                     var $this = $(this);
@@ -36,13 +36,14 @@
                         $cropwrap.attr('hidedate', hidedate);
                     }
                     commons.layer.msg('保存成功');
-                    commons.propertiesWindow.hide();
+                    $.cbuilder.propertiesWindow.hide();
                 });
             });
-            /* 删除 */
-            var $btndel = view.$pwfooter.find('.delete');
-            $btndel.on('click', function () {
-                var $selectedobj = $(view.$pw.$selectedobj);
+        },
+        /* 删除按钮 */
+        deleteBtnEvent: function () {
+            view.$pw.deletebtn.on('click', function () {
+                var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                 var tip = '确定删除&lt;' + $selectedobj.prop('tagName') + '&gt;?';
                 layer.confirm(tip, { icon: 3 }, function (index) {
                     var $deleteobj = '';
@@ -65,58 +66,23 @@
                         }
                     }
                     $deleteobj.detach();
-                    commons.propertiesWindow.hide();
+                    $.cbuilder.propertiesWindow.hide();
                     layer.close(index);
                 });
             });
-
         },
-        /* 收放按钮 */
-        opennerEvent: function () {
-            view.$pw.find('.cb-pw-openner').on('click', function () {
-                if (view.$pw.css('right') !== '0px') {
-                    commons.propertiesWindow.show();
-                } else {
-                    commons.propertiesWindow.hide('-345px');
-                }
-            });
-        },
-        pillsEvent: function () {
-            view.$pw.find('ul').delegate('li', 'click', function (event, objindex) {
-                var $this = $(this);
-                var stractive = 'cb-active';
-                var index = objindex || $this.index();
-                /* 找当前li的 父 panel */
-                var $panel = $this.parents('.pw-panel');
-                var showselector = '';
-                if ($panel.hasClass('pw-main')) {
-                    showselector = '.pw-main';
-                    view.setPanel(showselector);
-                }
-                /* 事件:编辑页显示中 */
-                $.cbuilder.$pw.trigger('propertiesWindow:editShowing', view.$pw.$selectedobj);
-                $this.parent().find('li').removeClass(stractive).eq(index).addClass(stractive);
-                view.$pw.selectedindex = index;
-                view.$pw.find(showselector).show();
-                commons.propertiesWindow.show();
-            });
-            view.btnsEvent();
-        },
-        customEvent: function () {
-            /* 事件:显示 */
-            view.$pw.on("propertiesWindow:show", function (event) {
+        /* 自定义 propertiesWindow:Showing 事件 */
+        showingEvent: function () {
+            view.$pw.on("propertiesWindow:Showing", function (event) {
                 commons.clean();
-                view.$pwallpanel.hide();
-                var $selectedobj = $(view.$pw.$selectedobj);
-                view.$pw.find('.pw-main .pw-header').text('<' + $selectedobj.prop('tagName') + '>');
-                view.$pw.find('.pw-main .cb-pills li:first').trigger('click', 0 || view.$pw.selectedindex);
-                view.$height.val(view.$pw.$selectedobj.css('height').replace(/px/, ''));
-                view.$width.val(view.$pw.$selectedobj.css('width').replace(/px/, ''));
+                var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
+                view.$height.val($selectedobj.css('height').replace(/px/, ''));
+                view.$width.val($selectedobj.css('width').replace(/px/, ''));
                 var $cropwrap = $selectedobj.parents('.cb-cropwrap');
                 /* 默认值 */
                 var defaults = {
                     showdate: '',
-                    hidedate: '',
+                    hidedate: ''
                 }
                 /* 设定 */
                 view.$showdate.val($cropwrap.attr('showdate') || defaults.showdate);
@@ -145,11 +111,8 @@
                 }
             }
         },
-        blockInit: function () {
-
-        },
         bindEvents: function () {
-            commons.objectCallFunction(view, 'customEvent', 'opennerEvent', 'pillsEvent');
+            commons.objectCallFunction(view, 'showingEvent', 'saveBtnEvent', 'deleteBtnEvent');
         },
         init: function () {
             var vendors = [
@@ -162,8 +125,8 @@
             commons.loadFile(vendors);
         },
         struc: function () {
-            commons.objectCallFunction(view, 'init', 'domCache', 'publicFunction', 'bindEvents', 'blockInit');
+            commons.objectCallFunction(view, 'init', 'domCache', 'bindEvents');
         }
     };
-    $.cbuilder.propertiesWindow.pwpicture = view;
+    view.struc();
 })();

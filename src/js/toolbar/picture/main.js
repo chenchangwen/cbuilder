@@ -13,7 +13,7 @@
                 onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
                         /* 图片双击事件 */
-                        $('.cb-content').undelegate('dblclick').delegate('.imgpos,img', 'dblclick', function (e) {
+                        $('.cb-content').delegate('.imgpos,img', 'dblclick', function (e) {
                             var $this = $(this);
                             var tagName = $this.prop('tagName');
                             $.cbuilder.propertiesWindow.$selectedobj = $this;
@@ -23,7 +23,7 @@
                             /* 移除全选范围(避免chrome双击会全选) */
                             window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
                             if (tagName === 'IMG') {
-                                $.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:show');
+                                $.cbuilder.propertiesWindow.show('pwpicture');
                             } else {
                                 view.loadJcrop($(this).parent().find('img'), 'edit');
                                 $.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
@@ -101,7 +101,7 @@
                         }, function () {
                             jcrop_api = this;
                             if (type === 'edit') {
-                                var $obj = $.cbuilder.$pw.$selectedobj;
+                                var $obj = $.cbuilder.propertiesWindow.$selectedobj;
                                 var left = $obj.position().left;
                                 var top = $obj.position().top;
                                 var w = $obj.width() + 6;

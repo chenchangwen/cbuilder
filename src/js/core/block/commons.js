@@ -5,7 +5,7 @@
             if (vendor.indexOf('css') >= 0) {
                 var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                 $("head").append(cssLink);
-            } else {
+            } else { 
                 $.ajax({
                     async: false,
                     url: vendor
@@ -45,8 +45,8 @@
             delete jcrop_api;
         }
         /* 如果是激活的imgpos 则删除,因为此时保存 肯定会新建新的imgpos */
-        if ($.cbuilder.$pw.$selectedobj.hasClass('imgpos-active')) {
-            $.cbuilder.$pw.$selectedobj.remove();
+        if ($.cbuilder.propertiesWindow.$selectedobj.hasClass('imgpos-active')) {
+            $.cbuilder.propertiesWindow.$selectedobj.remove();
         }
         /* 删除jcrop 生成的属性 */
         $.cbuilder.active.$element.find('img').css('visibility', '');
@@ -78,20 +78,6 @@
                 time: 2000,
                 offset: '200px'
             });
-        }
-    },
-    propertiesWindow: {
-        show: function () {
-            var $pw = $('body').find('.cb-propertiesWindow');
-            $pw.css({ right: '0px' });
-        },
-        hide: function (pixel) {
-            var $pw = $('body').find('.cb-propertiesWindow');
-            if (pixel !== undefined) {
-                $pw.css({ right: pixel });
-            } else {
-                $pw.css({ right: '-385px' });
-            }
         }
     }
 }

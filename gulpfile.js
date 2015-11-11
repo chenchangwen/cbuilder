@@ -44,7 +44,7 @@ gulp.task("default", function() {
 
 
 gulp.task("watch", function () {
-    gulp.watch([path.dev.tplhtml], ["template"]).on("change", function (event) {
+    gulp.watch([path.dev.tplhtml], ["js"]).on("change", function (event) {
         console.log("tpl文件变更: " + event.path + " was " + event.type);
     });
 
@@ -97,7 +97,7 @@ gulp.task("js_parser", function () {
 });
 
 /* js */
-gulp.task("js", ['template'], function () {
+gulp.task("js",["template"], function () {
     gulp.src(path.dev.js_plugin)
         .pipe(plumber())
         .pipe(fileinclude({
