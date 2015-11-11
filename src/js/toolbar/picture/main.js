@@ -13,7 +13,7 @@
                 onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
                         /* 图片双击事件 */
-                        $('.cb-content').delegate('.imgpos,img', 'dblclick', function (e) {
+                        $('.cb-content').undelegate('dblclick').delegate('.imgpos,img', 'dblclick', function (e) {
                             var $this = $(this);
                             var tagName = $this.prop('tagName');
                             $.cbuilder.propertiesWindow.$selectedobj = $this;

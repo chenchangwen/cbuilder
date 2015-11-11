@@ -55,12 +55,15 @@
                             view.$fontsize.find("option[value=" + fontsize.replace(/px/, '') + "]").prop("selected", "selected");
                             view.$fontdemo.css("font-size", fontsize);
                         }
+                        view.$fontsize.trigger('change');
+
 
                         defaults = {
                             color: '#000',
                             startdate: '',
                             enddate: '',
-                            isdayunit: 'true'
+                            isdayunit: 'true',
+                            format:'cn'
                         }
 
                         /* 开始,结束 时间 */
@@ -100,16 +103,22 @@
                             }
                         });
 
+
                         /* 是否天为单位 */
+                        var isday = false;
                         if (typeof $obj.attr("isdayunit") === "undefined") {
-                            view.$isdayunit.prop('checked', 'true');
+                            isday = true;
                         }
                         else if ($obj.attr('isdayunit') === 'true') {
-                            view.$isdayunit.prop('checked', 'true');
+                            isday = true;
                         } else {
-                            view.$isdayunit.prop('checked', '');
+                            isday = '';
                         }
+                        view.$isdayunit.prop('checked', isday);
+                        view.$isdayunit.trigger('change');
 
+                        /* 时间格式 */
+                        view.$format.val($obj.attr('format') || defaults.format);
                         break;
                 }
                 /* 匹配当前id的controls 并显示panel*/
@@ -221,6 +230,7 @@
                         tagname = 'div';
                         view.startdate = view.$startdate.val();
                         view.enddate = view.$enddate.val();
+                        view.format = view.$format.val();
                         view.isdayunit = view.$isdayunit.prop('checked');
                         if (view.startdate === '') {
                             commons.layer.msg('保存失败:请选择开始时间');
@@ -242,6 +252,8 @@
                             $imgpos.attr('enddate', view.enddate);
                             /* 是否天为单位 */
                             $imgpos.attr('isdayunit', view.isdayunit);
+                            /* 时间格式 */
+                            $imgpos.attr('format', view.format);
                         }
                 }
                 /* 全部正确保存类型 */
@@ -299,12 +311,39 @@
                 view.$fontdemo.css('font-size', $(this).val() + 'px');
                 view.$fontdemo.css('line-height', $(this).val() + 'px');
             });
+
+            /* 字体格式 */
+            var demoFontFormat = function () {
+                var isdayunit = view.$isdayunit.prop('checked');
+                var formatval = view.$format.val();
+                var text = '25HH01mm01ss';
+                if (formatval === 'cn') {
+                    text = text.replace(/HH/g, '时').replace(/mm/g, '分').replace(/ss/g, '秒');
+                }
+                else if (formatval === 'HH:mm:ss') {
+                    text = text.replace(/HH/g, ':').replace(/mm/g, ':').replace(/ss/g, '');
+                }
+                if (isdayunit) {
+                    text = text.replace(/25HH/g, '1天01时').replace(/25时/g, '1天01时').replace(/25:/g, '1天 01:');
+                }
+                view.$fontdemo.text(text);
+            }
+
+            /* 是否天为单位 */
+            view.$isdayunit.change(function () {
+                demoFontFormat();
+            });
+
+            /* 时间格式 */
+            view.$format.change(function () {
+                demoFontFormat();
+            });
         },
         _bindEvents: function () {
             commons.objectCallFunction(view, '_cropPosInputEvent', '_saveBtnEvent', '_deleteBtnEvent', '_typeEvent', '_countDownEvent');
         },
         _domCache: function () {
-            var vmain = 'cb-area-type,cb-area-url,.cb-area-croppos,' +
+            var vmain = 'cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos,' +
                 'cb-area-width,cb-area-height,cb-area-marginleft,' +
                 'cb-area-margintop,cb-area-anchor,pw-area';
             var vbtn = ',cb-area-save,cb-area-delete';

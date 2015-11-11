@@ -302,6 +302,14 @@
   text-decoration: none;
   cursor: pointer;
 }
+.cb-propertiesWindow .cb-temp {
+  position: absolute;
+}
+.cb-propertiesWindow .cb-area-fontdemo {
+  left: -400px;
+  border: 2px solid blue;
+  padding: 20px;
+}
 .cb-itemtools {
   display: none;
   position: absolute;
@@ -696,6 +704,14 @@ legend {
 .cb-propertiesWindow .cb-pills a {
   text-decoration: none;
   cursor: pointer;
+}
+.cb-propertiesWindow .cb-temp {
+  position: absolute;
+}
+.cb-propertiesWindow .cb-area-fontdemo {
+  left: -400px;
+  border: 2px solid blue;
+  padding: 20px;
 }
 .cb-toolbar {
   border-bottom: 1px solid #88b9e3;

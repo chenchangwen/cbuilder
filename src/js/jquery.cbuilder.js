@@ -344,7 +344,7 @@
         propertiesWindow: function() {
             /* htmlģ�� */
             var templates = {
-                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="input" colspan="2"><div id="cb-area-fontdemo">8&#x5929;08&#x65F6;08&#x5206;08&#x79D2;</div></td></tr><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-enddate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><div id="cb-area-fontdemo" class="cb-temp cb-area-fontdemo">08&#x65F6;08&#x5206;08&#x79D2;</div><table class="pw-body-content-list"><tbody><!--<tr>--><!--<td class="input" colspan="2">--><!--<div id="cb-area-fontdemo">--><!--08时08分08秒--><!--</div>--><!--</td>--><!--</tr>--><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-enddate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr><tr><td class="text">&#x65F6;&#x95F4;&#x683C;&#x5F0F;:</td><td class="input"><select id="cb-area-format"><option value="cn">&#x65F6;:&#x5206;:&#x79D2;</option><option value="HH:mm:ss">HH:mm:ss</option></select></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -354,6 +354,7 @@
                 if (right !== "0px" || right === "-345px") {
                     $.cbuilder.propertiesWindow.show();
                 } else {
+                    $.cbuilder.propertiesWindow.$temp.hide();
                     $.cbuilder.propertiesWindow.$self.css({
                         right: "-345px"
                     });
@@ -364,6 +365,7 @@
                 $self: $("body").find(".cb-propertiesWindow"),
                 $panel: $("body").find(".cb-propertiesWindow").find(".pw-panel"),
                 $titlepanel: $("#cb-title-panel"),
+                $temp: $("body").find(".cb-temp"),
                 /* ��ѡ���Ķ��� */
                 $selectedobj: "",
                 /* ��ǰ���Դ��� */
@@ -372,6 +374,7 @@
                 show: function(options) {
                     /* ������� */
                     $.cbuilder.$itemtools.hide();
+                    this.$temp.show();
                     if (options !== undefined) {
                         this.$currentpw = $("#" + options["name"]);
                         this.$self.find(".pw-panel").hide();
@@ -395,6 +398,7 @@
                     $.cbuilder.propertiesWindow.$self.css({
                         right: "-385px"
                     });
+                    this.$temp.hide();
                 }
             };
             (function() {
@@ -561,11 +565,13 @@
                                     view.$fontsize.find("option[value=" + fontsize.replace(/px/, "") + "]").prop("selected", "selected");
                                     view.$fontdemo.css("font-size", fontsize);
                                 }
+                                view.$fontsize.trigger("change");
                                 defaults = {
                                     color: "#000",
                                     startdate: "",
                                     enddate: "",
-                                    isdayunit: "true"
+                                    isdayunit: "true",
+                                    format: "cn"
                                 };
                                 /* 开始,结束 时间 */
                                 view.$startdate.val($obj.attr("startdate") || defaults.startdate);
@@ -593,13 +599,18 @@
                                     }
                                 });
                                 /* 是否天为单位 */
+                                var isday = false;
                                 if (typeof $obj.attr("isdayunit") === "undefined") {
-                                    view.$isdayunit.prop("checked", "true");
+                                    isday = true;
                                 } else if ($obj.attr("isdayunit") === "true") {
-                                    view.$isdayunit.prop("checked", "true");
+                                    isday = true;
                                 } else {
-                                    view.$isdayunit.prop("checked", "");
+                                    isday = "";
                                 }
+                                view.$isdayunit.prop("checked", isday);
+                                view.$isdayunit.trigger("change");
+                                /* 时间格式 */
+                                view.$format.val($obj.attr("format") || defaults.format);
                                 break;
                             }
                             /* 匹配当前id的controls 并显示panel*/
@@ -711,6 +722,7 @@
                                 tagname = "div";
                                 view.startdate = view.$startdate.val();
                                 view.enddate = view.$enddate.val();
+                                view.format = view.$format.val();
                                 view.isdayunit = view.$isdayunit.prop("checked");
                                 if (view.startdate === "") {
                                     commons.layer.msg("保存失败:请选择开始时间");
@@ -730,6 +742,8 @@
                                     $imgpos.attr("enddate", view.enddate);
                                     /* 是否天为单位 */
                                     $imgpos.attr("isdayunit", view.isdayunit);
+                                    /* 时间格式 */
+                                    $imgpos.attr("format", view.format);
                                 };
                             }
                             /* 全部正确保存类型 */
@@ -788,12 +802,35 @@
                             view.$fontdemo.css("font-size", $(this).val() + "px");
                             view.$fontdemo.css("line-height", $(this).val() + "px");
                         });
+                        /* 字体格式 */
+                        var demoFontFormat = function() {
+                            var isdayunit = view.$isdayunit.prop("checked");
+                            var formatval = view.$format.val();
+                            var text = "25HH01mm01ss";
+                            if (formatval === "cn") {
+                                text = text.replace(/HH/g, "时").replace(/mm/g, "分").replace(/ss/g, "秒");
+                            } else if (formatval === "HH:mm:ss") {
+                                text = text.replace(/HH/g, ":").replace(/mm/g, ":").replace(/ss/g, "");
+                            }
+                            if (isdayunit) {
+                                text = text.replace(/25HH/g, "1天01时").replace(/25时/g, "1天01时").replace(/25:/g, "1天 01:");
+                            }
+                            view.$fontdemo.text(text);
+                        };
+                        /* 是否天为单位 */
+                        view.$isdayunit.change(function() {
+                            demoFontFormat();
+                        });
+                        /* 时间格式 */
+                        view.$format.change(function() {
+                            demoFontFormat();
+                        });
                     },
                     _bindEvents: function() {
                         commons.objectCallFunction(view, "_cropPosInputEvent", "_saveBtnEvent", "_deleteBtnEvent", "_typeEvent", "_countDownEvent");
                     },
                     _domCache: function() {
-                        var vmain = "cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor,pw-area";
+                        var vmain = "cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor,pw-area";
                         var vbtn = ",cb-area-save,cb-area-delete";
                         var vtypecountdown = ",cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate,cb-area-isdayunit";
                         vmain += vbtn + vtypecountdown;

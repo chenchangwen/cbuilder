@@ -102,11 +102,11 @@ var cbuilder = {};
             function countDown() {
                 var timenow = $this.data('time') * 1000;
                 var tip = '';
-                var startdate = $this.data('startdate');
-                var enddate = $this.data('enddate');
-                var isdayunit = $this.data('isdayunit');
-                var timeDistance = 0;
+                var startdate = $this.startdate;
+                var enddate = $this.enddate;
+                var isdayunit = $this.isdayunit;
 
+                var timeDistance = 0;
                 if (startdate > timenow && timenow < enddate || startdate > timenow && enddate == undefined) {
                     tip = '距离开始时间还有:';
                     timeDistance = startdate - timenow;
@@ -140,15 +140,26 @@ var cbuilder = {};
                         second = "0" + second;
                     //转换后:最大小时
                     maxhour = parseInt(hour) + (day * 24);
-                    //如果剩余天数大于1,并且开启天数转换
-                    if (day > 0 && isdayunit === "true" && maxhour >= 24) {
-                        $hour.html(day + "天" + hour + '时');
-                    } else {
-                        $hour.html(maxhour+'时');
+                    /* 如果剩余天数大于1,并且开启天数转换 */
+                    if ($this.format === 'cn') {
+                        if (day > 0 && isdayunit === "true" && maxhour >= 24) {
+                            $hour.html(day + "天" + hour + '时');
+                        } else {
+                            $hour.html(maxhour + '时');
+                        }
+                        $tip.html(tip);
+                        $minute.html(minute + '分');
+                        $second.html(second + '秒');
+                    } else if ($this.format === 'HH:mm:ss') {
+                        if (day > 0 && isdayunit === "true" && maxhour >= 24) {
+                            $hour.html(day + "天" + hour + ':');
+                        } else {
+                            $hour.html(maxhour + ':');
+                        }
+                        $tip.html(tip);
+                        $minute.html(minute + ':');
+                        $second.html(second);
                     }
-                    $tip.html(tip);
-                    $minute.html(minute+'分');
-                    $second.html(second+'秒');
                     var time = $this.data('time') + 1;
                     $this.data('time', time);
                     /* 多实例 所以必须 以此命名 */
@@ -169,16 +180,20 @@ var cbuilder = {};
             var startdate = $this.attr("startdate");
             /* 结束时间 */
             var enddate = $this.attr("enddate");
-            /* 是否天为单位 */
-            var isdayunit = $this.attr("isdayunit");
             if (startdate != undefined) {
                 startdate = new Date(commons.stringToDate(startdate));
             }
             if (enddate != undefined) {
                 enddate = new Date(commons.stringToDate(enddate));
             }
-            $this.data('startdate', startdate).data('enddate', enddate).data('isdayunit', isdayunit);
-            $this.removeAttr('startdate').removeAttr('enddate').removeAttr('isdayunit');
+            /* 时间格式 */
+            $this.format = $this.attr("format") || 'cn';
+            $this.startdate = startdate;
+            $this.enddate = enddate;
+            /* 是否天为单位 */
+            $this.isdayunit = $this.attr("isdayunit");
+            /* 移除属性 */
+            $this.removeAttr('startdate').removeAttr('enddate').removeAttr('isdayunit').removeAttr('format');
         },
         /* 添加html */
         appendHtml: function() {
