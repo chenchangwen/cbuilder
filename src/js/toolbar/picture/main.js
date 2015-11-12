@@ -5,8 +5,8 @@
             var view = { 
                 init: function() {
                     var vendors = [
-                        '../../vendor/jcrop/js/jquery.Jcrop.min.js',
-                        '../../vendor/jcrop/css/jquery.Jcrop.min.css'
+                        'vendor/jcrop/js/jquery.Jcrop.min.js',
+                        'vendor/jcrop/css/jquery.Jcrop.min.css'
                     ];
                     commons.loadFile(vendors);
                 },
