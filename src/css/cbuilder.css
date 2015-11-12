@@ -304,11 +304,14 @@
 }
 .cb-propertiesWindow .cb-temp {
   position: absolute;
+  border: 2px solid #1FA5EE;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  padding: 20px;
 }
 .cb-propertiesWindow .cb-area-fontdemo {
   left: -400px;
-  border: 2px solid blue;
-  padding: 20px;
 }
 .cb-itemtools {
   display: none;
@@ -707,11 +710,14 @@ legend {
 }
 .cb-propertiesWindow .cb-temp {
   position: absolute;
+  border: 2px solid #1FA5EE;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  padding: 20px;
 }
 .cb-propertiesWindow .cb-area-fontdemo {
   left: -400px;
-  border: 2px solid blue;
-  padding: 20px;
 }
 .cb-toolbar {
   border-bottom: 1px solid #88b9e3;
