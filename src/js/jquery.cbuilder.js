@@ -27,14 +27,15 @@
         var currentScript = scripts[scripts.length - 1].src;
         var currentScriptChunks = currentScript.split("/");
         var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
-        return currentScript.replace(currentScriptFile, "");
+        var path = currentScript.replace(currentScriptFile, "");
+        path = path.replace(/cbuilder\/src\/js\//, "cbuilder/");
+        return path;
     }
-    var rootPath = currentScriptPath().replace(/src\/js/, "");
     var clsContainer = ".cb-container", clsToolbar = ".cb-toolbar", clsBody = ".cb-body", clsContent = ".cb-content", clsWrap = ".cb-item", stroriginhtml = "originhtml", strcbuilder = "cbuilder", basePath = currentScriptPath();
     var commons = {
         loadFile: function(srcarray) {
             for (var i = 0; i < srcarray.length; i++) {
-                var vendor = rootPath + srcarray[i];
+                var vendor = basePath.replace(/\/src\/js/gi, "") + srcarray[i];
                 if (vendor.indexOf("css") >= 0) {
                     var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                     $("head").append(cssLink);
@@ -183,7 +184,7 @@
                     var len = that.options.toolbar.length;
                     for (var i = 0; i < len; i++) {
                         var name = that.options.toolbar[i];
-                        var src = "src/js/toolbar/" + name + "/" + "main" + ".js";
+                        var src = basePath.replace(/src\/js/gi, "") + "/src/js/toolbar/" + name + "/" + "main" + ".js";
                         $.ajax({
                             async: false,
                             type: "get",

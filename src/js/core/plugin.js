@@ -29,10 +29,11 @@
         var currentScript = scripts[scripts.length - 1].src;
         var currentScriptChunks = currentScript.split('/');
         var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
-        return currentScript.replace(currentScriptFile, '');
+        var path = currentScript.replace(currentScriptFile, "");
+        path = path.replace(/cbuilder\/src\/js\//, 'cbuilder/');
+        return path;
     }
 
-    var rootPath = currentScriptPath().replace(/src\/js/, '');
     var clsContainer = ".cb-container",
         clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
@@ -128,7 +129,7 @@
                     var len = that.options.toolbar.length;
                     for (var i = 0; i < len; i++) {
                         var name = that.options.toolbar[i];
-                        var src = 'src/js/toolbar/' + name + '/' + 'main' + '.js';
+                        var src = basePath.replace(/src\/js/ig, '') + '/src/js/toolbar/' + name + '/' + 'main' + '.js';
                         $.ajax({
                             async: false,
                             type: "get",

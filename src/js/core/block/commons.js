@@ -1,7 +1,7 @@
 ﻿var commons= {
     loadFile: function(srcarray) {
         for (var i = 0; i < srcarray.length; i++) {
-            var vendor = rootPath + srcarray[i];
+            var vendor = basePath.replace(/\/src\/js/ig, '') + srcarray[i];
             if (vendor.indexOf('css') >= 0) {
                 var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                 $("head").append(cssLink);
