@@ -95,10 +95,10 @@
         _init: function () {
             var vendors = [
                 /* 日期 */
-                '../../../../lib/My97DatePicker/WdatePicker.js',
+                'lib/My97DatePicker/WdatePicker.js',
                 /* 颜色 */
-                '../../../../vendor/spectrum/spectrum.js',
-                '../../../../vendor/spectrum/spectrum.css'
+                'vendor/spectrum/spectrum.js',
+                'vendor/spectrum/spectrum.css'
             ];
             commons.loadFile(vendors);
         },

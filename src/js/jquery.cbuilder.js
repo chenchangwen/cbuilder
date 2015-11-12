@@ -29,11 +29,12 @@
         var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
         return currentScript.replace(currentScriptFile, "");
     }
+    var rootPath = currentScriptPath().replace(/src\/js/, "");
     var clsContainer = ".cb-container", clsToolbar = ".cb-toolbar", clsBody = ".cb-body", clsContent = ".cb-content", clsWrap = ".cb-item", stroriginhtml = "originhtml", strcbuilder = "cbuilder", basePath = currentScriptPath();
     var commons = {
         loadFile: function(srcarray) {
             for (var i = 0; i < srcarray.length; i++) {
-                var vendor = srcarray[i];
+                var vendor = rootPath + srcarray[i];
                 if (vendor.indexOf("css") >= 0) {
                     var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                     $("head").append(cssLink);
@@ -172,9 +173,9 @@
                 /* 加载vendors */
                 loadVendors: function() {
                     var vendors = [ /* 弹出层 */
-                    "../../vendor/layer/layer.js", "../../vendor/layer/skin/layer.css", /* 拖拽 */
-                    "../../vendor/dragula.js/dist/dragula.min.js", "../../vendor/dragula.js/dist/dragula.min.css", /* 菜单 */
-                    "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css" ];
+                    "vendor/layer/layer.js", "vendor/layer/skin/layer.css", /* 拖拽 */
+                    "vendor/dragula.js/dist/dragula.min.js", "vendor/dragula.js/dist/dragula.min.css", /* 菜单 */
+                    "vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "vendor/jQuery-contextMenu/src/jquery.contextMenu.css" ];
                     commons.loadFile(vendors);
                 },
                 /* 加载toolbar */
@@ -499,8 +500,8 @@
                     },
                     _init: function() {
                         var vendors = [ /* 日期 */
-                        "../../../../lib/My97DatePicker/WdatePicker.js", /* 颜色 */
-                        "../../../../vendor/spectrum/spectrum.js", "../../../../vendor/spectrum/spectrum.css" ];
+                        "lib/My97DatePicker/WdatePicker.js", /* 颜色 */
+                        "vendor/spectrum/spectrum.js", "vendor/spectrum/spectrum.css" ];
                         commons.loadFile(vendors);
                     },
                     _struc: function() {

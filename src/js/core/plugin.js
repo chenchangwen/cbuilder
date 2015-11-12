@@ -25,13 +25,14 @@
     };
 
     function currentScriptPath() {
-        var scripts = document.querySelectorAll('script[src]');
+         var scripts = document.querySelectorAll('script[src]');
         var currentScript = scripts[scripts.length - 1].src;
         var currentScriptChunks = currentScript.split('/');
         var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
         return currentScript.replace(currentScriptFile, '');
     }
 
+    var rootPath = currentScriptPath().replace(/src\/js/, '');
     var clsContainer = ".cb-container",
         clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
@@ -109,16 +110,16 @@
                 loadVendors: function () {
                     var vendors = [
                         /* 弹出层 */
-                        '../../vendor/layer/layer.js',
-                        '../../vendor/layer/skin/layer.css',
+                        'vendor/layer/layer.js',
+                        'vendor/layer/skin/layer.css',
 
                         /* 拖拽 */
-                        '../../vendor/dragula.js/dist/dragula.min.js',
-                        '../../vendor/dragula.js/dist/dragula.min.css',
+                        'vendor/dragula.js/dist/dragula.min.js',
+                        'vendor/dragula.js/dist/dragula.min.css',
 
                         /* 菜单 */
-                        '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.js',
-                        '../../vendor/jQuery-contextMenu/src/jquery.contextMenu.css'
+                        'vendor/jQuery-contextMenu/src/jquery.contextMenu.js',
+                        'vendor/jQuery-contextMenu/src/jquery.contextMenu.css'
                     ];
                     commons.loadFile(vendors);
                 },
