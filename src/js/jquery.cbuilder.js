@@ -22,20 +22,23 @@
             body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
         }
     };
-    function currentScriptPath() {
+    var clsContainer = ".cb-container", clsToolbar = ".cb-toolbar", clsBody = ".cb-body", clsContent = ".cb-content", clsWrap = ".cb-item", stroriginhtml = "originhtml", strcbuilder = "cbuilder", jsPath, rootPath;
+    (function() {
         var scripts = document.querySelectorAll("script[src]");
         var currentScript = scripts[scripts.length - 1].src;
         var currentScriptChunks = currentScript.split("/");
         var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
-        var path = currentScript.replace(currentScriptFile, "");
-        path = path.replace(/cbuilder\/src\/js\//, "cbuilder/");
-        return path;
-    }
-    var clsContainer = ".cb-container", clsToolbar = ".cb-toolbar", clsBody = ".cb-body", clsContent = ".cb-content", clsWrap = ".cb-item", stroriginhtml = "originhtml", strcbuilder = "cbuilder", basePath = currentScriptPath();
+        jsPath = currentScript.replace(currentScriptFile, "");
+        rootPath = jsPath.replace(/cbuilder\/src\/js\//, "cbuilder/");
+        if (jsPath.indexOf("src/js")) {
+            rootPath = jsPath.replace(/\/src\/js/, "");
+        }
+    })();
     var commons = {
+        /* 加载文件 */
         loadFile: function(srcarray) {
             for (var i = 0; i < srcarray.length; i++) {
-                var vendor = basePath.replace(/\/src\/js/gi, "") + srcarray[i];
+                var vendor = $.cbuilder.path.root + srcarray[i];
                 if (vendor.indexOf("css") >= 0) {
                     var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                     $("head").append(cssLink);
@@ -102,9 +105,58 @@
                 }
             }
         },
+        /* 正则 */
         regex: {
             url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
         },
+        /* 格式化 */
+        formatDate: function(date, format) {
+            if (!date) return;
+            if (!format) format = "yyyy-MM-dd";
+            switch (typeof date) {
+              case "string":
+                date = new Date(date.replace(/-/, "/"));
+                break;
+
+              case "number":
+                date = new Date(date);
+                break;
+            }
+            if (!date instanceof Date) return;
+            var dict = {
+                yyyy: date.getFullYear(),
+                M: date.getMonth() + 1,
+                d: date.getDate(),
+                H: date.getHours(),
+                m: date.getMinutes(),
+                s: date.getSeconds(),
+                MM: ("" + (date.getMonth() + 101)).substr(1),
+                dd: ("" + (date.getDate() + 100)).substr(1),
+                HH: ("" + (date.getHours() + 100)).substr(1),
+                mm: ("" + (date.getMinutes() + 100)).substr(1),
+                ss: ("" + (date.getSeconds() + 100)).substr(1)
+            };
+            return format.replace(/(yyyy|MM?|dd?|HH?|ss?|mm?)/g, function() {
+                return dict[arguments[0]];
+            });
+        },
+        dateTimePicker: {
+            /* 减一天 */
+            reduceOneDay: function(value) {
+                var d = new Date(value);
+                var t = d.getTime() - 1e3 * 60 * 60 * 24;
+                var yesterday = new Date(t);
+                return yesterday;
+            },
+            format: function(value) {
+                if (value === "") {
+                    return false;
+                } else {
+                    return commons.formatDate(value, "yyyy/MM/dd");
+                }
+            }
+        },
+        /* layer */
         layer: {
             msg: function(msg) {
                 layer.msg(msg, {
@@ -120,6 +172,10 @@
         this.strucView();
     };
     $.cbuilder = {
+        path: {
+            root: rootPath,
+            js: jsPath
+        },
         append: function(html) {
             $.cbuilder.active.$element.find(clsBody).append(html);
             $.cbuilder.active._trigger("cbuilder:onWrapContent");
@@ -176,7 +232,8 @@
                     var vendors = [ /* 弹出层 */
                     "vendor/layer/layer.js", "vendor/layer/skin/layer.css", /* 拖拽 */
                     "vendor/dragula.js/dist/dragula.min.js", "vendor/dragula.js/dist/dragula.min.css", /* 菜单 */
-                    "vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "vendor/jQuery-contextMenu/src/jquery.contextMenu.css" ];
+                    "vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "vendor/jQuery-contextMenu/src/jquery.contextMenu.css", /* 日期 */
+                    "vendor/datetimepicker/jquery.datetimepicker.css", "vendor/datetimepicker/jquery.datetimepicker.js" ];
                     commons.loadFile(vendors);
                 },
                 /* 加载toolbar */
@@ -184,14 +241,14 @@
                     var len = that.options.toolbar.length;
                     for (var i = 0; i < len; i++) {
                         var name = that.options.toolbar[i];
-                        var src = basePath.replace(/src\/js/gi, "") + "/src/js/toolbar/" + name + "/" + "main" + ".js";
+                        var src = $.cbuilder.path.js + "toolbar/" + name + "/" + "main" + ".js";
                         $.ajax({
                             async: false,
                             type: "get",
                             url: src,
                             success: function() {
                                 /* 执行动态函数,并获取module对象 */
-                                var module = init(that.$element, basePath, commons);
+                                var module = init(that.$element, $.cbuilder.path.root, commons);
                                 if (module.isToolbar === false) {
                                     module.onLoaded();
                                     return false;
@@ -213,7 +270,7 @@
                                                 shadeClose: true,
                                                 shade: .3,
                                                 area: [ width, height ],
-                                                content: basePath + "toolbar/" + module.toolbar.name + "/main.html"
+                                                content: $.cbuilder.path.js + "toolbar/" + module.toolbar.name + "/main.html"
                                             });
                                         }
                                         that._trigger("", module.toolbar.onClick);
@@ -346,7 +403,7 @@
         propertiesWindow: function() {
             /* htmlģ�� */
             var templates = {
-                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-main-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-main-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-main-showdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-main-hidedate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-main-hidedate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-main-showdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><div id="cb-area-fontdemo" class="cb-temp cb-area-fontdemo">08&#x65F6;08&#x5206;08&#x79D2;</div><table class="pw-body-content-list"><tbody><!--<tr>--><!--<td class="input" colspan="2">--><!--<div id="cb-area-fontdemo">--><!--08时08分08秒--><!--</div>--><!--</td>--><!--</tr>--><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate" onfocus="WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', maxDate: \'#F{$dp.$D(\\\'cb-area-enddate\\\')||\\\'2030-10-01\\\'}\' }) "></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate" onfocus=" WdatePicker({ dateFmt: \'yyyy-MM-dd HH:mm:ss\', minDate: \'#F{$dp.$D(\\\'cb-area-startdate\\\')}\', maxDate: \'2030-10-01\' }) "></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr><tr><td class="text">&#x65F6;&#x95F4;&#x683C;&#x5F0F;:</td><td class="input"><select id="cb-area-format"><option value="cn">&#x65F6;:&#x5206;:&#x79D2;</option><option value="HH:mm:ss">HH:mm:ss</option></select></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-picture-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-picture-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-picture-showdate"></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-picture-hidedate"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><div id="cb-area-fontdemo" class="cb-temp cb-area-fontdemo">08&#x65F6;08&#x5206;08&#x79D2;</div><table class="pw-body-content-list"><tbody><!--<tr>--><!--<td class="input" colspan="2">--><!--<div id="cb-area-fontdemo">--><!--08时08分08秒--><!--</div>--><!--</td>--><!--</tr>--><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate"></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate"></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr><tr><td class="text">&#x65F6;&#x95F4;&#x683C;&#x5F0F;:</td><td class="input"><select id="cb-area-format"><option value="cn">&#x65F6;:&#x5206;:&#x79D2;</option><option value="HH:mm:ss">HH:mm:ss</option></select></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -408,11 +465,11 @@
                 var view = {
                     /* dom缓存 */
                     _domCache: function() {
-                        var str1 = "cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate";
+                        var str1 = "cb-picture-height,cb-picture-width,cb-picture-showdate,cb-picture-hidedate";
                         view.$pw = $("#pwpicture");
                         view.$pw.savebtn = view.$pw.find(".pw-body-footer .save");
                         view.$pw.deletebtn = view.$pw.find(".pw-body-footer .delete");
-                        commons.setObjVariable(view, str1, "cb-main-");
+                        commons.setObjVariable(view, str1, "cb-picture-");
                     },
                     /* 保存按钮 */
                     _saveBtnEvent: function() {
@@ -435,11 +492,15 @@
                             var showdate = view.$showdate.val();
                             if (showdate !== "") {
                                 $cropwrap.attr("showdate", showdate);
+                            } else {
+                                $cropwrap.removeAttr("showdate");
                             }
                             /* 结束时间 */
                             var hidedate = view.$hidedate.val();
                             if (hidedate !== "") {
                                 $cropwrap.attr("hidedate", hidedate);
+                            } else {
+                                $cropwrap.removeAttr("hidedate");
                             }
                             commons.layer.msg("保存成功");
                             $.cbuilder.propertiesWindow.hide();
@@ -496,12 +557,40 @@
                             view.$hidedate.val($cropwrap.attr("hidedate") || defaults.hidedate);
                         });
                     },
+                    /* 日期事件 */
+                    _dateTimeEvent: function() {
+                        $(document).ready(function() {
+                            /* 图片显示时间 */
+                            view.$showdate.datetimepicker({
+                                lang: "ch",
+                                format: "Y-m-d H:i",
+                                onShow: function(ct) {
+                                    var maxdate = commons.dateTimePicker.format(view.$hidedate.val());
+                                    if (maxdate) {
+                                        maxdate = commons.dateTimePicker.reduceOneDay(maxdate);
+                                    }
+                                    this.setOptions({
+                                        maxDate: maxdate
+                                    });
+                                }
+                            });
+                            /* 图片隐藏时间 */
+                            view.$hidedate.datetimepicker({
+                                lang: "ch",
+                                format: "Y-m-d H:i",
+                                onShow: function(ct) {
+                                    this.setOptions({
+                                        minDate: commons.dateTimePicker.format(view.$showdate.val())
+                                    });
+                                }
+                            });
+                        });
+                    },
                     _bindEvents: function() {
-                        commons.objectCallFunction(view, "_showingEvent", "_saveBtnEvent", "_deleteBtnEvent");
+                        commons.objectCallFunction(view, "_showingEvent", "_saveBtnEvent", "_deleteBtnEvent", "_dateTimeEvent");
                     },
                     _init: function() {
-                        var vendors = [ /* 日期 */
-                        "lib/My97DatePicker/WdatePicker.js", /* 颜色 */
+                        var vendors = [ /* 颜色 */
                         "vendor/spectrum/spectrum.js", "vendor/spectrum/spectrum.css" ];
                         commons.loadFile(vendors);
                     },
@@ -828,8 +917,37 @@
                             demoFontFormat();
                         });
                     },
+                    /* 日期事件 */
+                    _dateTimeEvent: function() {
+                        $(document).ready(function() {
+                            /* 倒计时开始时间 */
+                            view.$startdate.datetimepicker({
+                                lang: "ch",
+                                format: "Y-m-d H:i",
+                                onShow: function(ct) {
+                                    var maxdate = commons.dateTimePicker.format(view.$enddate.val());
+                                    if (maxdate) {
+                                        maxdate = commons.dateTimePicker.reduceOneDay(maxdate);
+                                    }
+                                    this.setOptions({
+                                        maxDate: maxdate
+                                    });
+                                }
+                            });
+                            /* 倒计时结束时间 */
+                            view.$enddate.datetimepicker({
+                                lang: "ch",
+                                format: "Y-m-d H:i",
+                                onShow: function(ct) {
+                                    this.setOptions({
+                                        minDate: commons.dateTimePicker.format(view.$startdate.val())
+                                    });
+                                }
+                            });
+                        });
+                    },
                     _bindEvents: function() {
-                        commons.objectCallFunction(view, "_cropPosInputEvent", "_saveBtnEvent", "_deleteBtnEvent", "_typeEvent", "_countDownEvent");
+                        commons.objectCallFunction(view, "_cropPosInputEvent", "_saveBtnEvent", "_deleteBtnEvent", "_typeEvent", "_countDownEvent", "_dateTimeEvent");
                     },
                     _domCache: function() {
                         var vmain = "cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor,pw-area";

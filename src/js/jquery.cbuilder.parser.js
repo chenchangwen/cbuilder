@@ -105,7 +105,6 @@ var cbuilder = {};
                 var startdate = $this.startdate;
                 var enddate = $this.enddate;
                 var isdayunit = $this.isdayunit;
-
                 var timeDistance = 0;
                 if (startdate > timenow && timenow < enddate || startdate > timenow && enddate == undefined) {
                     tip = '距离开始时间还有:';
@@ -181,10 +180,10 @@ var cbuilder = {};
             /* 结束时间 */
             var enddate = $this.attr("enddate");
             if (startdate != undefined) {
-                startdate = new Date(commons.stringToDate(startdate));
+                startdate = new Date(commons.stringToDate(startdate + ':00'));
             }
             if (enddate != undefined) {
-                enddate = new Date(commons.stringToDate(enddate));
+                enddate = new Date(commons.stringToDate(enddate + ':00'));
             }
             /* 时间格式 */
             $this.format = $this.attr("format") || 'cn';
@@ -329,9 +328,9 @@ var cbuilder = {};
                         var timenow = serverTime * 1000;
                         var $this = $(this);
                         /* 显示时间 */
-                        var showdate = commons.stringToDate($this.attr('showdate'));
+                        var showdate = commons.stringToDate($this.attr('showdate') + ':00');
                         /* 结束时间 */
-                        var hidedate = commons.stringToDate($this.attr('hidedate'));
+                        var hidedate = commons.stringToDate($this.attr('hidedate') + ':00');
                         /* 没有设置 开始,结束时间 */
                         if (showdate === undefined && hidedate === undefined) {
                             isshow = true;

@@ -530,6 +530,9 @@ legend {
   cursor: pointer;
   background-image: url('../images/iconfont-delete.png');
 }
+body .xdsoft_datetimepicker {
+  z-index: 999999;
+}
 .cb-propertiesWindow {
   font-size: 12px;
   background: #fff;

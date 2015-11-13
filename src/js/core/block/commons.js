@@ -1,7 +1,8 @@
-﻿var commons= {
+﻿var commons = {
+    /* 加载文件 */
     loadFile: function(srcarray) {
         for (var i = 0; i < srcarray.length; i++) {
-            var vendor = basePath.replace(/\/src\/js/ig, '') + srcarray[i];
+            var vendor = $.cbuilder.path.root + srcarray[i];
             if (vendor.indexOf('css') >= 0) {
                 var cssLink = $("<link rel='stylesheet' type='text/css' href='" + vendor + "'>");
                 $("head").append(cssLink);
@@ -69,9 +70,57 @@
             }
         }
     },
+    /* 正则 */
     regex: {
         url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
     },
+    /* 格式化 */
+    formatDate: function(date,format) {
+        if (!date) return;
+        if (!format) format = "yyyy-MM-dd";
+        switch (typeof date) {
+            case "string":
+                date = new Date(date.replace(/-/, "/"));
+                break;
+            case "number":
+                date = new Date(date);
+                break;
+        }
+        if (!date instanceof Date) return;
+        var dict = {
+            "yyyy": date.getFullYear(),
+            "M": date.getMonth() + 1,
+            "d": date.getDate(),
+            "H": date.getHours(),
+            "m": date.getMinutes(),
+            "s": date.getSeconds(),
+            "MM": ("" + (date.getMonth() + 101)).substr(1),
+            "dd": ("" + (date.getDate() + 100)).substr(1),
+            "HH": ("" + (date.getHours() + 100)).substr(1),
+            "mm": ("" + (date.getMinutes() + 100)).substr(1),
+            "ss": ("" + (date.getSeconds() + 100)).substr(1)
+        };
+        return format.replace(/(yyyy|MM?|dd?|HH?|ss?|mm?)/g, function () {
+            return dict[arguments[0]];
+        });
+    },
+    dateTimePicker: {
+        /* 减一天 */
+        reduceOneDay: function (value) {
+            var d = new Date(value);
+            var t = d.getTime() - 1000 * 60 * 60 * 24;
+            var yesterday = new Date(t);
+            return yesterday;
+        },
+        format: function(value) {
+            if (value === '') {
+                return false;
+            } else {
+                return commons.formatDate(value, 'yyyy/MM/dd');
+            }
+        }
+    },
+    /* layer */
     layer: {
         msg: function(msg) {
             layer.msg(msg, {

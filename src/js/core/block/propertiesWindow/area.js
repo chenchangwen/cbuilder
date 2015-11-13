@@ -103,7 +103,6 @@
                             }
                         });
 
-
                         /* 是否天为单位 */
                         var isday = false;
                         if (typeof $obj.attr("isdayunit") === "undefined") {
@@ -339,8 +338,38 @@
                 demoFontFormat();
             });
         },
+        /* 日期事件 */
+        _dateTimeEvent: function () {
+            $(document).ready(function () {
+                /* 倒计时开始时间 */
+                view.$startdate.datetimepicker({
+                    lang: 'ch',
+                    format: 'Y-m-d H:i',
+                    onShow: function (ct) {
+                        var maxdate = commons.dateTimePicker.format(view.$enddate.val());
+                        if (maxdate) {
+                            maxdate = commons.dateTimePicker.reduceOneDay(maxdate);
+                        }
+                        this.setOptions({
+                            maxDate: maxdate
+                        });
+                    }
+                });
+
+                /* 倒计时结束时间 */
+                view.$enddate.datetimepicker({
+                    lang: 'ch',
+                    format: 'Y-m-d H:i',
+                    onShow: function (ct) {
+                        this.setOptions({
+                            minDate: commons.dateTimePicker.format(view.$startdate.val())
+                        });
+                    }
+                });
+            });
+        },
         _bindEvents: function () {
-            commons.objectCallFunction(view, '_cropPosInputEvent', '_saveBtnEvent', '_deleteBtnEvent', '_typeEvent', '_countDownEvent');
+            commons.objectCallFunction(view, '_cropPosInputEvent', '_saveBtnEvent', '_deleteBtnEvent', '_typeEvent', '_countDownEvent', '_dateTimeEvent');
         },
         _domCache: function () {
             var vmain = 'cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos,' +

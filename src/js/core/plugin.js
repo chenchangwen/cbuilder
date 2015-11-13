@@ -23,17 +23,8 @@
             body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
         }
     };
-
-    function currentScriptPath() {
-         var scripts = document.querySelectorAll('script[src]');
-        var currentScript = scripts[scripts.length - 1].src;
-        var currentScriptChunks = currentScript.split('/');
-        var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
-        var path = currentScript.replace(currentScriptFile, "");
-        path = path.replace(/cbuilder\/src\/js\//, 'cbuilder/');
-        return path;
-    }
-
+  
+    
     var clsContainer = ".cb-container",
         clsToolbar = ".cb-toolbar",
         clsBody = ".cb-body",
@@ -41,18 +32,34 @@
         clsWrap = '.cb-item',
         stroriginhtml = 'originhtml',
         strcbuilder = 'cbuilder',
-        basePath = currentScriptPath();
+        jsPath, rootPath;
         
+    (function () {
+        var scripts = document.querySelectorAll('script[src]');
+        var currentScript = scripts[scripts.length - 1].src;
+        var currentScriptChunks = currentScript.split('/');
+        var currentScriptFile = currentScriptChunks[currentScriptChunks.length - 1];
+        jsPath = currentScript.replace(currentScriptFile, "");
+        rootPath = jsPath.replace(/cbuilder\/src\/js\//, 'cbuilder/');
+        if (jsPath.indexOf('src/js')) {
+            rootPath = jsPath.replace(/\/src\/js/, "");
+        }
+    })();
+
     ~~include('./block/commons.js')
 
 
-    var cbuilder = function(element, options) {
+    var cbuilder = function (element, options) {
         this.options = $.extend({}, defaults, options);
         this.$element = $(element);
         this.strucView();
     };
 
     $.cbuilder = {
+        path: {
+            root: rootPath,
+            js: jsPath
+        },
         append: function (html) {
             $.cbuilder.active.$element.find(clsBody).append(html);
             $.cbuilder.active._trigger('cbuilder:onWrapContent');
@@ -120,23 +127,27 @@
 
                         /* 菜单 */
                         'vendor/jQuery-contextMenu/src/jquery.contextMenu.js',
-                        'vendor/jQuery-contextMenu/src/jquery.contextMenu.css'
+                        'vendor/jQuery-contextMenu/src/jquery.contextMenu.css',
+                        /* 日期 */
+                        'vendor/datetimepicker/jquery.datetimepicker.css',
+                        'vendor/datetimepicker/jquery.datetimepicker.js'
                     ];
                     commons.loadFile(vendors);
+                    //$.datetimepicker.setLocale('cn');
                 },
                 /* 加载toolbar */ 
                 loadToolbar: function () {
                     var len = that.options.toolbar.length;
                     for (var i = 0; i < len; i++) {
                         var name = that.options.toolbar[i];
-                        var src = basePath.replace(/src\/js/ig, '') + '/src/js/toolbar/' + name + '/' + 'main' + '.js';
+                        var src = $.cbuilder.path.js + 'toolbar/' + name + '/' + 'main' + '.js';
                         $.ajax({
                             async: false,
                             type: "get",
                             url: src,
                             success: function () {
                                 /* 执行动态函数,并获取module对象 */
-                                var module = init(that.$element, basePath, commons);
+                                var module = init(that.$element, $.cbuilder.path.root, commons);
                                 if (module.isToolbar === false) {
                                     module.onLoaded();
                                     return false;
@@ -162,7 +173,7 @@
                                                 shadeClose: true,
                                                 shade: 0.3,
                                                 area: [width,height],
-                                                content: basePath + 'toolbar/' + module.toolbar.name + '/main.html'
+                                                content: $.cbuilder.path.js + 'toolbar/' + module.toolbar.name + '/main.html'
                                             });
                                         }
                                         that._trigger('', module.toolbar.onClick);

@@ -3,11 +3,11 @@
     var view = {
         /* dom缓存 */
         _domCache: function () {
-            var str1 = 'cb-main-height,cb-main-width,cb-main-showdate,cb-main-hidedate';
+            var str1 = 'cb-picture-height,cb-picture-width,cb-picture-showdate,cb-picture-hidedate';
             view.$pw = $('#pwpicture');
             view.$pw.savebtn = view.$pw.find('.pw-body-footer .save');
             view.$pw.deletebtn = view.$pw.find('.pw-body-footer .delete');
-            commons.setObjVariable(view, str1, 'cb-main-');
+            commons.setObjVariable(view, str1, 'cb-picture-');
         },
         /* 保存按钮 */
         _saveBtnEvent: function() {
@@ -30,11 +30,15 @@
                 var showdate = view.$showdate.val();
                 if (showdate !== '') {
                     $cropwrap.attr('showdate', showdate);
+                } else {
+                    $cropwrap.removeAttr('showdate');
                 }
                 /* 结束时间 */
                 var hidedate = view.$hidedate.val();
                 if (hidedate !== '') {
                     $cropwrap.attr('hidedate', hidedate);
+                } else {
+                    $cropwrap.removeAttr('hidedate');
                 }
                 commons.layer.msg('保存成功');
                 $.cbuilder.propertiesWindow.hide();
@@ -89,13 +93,41 @@
                 view.$hidedate.val($cropwrap.attr('hidedate') || defaults.hidedate);
             });
         },
+        /* 日期事件 */
+        _dateTimeEvent: function () {
+            $(document).ready(function() {
+                /* 图片显示时间 */
+                view.$showdate.datetimepicker({
+                    lang: 'ch',
+                    format: 'Y-m-d H:i',
+                    onShow: function (ct) {
+                        var maxdate = commons.dateTimePicker.format(view.$hidedate.val());
+                        if (maxdate) {
+                            maxdate = commons.dateTimePicker.reduceOneDay(maxdate);
+                        }
+                        this.setOptions({
+                            maxDate: maxdate
+                        });
+                    }
+                });
+
+                /* 图片隐藏时间 */
+                view.$hidedate.datetimepicker({
+                    lang: 'ch',
+                    format: 'Y-m-d H:i',
+                    onShow: function (ct) {
+                        this.setOptions({
+                            minDate: commons.dateTimePicker.format(view.$showdate.val())
+                        });
+                    }
+                });
+            });
+        },
         _bindEvents: function () {
-            commons.objectCallFunction(view, '_showingEvent', '_saveBtnEvent', '_deleteBtnEvent');
+            commons.objectCallFunction(view, '_showingEvent', '_saveBtnEvent', '_deleteBtnEvent', '_dateTimeEvent');
         },
         _init: function () {
             var vendors = [
-                /* 日期 */
-                'lib/My97DatePicker/WdatePicker.js',
                 /* 颜色 */
                 'vendor/spectrum/spectrum.js',
                 'vendor/spectrum/spectrum.css'
