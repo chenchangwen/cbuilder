@@ -40,7 +40,7 @@
                 } else {
                     $cropwrap.removeAttr('hidedate');
                 }
-                commons.layer.msg('保存成功');
+                commons.layer.msg('success');
                 $.cbuilder.propertiesWindow.hide();
             });
         },
@@ -78,7 +78,7 @@
         /* 自定义 propertiesWindow:Showing 事件 */
         _showingEvent: function () {
             view.$pw.on("propertiesWindow:Showing", function (event) {
-                commons.clean();
+                commons.removeImpos();
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                 view.$height.val($selectedobj.css('height').replace(/px/, ''));
                 view.$width.val($selectedobj.css('width').replace(/px/, ''));

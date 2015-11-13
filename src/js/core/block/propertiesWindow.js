@@ -26,6 +26,12 @@ $.cbuilder.propertiesWindow = {
     show: function (options) {
         /* 隐藏项工具 */
         $.cbuilder.$itemtools.hide();
+        /* 删除临时锚点 */
+        var $tempanchor = $('#tempanchor');
+        if ($tempanchor) {
+            $tempanchor.removeAttr('id');
+        }
+        /* 显示临时样式 */
         this.$temp.show();
         if (options !== undefined) {
             this.$currentpw = $('#' + options['name']);

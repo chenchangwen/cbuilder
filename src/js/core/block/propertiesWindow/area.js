@@ -211,7 +211,7 @@
                         var url = $.trim(view.$url.val()).toString();
                         var opentype = $('input[name="opentype"]:checked').data('value');
                         if (!url.match(commons.regex.url)) {
-                            commons.layer.msg('保存失败:请输入正确的链接地址');
+                            commons.layer.msg('','请输入正确的链接地址');
                             return false;
                         }
                         areatypehtml += 'target="' + opentype + '"';
@@ -220,7 +220,7 @@
                     case 'anchor':
                         var $anchor = $.cbuilder.active.$element.find(clsContent).find('.cb-anchor');
                         if ($anchor.length === 0) {
-                            commons.layer.msg('保存失败:请添加锚点');
+                            commons.layer.msg('', '请添加锚点');
                             return false;
                         }
                         areatypehtml += 'href="#' + view.$anchor.val() + '"';
@@ -232,12 +232,12 @@
                         view.format = view.$format.val();
                         view.isdayunit = view.$isdayunit.prop('checked');
                         if (view.startdate === '') {
-                            commons.layer.msg('保存失败:请选择开始时间');
+                            commons.layer.msg('','请选择开始时间');
                             return false;
                         }
                         else
                             if (view.enddate === '') {
-                                commons.layer.msg('保存失败:请选择结束时间');
+                                commons.layer.msg('','请选择结束时间');
                                 return false;
                             }
                         successcb = function () {
@@ -271,11 +271,8 @@
                 if (typeof successcb === 'function') {
                     successcb();
                 }
-                commons.clean();
-                layer.msg('保存成功', {
-                    offset: '200px',
-                    time: 1000
-                });
+                commons.removeImpos();
+                commons.layer.msg('success');
                 $.cbuilder.propertiesWindow.hide();
             });
         },
@@ -283,7 +280,7 @@
         _deleteBtnEvent: function () {
             view.$delete.on('click', function () {
                 layer.confirm('确定删除<当前区域>?', { icon: 3 }, function (index) {
-                    commons.clean();
+                    commons.removeImpos();
                     commons.propertiesWindow.hide();
                     layer.close(index);
                 });

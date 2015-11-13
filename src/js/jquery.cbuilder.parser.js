@@ -114,7 +114,11 @@ var cbuilder = {};
                     tip = '距离结束时间还有:';
                     timeDistance = enddate - timenow;
                 }
-
+                var removeCountDown= function() {
+                    if (typeof $this['cdtimeout'] != "undefined")
+                        clearTimeout($this['cdtimeout']);
+                    $this.remove();
+                }
                 var day, hour, minute, second, maxhour;
                 if (timeDistance >= 0) {
                     // 相减的差数换算成天数   
@@ -159,15 +163,16 @@ var cbuilder = {};
                         $minute.html(minute + ':');
                         $second.html(second);
                     }
+                    if (day === 0 && hour === "00" && minute === "00" && second === "00") {
+                        removeCountDown();
+                    }
                     var time = $this.data('time') + 1;
                     $this.data('time', time);
                     /* 多实例 所以必须 以此命名 */
                     $this['cdtimeout'] = setTimeout(countDown, 1000);
 
                 } else {
-                    if (typeof $this['cdtimeout'] != "undefined")
-                        clearTimeout($this['cdtimeout']);
-                    $this.remove();
+                    removeCountDown();
                 }
             }
             countDown();

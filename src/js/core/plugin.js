@@ -61,9 +61,12 @@
             js: jsPath
         },
         append: function (html) {
-            $.cbuilder.active.$element.find(clsBody).append(html);
-            $.cbuilder.active._trigger('cbuilder:onWrapContent');
-            $.cbuilder.active._trigger('cbuilder:onContentReady');
+            if (html !== '') {
+                var html2 = '<div class="cb-item"><div class="cb-content">' +html + '</div></div>';
+                $.cbuilder.active.$element.find(clsBody).append(html2);
+                $.cbuilder.active._trigger('cbuilder:onWrapContent');
+                $.cbuilder.active._trigger('cbuilder:onContentReady');
+            }
         },
         item: {
             tools: {
@@ -133,7 +136,6 @@
                         'vendor/datetimepicker/jquery.datetimepicker.js'
                     ];
                     commons.loadFile(vendors);
-                    //$.datetimepicker.setLocale('cn');
                 },
                 /* 加载toolbar */ 
                 loadToolbar: function () {
@@ -219,15 +221,36 @@
                         }
                     });
                     /* 内容加载完毕 */
-                    that.$element.on('cbuilder:onContentReady', function (e) {
-//                        $(clsContent).delegate('*', 'dblclick', function (e) {
-//                           // alert('')
+//                    that.$element.on('cbuilder:onContentReady', function (e) {
+//                        alert(123123)
+//                        $('.cb-item').delegate('*', 'dblclick', function (e) {
+//                            $.cbuilder.propertiesWindow.$selectedobj = $(this);
+//                            console.log($(this).prop('tagName'));
 //                        });
+//                    });
+
+                    $('.pw-body-footer').delegate('.deleteevent', 'click', function (e) {
+                        var tip = '确定删除&lt;' + $.cbuilder.propertiesWindow.$selectedobj.prop('tagName') + '&gt;?';
+                        layer.confirm(tip, { icon: 3 }, function (index) {
+                            $.cbuilder.propertiesWindow.$selectedobj.parents('.cb-item').remove();
+                            $.cbuilder.propertiesWindow.hide();
+                            layer.close(index);
+                        });
                     });
+
+              
+                    that.$element.delegate(".cb-content", "mouseover", function (event) {
+                        $(this).addClass('cb-hover');
+                    });
+
+                    that.$element.delegate(".cb-content", "mouseout", function (event) {
+                        $(this).removeClass('cb-hover');
+                    });
+ 
                 },
                 /* 构建 */
                 struc: function () {
-                    commons.objectCallFunction(view, 'init', 'loadVendors', 'loadToolbar', 'bindEvents', 'appendHtml', 'triggerCustomEvent');
+                    commons.objectCallFunction(view, 'init', 'loadVendors', 'loadToolbar',  'appendHtml' ,'bindEvents', 'triggerCustomEvent');
                 }
             };
             view.struc();

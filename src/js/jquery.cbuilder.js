@@ -74,7 +74,7 @@
             }
         },
         /* 清理 */
-        clean: function() {
+        removeImpos: function() {
             /* jcrop */
             if (typeof jcrop_api != "undefined") {
                 jcrop_api.destroy();
@@ -107,7 +107,7 @@
         },
         /* 正则 */
         regex: {
-            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/
+            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/
         },
         /* 格式化 */
         formatDate: function(date, format) {
@@ -158,10 +158,25 @@
         },
         /* layer */
         layer: {
-            msg: function(msg) {
-                layer.msg(msg, {
-                    time: 1e3,
-                    offset: "200px"
+            msg: function(type, msg) {
+                var info = "";
+                switch (type) {
+                  case "warning":
+                    info = "保存失败";
+                    break;
+
+                  case "success":
+                    info = "保存成功";
+                    break;
+                }
+                if (msg) {
+                    if (info !== "") info = info + ":" + msg; else {
+                        info = msg;
+                    }
+                }
+                layer.msg(info, {
+                    time: 1500,
+                    offset: "400px"
                 });
             }
         }
@@ -177,9 +192,12 @@
             js: jsPath
         },
         append: function(html) {
-            $.cbuilder.active.$element.find(clsBody).append(html);
-            $.cbuilder.active._trigger("cbuilder:onWrapContent");
-            $.cbuilder.active._trigger("cbuilder:onContentReady");
+            if (html !== "") {
+                var html2 = '<div class="cb-item"><div class="cb-content">' + html + "</div></div>";
+                $.cbuilder.active.$element.find(clsBody).append(html2);
+                $.cbuilder.active._trigger("cbuilder:onWrapContent");
+                $.cbuilder.active._trigger("cbuilder:onContentReady");
+            }
         },
         item: {
             tools: {
@@ -316,11 +334,33 @@
                         }
                     });
                     /* 内容加载完毕 */
-                    that.$element.on("cbuilder:onContentReady", function(e) {});
+                    //                    that.$element.on('cbuilder:onContentReady', function (e) {
+                    //                        alert(123123)
+                    //                        $('.cb-item').delegate('*', 'dblclick', function (e) {
+                    //                            $.cbuilder.propertiesWindow.$selectedobj = $(this);
+                    //                            console.log($(this).prop('tagName'));
+                    //                        });
+                    //                    });
+                    $(".pw-body-footer").delegate(".deleteevent", "click", function(e) {
+                        var tip = "确定删除&lt;" + $.cbuilder.propertiesWindow.$selectedobj.prop("tagName") + "&gt;?";
+                        layer.confirm(tip, {
+                            icon: 3
+                        }, function(index) {
+                            $.cbuilder.propertiesWindow.$selectedobj.parents(".cb-item").remove();
+                            $.cbuilder.propertiesWindow.hide();
+                            layer.close(index);
+                        });
+                    });
+                    that.$element.delegate(".cb-content", "mouseover", function(event) {
+                        $(this).addClass("cb-hover");
+                    });
+                    that.$element.delegate(".cb-content", "mouseout", function(event) {
+                        $(this).removeClass("cb-hover");
+                    });
                 },
                 /* 构建 */
                 struc: function() {
-                    commons.objectCallFunction(view, "init", "loadVendors", "loadToolbar", "bindEvents", "appendHtml", "triggerCustomEvent");
+                    commons.objectCallFunction(view, "init", "loadVendors", "loadToolbar", "appendHtml", "bindEvents", "triggerCustomEvent");
                 }
             };
             view.struc();
@@ -403,7 +443,7 @@
         propertiesWindow: function() {
             /* htmlģ�� */
             var templates = {
-                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-picture-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-picture-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-picture-showdate"></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-picture-hidedate"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><div id="cb-area-fontdemo" class="cb-temp cb-area-fontdemo">08&#x65F6;08&#x5206;08&#x79D2;</div><table class="pw-body-content-list"><tbody><!--<tr>--><!--<td class="input" colspan="2">--><!--<div id="cb-area-fontdemo">--><!--08时08分08秒--><!--</div>--><!--</td>--><!--</tr>--><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate"></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate"></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr><tr><td class="text">&#x65F6;&#x95F4;&#x683C;&#x5F0F;:</td><td class="input"><select id="cb-area-format"><option value="cn">&#x65F6;:&#x5206;:&#x79D2;</option><option value="HH:mm:ss">HH:mm:ss</option></select></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div></div>',
+                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><hr class="cb-article-divider"><ul class="cb-pills"><li class="cb-active"><a href="javascript:;" class="cb-pills-title"></a></li></ul><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">height:</td><td class="input"><input type="text" id="cb-picture-height"></td></tr><tr><td class="text">width:</td><td class="input"><input type="text" id="cb-picture-width"></td></tr></tbody></table><h1 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5F00;&#x59CB;:</td><td class="input"><input type="text" id="cb-picture-showdate"></td></tr><tr><td class="text">&#x7ED3;&#x675F;:</td><td class="input"><input type="text" id="cb-picture-hidedate"></td></tr></tbody></table><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">width:</td><td class="input"><input id="cb-area-width" class="cb-area-croppos" data-name="width" maxlength="4" type="text"></td></tr><tr><td class="text">height:</td><td class="input"><input id="cb-area-height" class="cb-area-croppos" data-name="height" maxlength="4" type="text"></td></tr><tr><td class="text">margin-left:</td><td class="input"><input id="cb-area-marginleft" class="cb-area-croppos" data-name="left" maxlength="4" type="text"></td></tr><tr><td class="text">margin-top:</td><td class="input"><input id="cb-area-margintop" class="cb-area-croppos" data-name="top" maxlength="4" type="text"></td></tr></tbody></table><hr class="cb-article-divider"><h1 class="pw-body-content-header">&#x7C7B;&#x578B;</h1><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><table class="pw-body-content-list"><tbody><tr><td class="text">&#x94FE;&#x63A5;&#x5730;&#x5740;:</td><td class="input"><textarea id="cb-area-url" rows="3" cols="30" style="width: 100%"></textarea></td></tr><tr><td class="text">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</td><td class="input"><label for="open-type1"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></td></tr></tbody></table></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><div id="cb-area-fontdemo" class="cb-temp cb-area-fontdemo">08&#x65F6;08&#x5206;08&#x79D2;</div><table class="pw-body-content-list"><tbody><tr><td class="text">&#x5B57;&#x4F53;:</td><td class="input"><select id="cb-area-fontfamily"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</td><td class="input"><select id="cb-area-fontsize"></select></td></tr><tr><td class="text">&#x5B57;&#x4F53;&#x989C;&#x8272;:</td><td class="input"><input type="text" id="cb-area-fontcolor" style="display: none"></td></tr><tr><td class="text">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-startdate"></td></tr><tr><td class="text">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</td><td class="input"><input type="text" id="cb-area-enddate"></td></tr><tr><td class="text">&#x662F;&#x5426;&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</td><td class="input"><input type="checkbox" id="cb-area-isdayunit"></td></tr><tr><td class="text">&#x65F6;&#x95F4;&#x683C;&#x5F0F;:</td><td class="input"><select id="cb-area-format"><option value="cn">&#x65F6;:&#x5206;:&#x79D2;</option><option value="HH:mm:ss">HH:mm:ss</option></select></td></tr></tbody></table></div><hr class="cb-article-divider"></div><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn primary">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn primary delete">&#x5220; &#x9664;</button></div></div></div></div><!-- 锚点 --><div class="pw-picture pw-panel" id="pwanchor"><div class="pw-body"><div class="pw-body-content"><h1 class="pw-body-content-header">&#x5C5E;&#x6027;</h1><table class="pw-body-content-list"><tbody><tr><td class="text">&#x540D;&#x79F0;:</td><td class="input"><input id="cb-anchor-name" type="text"></td></tr></tbody></table></div><div class="pw-body-footer"><button type="button" id="cb-anchor-save" class="btn primary save">&#x4FDD; &#x5B58;</button><button type="button" id="cb-anchor-delete" class="btn primary delete deleteevent">&#x5220; &#x9664;</button></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -433,6 +473,12 @@
                 show: function(options) {
                     /* ������� */
                     $.cbuilder.$itemtools.hide();
+                    /* ɾ����ʱê�� */
+                    var $tempanchor = $("#tempanchor");
+                    if ($tempanchor) {
+                        $tempanchor.removeAttr("id");
+                    }
+                    /* ��ʾ��ʱ��ʽ */
                     this.$temp.show();
                     if (options !== undefined) {
                         this.$currentpw = $("#" + options["name"]);
@@ -502,7 +548,7 @@
                             } else {
                                 $cropwrap.removeAttr("hidedate");
                             }
-                            commons.layer.msg("保存成功");
+                            commons.layer.msg("success");
                             $.cbuilder.propertiesWindow.hide();
                         });
                     },
@@ -542,7 +588,7 @@
                     /* 自定义 propertiesWindow:Showing 事件 */
                     _showingEvent: function() {
                         view.$pw.on("propertiesWindow:Showing", function(event) {
-                            commons.clean();
+                            commons.removeImpos();
                             var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                             view.$height.val($selectedobj.css("height").replace(/px/, ""));
                             view.$width.val($selectedobj.css("width").replace(/px/, ""));
@@ -793,7 +839,7 @@
                                 var url = $.trim(view.$url.val()).toString();
                                 var opentype = $('input[name="opentype"]:checked').data("value");
                                 if (!url.match(commons.regex.url)) {
-                                    commons.layer.msg("保存失败:请输入正确的链接地址");
+                                    commons.layer.msg("", "请输入正确的链接地址");
                                     return false;
                                 }
                                 areatypehtml += 'target="' + opentype + '"';
@@ -803,7 +849,7 @@
                               case "anchor":
                                 var $anchor = $.cbuilder.active.$element.find(clsContent).find(".cb-anchor");
                                 if ($anchor.length === 0) {
-                                    commons.layer.msg("保存失败:请添加锚点");
+                                    commons.layer.msg("", "请添加锚点");
                                     return false;
                                 }
                                 areatypehtml += 'href="#' + view.$anchor.val() + '"';
@@ -816,10 +862,10 @@
                                 view.format = view.$format.val();
                                 view.isdayunit = view.$isdayunit.prop("checked");
                                 if (view.startdate === "") {
-                                    commons.layer.msg("保存失败:请选择开始时间");
+                                    commons.layer.msg("", "请选择开始时间");
                                     return false;
                                 } else if (view.enddate === "") {
-                                    commons.layer.msg("保存失败:请选择结束时间");
+                                    commons.layer.msg("", "请选择结束时间");
                                     return false;
                                 }
                                 successcb = function() {
@@ -853,11 +899,8 @@
                             if (typeof successcb === "function") {
                                 successcb();
                             }
-                            commons.clean();
-                            layer.msg("保存成功", {
-                                offset: "200px",
-                                time: 1e3
-                            });
+                            commons.removeImpos();
+                            commons.layer.msg("success");
                             $.cbuilder.propertiesWindow.hide();
                         });
                     },
@@ -867,7 +910,7 @@
                             layer.confirm("确定删除<当前区域>?", {
                                 icon: 3
                             }, function(index) {
-                                commons.clean();
+                                commons.removeImpos();
                                 commons.propertiesWindow.hide();
                                 layer.close(index);
                             });
