@@ -13,17 +13,14 @@
         _saveBtnEvent: function() {
             view.$pw.savebtn.on('click', function () {
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
-                var $bodylist = view.$pw.find('.pw-body-content-list tr');
-                $bodylist.each(function () {
-                    var $this = $(this);
-                    var text = $this.find('.text').text().replace(/:/, '');
-                    var value = $this.find('.input').find('input').val();
-                    if ($selectedobj.css(text)) {
-                        $selectedobj.css(text, value);
-                    } else if ($selectedobj.prop(text)) {
-                        $selectedobj.prop(text, value);
-                    }
-                });
+
+                if (view.$height.val() !== '') {
+                    $selectedobj.css('height', view.$height.val());
+                }
+                if (view.$width.val() !== '') {
+                    $selectedobj.css('width', view.$width.val());
+                }
+
                 var $cropwrap = $selectedobj.parents('.cb-cropwrap');
                 /* 保存显示时间 */
                 /* 开始时间 */

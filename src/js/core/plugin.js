@@ -17,7 +17,7 @@
         toolbar: ["upload", 'mupload', 'test','clean', 'anchor', 'preview', 'picture'],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
-            toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
+            toolbar_button: "<div class='btn-wrap'><button class='btn btn-primary btn-sm {clsname}'>{name}</button></div>",
             body: "<div class='cb-body'></div>",
             body_item: "<div class='cb-item'><div class='cb-content'></div></div>",
             body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
@@ -133,12 +133,24 @@
                         'vendor/jQuery-contextMenu/src/jquery.contextMenu.css',
                         /* 日期 */
                         'vendor/datetimepicker/jquery.datetimepicker.css',
-                        'vendor/datetimepicker/jquery.datetimepicker.js'
+                        'vendor/datetimepicker/jquery.datetimepicker.js',
+
+                        'vendor/bootstrap/dist/css/bootstrap.min.css',
+                         'vendor/bootstrap/dist/css/bootstrap-theme.css'
                     ];
                     commons.loadFile(vendors);
                 },
                 /* 加载toolbar */ 
                 loadToolbar: function () {
+                    /* 校验点击 */
+                    var checkOnClick = function () {
+                        if ($('.jcrop-holder').length>0) {
+                            commons.layer.msg('', '请先保存区域');
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
                     var len = that.options.toolbar.length;
                     for (var i = 0; i < len; i++) {
                         var name = that.options.toolbar[i];
@@ -169,16 +181,20 @@
                                         if (module.type === 'iframe') {
                                             var width = module.width !== undefined ? module.width + 'px' : '95%';
                                             var height = module.height !== undefined ? module.height + 'px' : '95%';
-                                            layer.open({
-                                                type: 2,
-                                                title: module.toolbar.text,
-                                                shadeClose: true,
-                                                shade: 0.3,
-                                                area: [width,height],
-                                                content: $.cbuilder.path.js + 'toolbar/' + module.toolbar.name + '/main.html'
-                                            });
+                                            if (checkOnClick()) {
+                                                layer.open({
+                                                    type: 2,
+                                                    title: module.toolbar.text,
+                                                    shadeClose: true,
+                                                    shade: 0.3,
+                                                    area: [width, height],
+                                                    content: $.cbuilder.path.js + 'toolbar/' + module.toolbar.name + '/main.html'
+                                                });
+                                            }
                                         }
-                                        that._trigger('', module.toolbar.onClick);
+                                        if (checkOnClick()) {
+                                            that._trigger('', module.toolbar.onClick);
+                                        }
                                     });
                                 } else {
                                     if (typeof module.onLoaded === "function") {
@@ -246,7 +262,7 @@
                     that.$element.delegate(".cb-content", "mouseout", function (event) {
                         $(this).removeClass('cb-hover');
                     });
- 
+                    
                 },
                 /* 构建 */
                 struc: function () {
@@ -280,7 +296,6 @@
         }
     }
     onceView.struc();
-
 
     $.fn.cbuilder = function(option) {
         var args = arguments;

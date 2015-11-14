@@ -16,16 +16,17 @@
     "tests"
   ],
   "dependencies": {
-    "jquery": "1.11.2",
-    "requirejs": "~2.1.17",
+    "bootstrap": "~3.3.5",
+    "datetimepicker": "~2.4.5",
+    "dragula.js": "~1.5.1",
     "dropzone": "~4.0.1",
     "jcrop": "~0.9.12",
-    "tangram": "*",
-    "uikit": "~2.18.0",
-    "spectrum": "~1.6.2",
-    "dragula.js": "~1.5.1",
+    "jquery": "1.11.2",
     "jQuery-contextMenu": "~1.6.7",
     "layer": "*",
-    "datetimepicker": "~2.4.5"
+    "requirejs": "~2.1.17",
+    "spectrum": "~1.6.2",
+    "tangram": "*",
+    "uikit": "~2.18.0"
   }
 }

@@ -42,37 +42,37 @@
   height: 20px;
   display: block;
 }
-.primary {
-  color: #fff;
-  background-color: #1ba1e2;
-  border-color: #fff;
-}
+/*.primary {
+    color: #fff;
+    background-color: @vcolor;
+    border-color: #fff;
+}*/
 .delete {
   color: #fff;
   background-color: #d32c46;
   border-color: #fff;
 }
-.btn {
-  display: inline-block;
-  padding: 6px 10px;
-  margin-bottom: 0;
-  font-size: 10px;
-  font-weight: 400;
-  line-height: 1.42857143;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
+/*.btn {
+    display: inline-block;
+    padding: 6px 10px;
+    margin-bottom: 0;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}*/
 .cb-hover {
   box-shadow: 0 0 13px #c3c3c3;
   border: 1px solid #d9d9d9;
@@ -482,37 +482,37 @@ select {
 legend {
   color: #000;
 }
-.primary {
-  color: #fff;
-  background-color: #1ba1e2;
-  border-color: #fff;
-}
+/*.primary {
+    color: #fff;
+    background-color: @vcolor;
+    border-color: #fff;
+}*/
 .delete {
   color: #fff;
   background-color: #d32c46;
   border-color: #fff;
 }
-.btn {
-  display: inline-block;
-  padding: 6px 10px;
-  margin-bottom: 0;
-  font-size: 10px;
-  font-weight: 400;
-  line-height: 1.42857143;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  background-image: none;
-  border: 1px solid transparent;
-  border-radius: 4px;
-}
+/*.btn {
+    display: inline-block;
+    padding: 6px 10px;
+    margin-bottom: 0;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}*/
 .cb-hover {
   box-shadow: 0 0 13px #c3c3c3;
   border: 1px solid #d9d9d9;
