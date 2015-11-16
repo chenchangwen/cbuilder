@@ -40,6 +40,7 @@
                         var name = view.$name.val();
                         if (name === '') {
                             commons.layer.msg('', '请输入名称');
+                            view.$name.focus();
                             return false;
                         }
           

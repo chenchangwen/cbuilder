@@ -221,6 +221,7 @@
                         var $anchor = $.cbuilder.active.$element.find(clsContent).find('.cb-anchor');
                         if ($anchor.length === 0) {
                             commons.layer.msg('', '请添加锚点');
+                            $anchor.focus();
                             return false;
                         }
                         areatypehtml += 'href="#' + view.$anchor.val() + '"';
@@ -232,12 +233,14 @@
                         view.format = view.$format.val();
                         view.isdayunit = view.$isdayunit.prop('checked');
                         if (view.startdate === '') {
-                            commons.layer.msg('','请选择开始时间');
+                            commons.layer.msg('', '请选择开始时间');
+                            view.$startdate.focus();
                             return false;
                         }
                         else
                             if (view.enddate === '') {
-                                commons.layer.msg('','请选择结束时间');
+                                commons.layer.msg('', '请选择结束时间');
+                                view.$enddate.focus();
                                 return false;
                             }
                         successcb = function () {

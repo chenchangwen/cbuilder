@@ -13,11 +13,19 @@
         _saveBtnEvent: function() {
             view.$pw.savebtn.on('click', function () {
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
-
-                if (view.$height.val() !== '') {
+                if (!commons.regex.number.test(view.$height.val())) {
+                    commons.layer.msg('', '请输入正确的数字');
+                    view.$height.focus();
+                    return false;
+                } else {
                     $selectedobj.css('height', view.$height.val());
                 }
-                if (view.$width.val() !== '') {
+
+                if (!commons.regex.number.test(view.$width.val())) {
+                    commons.layer.msg('', '请输入正确的数字');
+                    view.$width.focus();
+                    return false;
+                } else {
                     $selectedobj.css('width', view.$width.val());
                 }
 

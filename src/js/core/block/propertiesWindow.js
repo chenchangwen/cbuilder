@@ -4,11 +4,11 @@ $('body').append(templates.propertiesWindow);
 
 $("#pwopenner").on('click', function () {
     var right = $.cbuilder.propertiesWindow.$self.css('right');
-    if (right !== '0px' || right === '-345px') {
+    if (right !== '0px' || right === '-330px') {
         $.cbuilder.propertiesWindow.show();
     } else {
         $.cbuilder.propertiesWindow.$temp.hide();
-        $.cbuilder.propertiesWindow.$self.css({ right: '-345px' });
+        $.cbuilder.propertiesWindow.$self.css({ right: '-330px' });
     }
 });
 

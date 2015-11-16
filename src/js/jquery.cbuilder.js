@@ -13,7 +13,7 @@
     var defaults = {
         height: "100%",
         width: "99%",
-        toolbar: [ "upload", "mupload", "test", "clean", "anchor", "preview", "picture" ],
+        toolbar: [ "upload", "mupload", "test", "clean", "anchor", "preview", "picture", "sourcecode" ],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn btn-primary btn-sm {clsname}'>{name}</button></div>",
@@ -107,7 +107,8 @@
         },
         /* 正则 */
         regex: {
-            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/
+            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+            number: /^[0-9]*[1-9][0-9]*$/
         },
         /* 格式化 */
         formatDate: function(date, format) {
@@ -223,6 +224,9 @@
             }
             return html;
         },
+        setContent: function(html) {
+            $.cbuilder.active.$element.find(".cb-body").html(html);
+        },
         _getItemsObject: function() {
             var clonecontents = $.cbuilder.active.$element.clone();
             var $items = clonecontents.find(".cb-body");
@@ -292,14 +296,18 @@
                                             var width = module.width !== undefined ? module.width + "px" : "95%";
                                             var height = module.height !== undefined ? module.height + "px" : "95%";
                                             if (checkOnClick()) {
-                                                layer.open({
+                                                var defaults = {
                                                     type: 2,
                                                     title: module.toolbar.text,
                                                     shadeClose: true,
                                                     shade: .3,
+                                                    skin: "layui-layer-rim",
+                                                    //加上边框
                                                     area: [ width, height ],
                                                     content: $.cbuilder.path.js + "toolbar/" + module.toolbar.name + "/main.html"
-                                                });
+                                                };
+                                                var options = $.extend({}, defaults, module.options);
+                                                layer.open(options);
                                             }
                                         }
                                         if (checkOnClick()) {
@@ -463,12 +471,12 @@
             $("body").append(templates.propertiesWindow);
             $("#pwopenner").on("click", function() {
                 var right = $.cbuilder.propertiesWindow.$self.css("right");
-                if (right !== "0px" || right === "-345px") {
+                if (right !== "0px" || right === "-330px") {
                     $.cbuilder.propertiesWindow.show();
                 } else {
                     $.cbuilder.propertiesWindow.$temp.hide();
                     $.cbuilder.propertiesWindow.$self.css({
-                        right: "-345px"
+                        right: "-330px"
                     });
                 }
             });
@@ -534,10 +542,18 @@
                     _saveBtnEvent: function() {
                         view.$pw.savebtn.on("click", function() {
                             var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
-                            if (view.$height.val() !== "") {
+                            if (!commons.regex.number.test(view.$height.val())) {
+                                commons.layer.msg("", "请输入正确的数字");
+                                view.$height.focus();
+                                return false;
+                            } else {
                                 $selectedobj.css("height", view.$height.val());
                             }
-                            if (view.$width.val() !== "") {
+                            if (!commons.regex.number.test(view.$width.val())) {
+                                commons.layer.msg("", "请输入正确的数字");
+                                view.$width.focus();
+                                return false;
+                            } else {
                                 $selectedobj.css("width", view.$width.val());
                             }
                             var $cropwrap = $selectedobj.parents(".cb-cropwrap");
@@ -858,6 +874,7 @@
                                 var $anchor = $.cbuilder.active.$element.find(clsContent).find(".cb-anchor");
                                 if ($anchor.length === 0) {
                                     commons.layer.msg("", "请添加锚点");
+                                    $anchor.focus();
                                     return false;
                                 }
                                 areatypehtml += 'href="#' + view.$anchor.val() + '"';
@@ -871,9 +888,11 @@
                                 view.isdayunit = view.$isdayunit.prop("checked");
                                 if (view.startdate === "") {
                                     commons.layer.msg("", "请选择开始时间");
+                                    view.$startdate.focus();
                                     return false;
                                 } else if (view.enddate === "") {
                                     commons.layer.msg("", "请选择结束时间");
+                                    view.$enddate.focus();
                                     return false;
                                 }
                                 successcb = function() {

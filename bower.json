@@ -27,6 +27,7 @@
     "requirejs": "~2.1.17",
     "spectrum": "~1.6.2",
     "tangram": "*",
-    "uikit": "~2.18.0"
+    "uikit": "~2.18.0",
+    "codemirror": "~5.8.0"
   }
 }

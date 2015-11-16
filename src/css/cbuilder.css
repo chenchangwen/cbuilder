@@ -151,7 +151,7 @@
 }
 .cb-propertiesWindow .cb-pw-openner {
   position: absolute;
-  left: -40px;
+  left: -30px;
   font-size: 18px;
   color: white;
   top: 50%;
@@ -564,7 +564,7 @@ body .xdsoft_datetimepicker {
 }
 .cb-propertiesWindow .cb-pw-openner {
   position: absolute;
-  left: -40px;
+  left: -30px;
   font-size: 18px;
   color: white;
   top: 50%;

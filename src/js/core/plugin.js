@@ -14,7 +14,7 @@
     var defaults = {
         height: "100%",
         width:"99%",
-        toolbar: ["upload", 'mupload', 'test','clean', 'anchor', 'preview', 'picture'],
+        toolbar: ["upload", 'mupload', 'test','clean', 'anchor', 'preview', 'picture','sourcecode'],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn btn-primary btn-sm {clsname}'>{name}</button></div>",
@@ -91,6 +91,9 @@
                 html =this._getItemsObject().html();
             }
             return html;
+        },
+        setContent: function (html) {
+            $.cbuilder.active.$element.find('.cb-body').html(html);
         },
         _getItemsObject: function() {
             var clonecontents = $.cbuilder.active.$element.clone();
@@ -182,14 +185,17 @@
                                             var width = module.width !== undefined ? module.width + 'px' : '95%';
                                             var height = module.height !== undefined ? module.height + 'px' : '95%';
                                             if (checkOnClick()) {
-                                                layer.open({
+                                                var defaults = {
                                                     type: 2,
                                                     title: module.toolbar.text,
                                                     shadeClose: true,
                                                     shade: 0.3,
+                                                    skin: 'layui-layer-rim', //加上边框
                                                     area: [width, height],
                                                     content: $.cbuilder.path.js + 'toolbar/' + module.toolbar.name + '/main.html'
-                                                });
+                                                }
+                                                var options=$.extend({}, defaults, module.options);
+                                                layer.open(options);
                                             }
                                         }
                                         if (checkOnClick()) {
