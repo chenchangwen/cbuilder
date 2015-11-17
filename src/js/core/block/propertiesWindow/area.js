@@ -263,7 +263,7 @@
                             commons.layer.msg('', '请输入优惠券id', view.$couponid);
                             return false;
                         }
-                        if (couponid.indexOf(',') >= 0) {
+                        if (couponid.indexOf(',') >= 0 || !commons.regex.number.test(couponid)) {
                             var reg = /^(\d+\,)+\d+$/;
                             if (!reg.test(couponid)) {
                                 commons.layer.msg('', '优惠券id格式不正确,格式[数字,数字] 如:123,456', view.$couponid);

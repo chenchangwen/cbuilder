@@ -33,7 +33,7 @@ function init(element, basePath, commons) {
                     folder_method: 'post',
                     folder_url: '/service/image/getFolder',
                     image_method: 'post',
-                    image_url: '/img',
+                    image_url: '/service/image/getImages',
                     rows: 10,
                     onComplete: function(selected) {
                         alert('You select: ' + JSON.stringify(selected));

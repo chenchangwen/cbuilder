@@ -35,8 +35,8 @@ var itemtoolsview = {
             }
         });
     },
-    deleteEvent: function () {
-        $(".item-delete").on('click', function () {
+    deleteBtnEvent: function () {
+        itemtoolsview.$contianer.delegate(".item-delete", 'click', function () {
             var that = $(this);
             layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
                 layer.close(index);
@@ -46,7 +46,7 @@ var itemtoolsview = {
     },
     bindEvents: function() {
         itemtoolsview.mouseOverEvent();
-        itemtoolsview.deleteEvent();
+        itemtoolsview.deleteBtnEvent();
     },
     struc: function() {
         $(document).ready(function() {
