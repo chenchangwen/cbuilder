@@ -295,7 +295,7 @@ var cbuilder = {};
             /* 需要显示商品的数组 */
                 showGoodIdAry = [];
             /* 商品链接正则 */
-            var patterns = [/goods-\d+/];
+            var patterns = [/goods_id=\d+/, /\d+.html/ig, /goods-\d+/];
             var Area = {
                 /* 校验Icon状态 */
                 checkIconState: function() {
@@ -402,14 +402,13 @@ var cbuilder = {};
                                         $(".imgpos").each(function () {
                                             var $this = $(this);
                                             var href = $this.attr("href");
+                                            /* add by yy 临时保存匹配结果 */
                                             var match = '';
                                             if (href) {
                                                 for (var j = 0; j < patterns.length; j++) {
-                                                    if (patterns[j].test(href.toString())) {
-                                                        match = href.toString().match(/\d+/);
-                                                        if (match && match[0] === showGoodIdAry[i]) {
-                                                            $this.children("b").css("display", "block");
-                                                        }
+                                                    match = href.toString().match(/\d+/);
+                                                    if (match && match[0] === showGoodIdAry[i]) {
+                                                        $this.children("b").css("display", "block");
                                                     }
                                                 }
                                             }
