@@ -28,7 +28,7 @@
                                     pillstitle:'编辑元素'
                                 });
                             } else {
-                                view.loadJcrop($(this).parent().find('img'), 'edit');
+                                commons.jcrop.load($(this).parent().find('img'), 'edit');
                                 //$.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
                                 $.cbuilder.propertiesWindow.show({
                                     name: 'pwarea',
@@ -58,83 +58,6 @@
 //                        $.cbuilder.active._content = $.cbuilder._getItemsObject().html();
                     });
                 },
-                pwEditShowing: function () {
-                    $.cbuilder.propertiesWindow.$self.on('propertiesWindow:editShowing', function (event, opobj) {
-                        /* 将当前选择的对象(img)设为 pw的选择对象 */
-                        var $selectedobj = $(opobj);
-                        $.cbuilder.propertiesWindow.$selectedobj = $selectedobj;
-                        if ($selectedobj.prop('tagName') === 'IMG') {
-                            var options = {
-                                id: 'cb-main-addarea',
-                                text: '新建区域',
-                                panel: '.pw-main',
-                                event: function(obj) {
-                                    obj.on('click', function() {
-                                        view.loadJcrop($.cbuilder.propertiesWindow.$selectedobj, 'create');
-                                        $.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['新建区域', 'area']);
-                                    });
-                                }
-                            };
-                            $.cbuilder.$pw.AddBtn(options);
-                            $("#cb-main-addarea").show();
-                        } else {
-                            $("#cb-main-addarea").hide();
-                        }
-                    });
-                },
-                /* 载入图像裁剪 */
-                loadJcrop: function (obj, type) {
-                    if (typeof (jcrop_api) != "undefined") {
-                        jcrop_api.release();
-                        jcrop_api.animateTo([100, 100, 0, 0]);
-                        $.cbuilder.areapos = {
-                            w: 100,
-                            h: 100,
-                            x: 0,
-                            y: 0
-                        };
-                    } else {
-                        obj.Jcrop({
-                            onSelect: function (c) {
-                                $.cbuilder.areapos = {
-                                    w: c.w,
-                                    h: c.h,
-                                    x: c.x,
-                                    y: c.y
-                                };
-                                view.saveJcropPosition();
-                            },
-                            allowSelect: false
-                        }, function () {
-                            jcrop_api = this;
-                            if (type === 'edit') {
-                                var $obj = $.cbuilder.propertiesWindow.$selectedobj;
-                                var left = $obj.position().left;
-                                var top = $obj.position().top;
-                                var w = $obj.width() + 6;
-                                var h = $obj.height() + 6;
-                                $obj.addClass('imgpos-active');
-                                jcrop_api.setSelect([left, top, left + w, top + h]);
-                            } else {
-                                /* 默认:创建jcrop */
-                                jcrop_api.animateTo([100, 100, 0, 0]);
-                                $.cbuilder.areapos = {
-                                    w: 100,
-                                    h: 100,
-                                    x: 0,
-                                    y: 0
-                                };
-                            }
-                        });
-                    }
-                },
-                /* 保存裁剪位置 */
-                saveJcropPosition: function () {
-                    $('#cb-area-width').val($.cbuilder.areapos.w);
-                    $('#cb-area-height').val($.cbuilder.areapos.h);
-                    $('#cb-area-marginleft').val($.cbuilder.areapos.x);
-                    $('#cb-area-margintop').val($.cbuilder.areapos.y);
-                },
                 bindEvents: function () {
                     this.onContentReadyEvent();
                     this.onGetContentBeforeEvent();
@@ -142,7 +65,6 @@
                 struc: function () {
                     if (typeof $.Jcrop === "undefined") {
                         this.init();
-                        this.pwEditShowing();
                     }
                     this.bindEvents();
                 }

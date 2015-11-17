@@ -94,6 +94,8 @@
         },
         setContent: function (html) {
             $.cbuilder.active.$element.find('.cb-body').html(html);
+            $.cbuilder.active._trigger('cbuilder:onWrapContent');
+            $.cbuilder.active._trigger('cbuilder:onContentReady');
         },
         _getItemsObject: function() {
             var clonecontents = $.cbuilder.active.$element.clone();
@@ -123,6 +125,11 @@
                 /* 加载vendors */
                 loadVendors: function () {
                     var vendors = [
+                        
+                        /* bootstrap */
+                        'vendor/bootstrap/dist/css/bootstrap.min.css',
+                         'vendor/bootstrap/dist/css/bootstrap-theme.css',
+
                         /* 弹出层 */
                         'vendor/layer/layer.js',
                         'vendor/layer/skin/layer.css',
@@ -131,15 +138,9 @@
                         'vendor/dragula.js/dist/dragula.min.js',
                         'vendor/dragula.js/dist/dragula.min.css',
 
-                        /* 菜单 */
-                        'vendor/jQuery-contextMenu/src/jquery.contextMenu.js',
-                        'vendor/jQuery-contextMenu/src/jquery.contextMenu.css',
                         /* 日期 */
                         'vendor/datetimepicker/jquery.datetimepicker.css',
-                        'vendor/datetimepicker/jquery.datetimepicker.js',
-
-                        'vendor/bootstrap/dist/css/bootstrap.min.css',
-                         'vendor/bootstrap/dist/css/bootstrap-theme.css'
+                        'vendor/datetimepicker/jquery.datetimepicker.js'
                     ];
                     commons.loadFile(vendors);
                 },

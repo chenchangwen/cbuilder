@@ -119,6 +119,9 @@
                         /* 时间格式 */
                         view.$format.val($obj.attr('format') || defaults.format);
                         break;
+                    case 'coupon':
+                        view.$couponid.val($obj.attr('data-id') || '');
+                        break;
                 }
                 /* 匹配当前id的controls 并显示panel*/
                 view.$pw.find('.pw-controls-panel[class*=' + inputid + ']').show();
@@ -211,8 +214,8 @@
                         var url = $.trim(view.$url.val()).toString();
                         var opentype = $('input[name="opentype"]:checked').data('value');
                         if (!url.match(commons.regex.url)) {
-                            commons.layer.msg('','请输入正确的链接地址');
-                            return false;
+                            commons.layer.msg('', '请输入正确的链接地址', view.$url);
+                            return false;;
                         }
                         areatypehtml += 'target="' + opentype + '"';
                         areatypehtml += 'href="' + url + '"';
@@ -220,8 +223,7 @@
                     case 'anchor':
                         var $anchor = $.cbuilder.active.$element.find(clsContent).find('.cb-anchor');
                         if ($anchor.length === 0) {
-                            commons.layer.msg('', '请添加锚点');
-                            $anchor.focus();
+                            commons.layer.msg('', '请添加锚点', $anchor);
                             return false;
                         }
                         areatypehtml += 'href="#' + view.$anchor.val() + '"';
@@ -233,18 +235,15 @@
                         view.format = view.$format.val();
                         view.isdayunit = view.$isdayunit.prop('checked');
                         if (view.startdate === '') {
-                            commons.layer.msg('', '请选择开始时间');
-                            view.$startdate.focus();
+                            commons.layer.msg('', '请选择开始时间', view.$startdate);
                             return false;
                         }
                         else
                             if (view.enddate === '') {
-                                commons.layer.msg('', '请选择结束时间');
-                                view.$enddate.focus();
+                                commons.layer.msg('', '请选择结束时间', view.$enddate);
                                 return false;
                             }
-                        successcb = function () {
-                            var $imgpos = $("#tempimgpos");
+                        successcb = function ($imgpos) {
                             /* 字体,大小,颜色 */
                             $imgpos.css("font-family", view.$fontfamily.val());
                             $imgpos.css("font-size", view.$fontsize.val() + 'px');
@@ -257,6 +256,26 @@
                             /* 时间格式 */
                             $imgpos.attr('format', view.format);
                         }
+                        break;
+                    case 'coupon':
+                        var couponid = view.$couponid.val();
+                        if (couponid === '') {
+                            commons.layer.msg('', '请输入优惠券id', view.$couponid);
+                            return false;
+                        }
+                        if (couponid.indexOf(',') >= 0) {
+                            var reg = /^(\d+\,)+\d+$/;
+                            if (!reg.test(couponid)) {
+                                commons.layer.msg('', '优惠券id格式不正确,格式[数字,数字] 如:123,456', view.$couponid);
+                                return false;
+                            }
+                        }
+                        successcb = function ($imgpos) {
+                            /* 优惠券id */
+                            $imgpos.attr('data-id', couponid);
+                        }
+                        
+                        break;
                 }
                 /* 全部正确保存类型 */
                 areatypehtml += ' linktype="' + type + '"';
@@ -272,7 +291,8 @@
                 /* 全部正确插入imgpos */
                 $parent.append(imgpos);
                 if (typeof successcb === 'function') {
-                    successcb();
+                    var $imgpos = $("#tempimgpos");
+                    successcb($imgpos);
                 }
                 commons.removeImpos();
                 commons.layer.msg('success');
@@ -284,7 +304,7 @@
             view.$delete.on('click', function () {
                 layer.confirm('确定删除<当前区域>?', { icon: 3 }, function (index) {
                     commons.removeImpos();
-                    commons.propertiesWindow.hide();
+                    $.cbuilder.propertiesWindow.hide();
                     layer.close(index);
                 });
             });
@@ -372,7 +392,7 @@
             commons.objectCallFunction(view, '_cropPosInputEvent', '_saveBtnEvent', '_deleteBtnEvent', '_typeEvent', '_countDownEvent', '_dateTimeEvent');
         },
         _domCache: function () {
-            var vmain = 'cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos,' +
+            var vmain = 'cb-area-couponid,cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos,' +
                 'cb-area-width,cb-area-height,cb-area-marginleft,' +
                 'cb-area-margintop,cb-area-anchor,pw-area';
             var vbtn = ',cb-area-save,cb-area-delete';

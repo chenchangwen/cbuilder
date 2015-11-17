@@ -123,7 +123,7 @@
     },
     /* layer */
     layer: {
-        msg: function (type, msg) {
+        msg: function (type, msg,$focuselement) {
             var info = '';
             switch (type) {
                 case 'warning':
@@ -144,6 +144,71 @@
                 time: 1500,
                 offset: '400px'
             });
+            if (commons.judge.isJquery($focuselement)) {
+                $focuselement.focus();
+            }
+        }
+    },
+    /* jcrop*/
+    jcrop: {
+        load: function (obj, type) {
+            if (typeof (jcrop_api) != "undefined") {
+                jcrop_api.release();
+                jcrop_api.animateTo([100, 100, 0, 0]);
+                $.cbuilder.areapos = {
+                    w: 100,
+                    h: 100,
+                    x: 0,
+                    y: 0
+                };
+            } else {
+                obj.Jcrop({
+                    onSelect: function (c) {
+                        $.cbuilder.areapos = {
+                            w: c.w,
+                            h: c.h,
+                            x: c.x,
+                            y: c.y
+                        };
+                        $('#cb-area-width').val($.cbuilder.areapos.w);
+                        $('#cb-area-height').val($.cbuilder.areapos.h);
+                        $('#cb-area-marginleft').val($.cbuilder.areapos.x);
+                        $('#cb-area-margintop').val($.cbuilder.areapos.y);
+                    },
+                    allowSelect: false
+                }, function () {
+                    jcrop_api = this;
+                    if (type === 'edit') {
+                        var $obj = $.cbuilder.propertiesWindow.$selectedobj;
+                        var left = $obj.position().left;
+                        var top = $obj.position().top;
+                        var w = $obj.width() + 6;
+                        var h = $obj.height() + 6;
+                        $obj.addClass('imgpos-active');
+                        jcrop_api.setSelect([left, top, left + w, top + h]);
+                    } else {
+                        /* 默认:创建jcrop */
+                        jcrop_api.animateTo([100, 100, 0, 0]);
+                        $.cbuilder.areapos = {
+                            w: 100,
+                            h: 100,
+                            x: 0,
+                            y: 0
+                        };
+                    }
+                });
+            }
+        }
+    },
+    /* 判断 */
+    judge: {
+        isJquery:function(obj) {
+            if (typeof obj !== 'undefined') {
+                if (obj instanceof jQuery) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

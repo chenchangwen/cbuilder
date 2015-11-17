@@ -3,27 +3,35 @@
     var view = {
         /* dom缓存 */
         _domCache: function () {
-            var str1 = 'cb-picture-height,cb-picture-width,cb-picture-showdate,cb-picture-hidedate';
+            var str1 = 'cb-picture-addarea,cb-picture-height,cb-picture-width,cb-picture-showdate,cb-picture-hidedate';
             view.$pw = $('#pwpicture');
-            view.$pw.savebtn = view.$pw.find('.pw-body-footer .save');
-            view.$pw.deletebtn = view.$pw.find('.pw-body-footer .delete');
+            view.$savebtn = view.$pw.find('.pw-body-footer .save');
+            view.$deletebtn = view.$pw.find('.pw-body-footer .delete');
             commons.setObjVariable(view, str1, 'cb-picture-');
+        },
+        /* 新建区域 */
+        _addAreaBtnEvent: function() {
+            view.$addarea.on('click', function() {
+                commons.jcrop.load($.cbuilder.propertiesWindow.$selectedobj, 'create');
+                $.cbuilder.propertiesWindow.show({
+                    name: 'pwarea',
+                    pillstitle: '新建区域'
+                });
+            });
         },
         /* 保存按钮 */
         _saveBtnEvent: function() {
-            view.$pw.savebtn.on('click', function () {
+            view.$savebtn.on('click', function () {
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                 if (!commons.regex.number.test(view.$height.val())) {
-                    commons.layer.msg('', '请输入正确的数字');
-                    view.$height.focus();
+                    commons.layer.msg('', '请输入正确的数字', view.$height);
                     return false;
                 } else {
                     $selectedobj.css('height', view.$height.val());
                 }
 
                 if (!commons.regex.number.test(view.$width.val())) {
-                    commons.layer.msg('', '请输入正确的数字');
-                    view.$width.focus();
+                    commons.layer.msg('', '请输入正确的数字', view.$width);
                     return false;
                 } else {
                     $selectedobj.css('width', view.$width.val());
@@ -51,7 +59,7 @@
         },
         /* 删除按钮 */
         _deleteBtnEvent: function () {
-            view.$pw.deletebtn.on('click', function () {
+            view.$deletebtn.on('click', function () {
                 var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                 var tip = '确定删除&lt;' + $selectedobj.prop('tagName') + '&gt;?';
                 layer.confirm(tip, { icon: 3 }, function (index) {
@@ -129,7 +137,7 @@
             });
         },
         _bindEvents: function () {
-            commons.objectCallFunction(view, '_showingEvent', '_saveBtnEvent', '_deleteBtnEvent', '_dateTimeEvent');
+            commons.objectCallFunction(view, '_showingEvent', '_saveBtnEvent', '_addAreaBtnEvent', '_deleteBtnEvent', '_dateTimeEvent');
         },
         _init: function () {
             var vendors = [

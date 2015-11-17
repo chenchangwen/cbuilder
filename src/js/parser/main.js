@@ -288,15 +288,15 @@ var cbuilder = {};
         _bindEvents: function () {
             //ccweditor.objectCallFunction(ccweditor, 'cropWrapEvent', 'tabContainerEvent', 'tabEvent', 'couponEvent');
         },
-        /* 热点组件 */
-        _HotLinkComponent: function () {
+        /* 区域组件 */
+        _AreaComponent: function () {
             /* 商品数组 */
             var goodIdAry = [],
             /* 需要显示商品的数组 */
                 showGoodIdAry = [];
             /* 商品链接正则 */
             var patterns = [/goods_id=\d+/, /\d+.html/ig, /goods-\d+/];
-            var hotlink = {
+            var Area = {
                 /* 校验Icon状态 */
                 checkIconState: function() {
                     view.$imgpos.each(function (i) {
@@ -322,7 +322,7 @@ var cbuilder = {};
                         }
                         /* 如果是最后一个,则显示图片Icon */
                         if (i === (view.$imgpos.length - 1)) {
-                            hotlink.showStateIcon();
+                            Area.showStateIcon();
                         }
                     });  
                 },
@@ -421,17 +421,17 @@ var cbuilder = {};
                     return false;
                 },
                 init: function() {
-                    commons.objectCallFunction(hotlink, 'checkIconState', 'checkCountDownState');
+                    commons.objectCallFunction(Area, 'checkIconState', 'checkCountDownState');
                 }
             };
-            hotlink.init();
+            Area.init();
         },
         _ComponentsCustomEvent: function () {
             
         },
         /* 解析组件 */
         _parseComponents: function () {
-            commons.objectCallFunction(view, '_domCache', '_HotLinkComponent');
+            commons.objectCallFunction(view, '_domCache', '_AreaComponent');
         },
         init: function () {
             var $img = $('img');

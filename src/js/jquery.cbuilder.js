@@ -159,7 +159,7 @@
         },
         /* layer */
         layer: {
-            msg: function(type, msg) {
+            msg: function(type, msg, $focuselement) {
                 var info = "";
                 switch (type) {
                   case "warning":
@@ -179,6 +179,71 @@
                     time: 1500,
                     offset: "400px"
                 });
+                if (commons.judge.isJquery($focuselement)) {
+                    $focuselement.focus();
+                }
+            }
+        },
+        /* jcrop*/
+        jcrop: {
+            load: function(obj, type) {
+                if (typeof jcrop_api != "undefined") {
+                    jcrop_api.release();
+                    jcrop_api.animateTo([ 100, 100, 0, 0 ]);
+                    $.cbuilder.areapos = {
+                        w: 100,
+                        h: 100,
+                        x: 0,
+                        y: 0
+                    };
+                } else {
+                    obj.Jcrop({
+                        onSelect: function(c) {
+                            $.cbuilder.areapos = {
+                                w: c.w,
+                                h: c.h,
+                                x: c.x,
+                                y: c.y
+                            };
+                            $("#cb-area-width").val($.cbuilder.areapos.w);
+                            $("#cb-area-height").val($.cbuilder.areapos.h);
+                            $("#cb-area-marginleft").val($.cbuilder.areapos.x);
+                            $("#cb-area-margintop").val($.cbuilder.areapos.y);
+                        },
+                        allowSelect: false
+                    }, function() {
+                        jcrop_api = this;
+                        if (type === "edit") {
+                            var $obj = $.cbuilder.propertiesWindow.$selectedobj;
+                            var left = $obj.position().left;
+                            var top = $obj.position().top;
+                            var w = $obj.width() + 6;
+                            var h = $obj.height() + 6;
+                            $obj.addClass("imgpos-active");
+                            jcrop_api.setSelect([ left, top, left + w, top + h ]);
+                        } else {
+                            /* 默认:创建jcrop */
+                            jcrop_api.animateTo([ 100, 100, 0, 0 ]);
+                            $.cbuilder.areapos = {
+                                w: 100,
+                                h: 100,
+                                x: 0,
+                                y: 0
+                            };
+                        }
+                    });
+                }
+            }
+        },
+        /* 判断 */
+        judge: {
+            isJquery: function(obj) {
+                if (typeof obj !== "undefined") {
+                    if (obj instanceof jQuery) {
+                        return true;
+                    }
+                }
+                return false;
             }
         }
     };
@@ -226,6 +291,8 @@
         },
         setContent: function(html) {
             $.cbuilder.active.$element.find(".cb-body").html(html);
+            $.cbuilder.active._trigger("cbuilder:onWrapContent");
+            $.cbuilder.active._trigger("cbuilder:onContentReady");
         },
         _getItemsObject: function() {
             var clonecontents = $.cbuilder.active.$element.clone();
@@ -251,11 +318,11 @@
                 },
                 /* 加载vendors */
                 loadVendors: function() {
-                    var vendors = [ /* 弹出层 */
+                    var vendors = [ /* bootstrap */
+                    "vendor/bootstrap/dist/css/bootstrap.min.css", "vendor/bootstrap/dist/css/bootstrap-theme.css", /* 弹出层 */
                     "vendor/layer/layer.js", "vendor/layer/skin/layer.css", /* 拖拽 */
-                    "vendor/dragula.js/dist/dragula.min.js", "vendor/dragula.js/dist/dragula.min.css", /* 菜单 */
-                    "vendor/jQuery-contextMenu/src/jquery.contextMenu.js", "vendor/jQuery-contextMenu/src/jquery.contextMenu.css", /* 日期 */
-                    "vendor/datetimepicker/jquery.datetimepicker.css", "vendor/datetimepicker/jquery.datetimepicker.js", "vendor/bootstrap/dist/css/bootstrap.min.css", "vendor/bootstrap/dist/css/bootstrap-theme.css" ];
+                    "vendor/dragula.js/dist/dragula.min.js", "vendor/dragula.js/dist/dragula.min.css", /* 日期 */
+                    "vendor/datetimepicker/jquery.datetimepicker.css", "vendor/datetimepicker/jquery.datetimepicker.js" ];
                     commons.loadFile(vendors);
                 },
                 /* 加载toolbar */
@@ -464,7 +531,7 @@
         propertiesWindow: function() {
             /* htmlģ�� */
             var templates = {
-                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><h3 class="cb-pills-title"></h3><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><form class="form-horizontal"><h6 class="pw-body-content-header">&#x5C5E;&#x6027;</h6><div class="form-group"><label for="cb-picture-height" class="col-sm-2 control-label">height:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-height" placeholder="height"></div></div><div class="form-group"><label for="cb-picture-width" class="col-sm-2 control-label">width:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-width" placeholder="width"></div></div><h6 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h6><div class="form-group"><label for="cb-picture-showdate" class="col-sm-2 control-label">&#x5F00;&#x59CB;:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-showdate" placeholder="&#x5F00;&#x59CB;"></div></div><div class="form-group"><label for="cb-picture-hidedate" class="col-sm-2 control-label">&#x7ED3;&#x675F;:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-hidedate" placeholder="&#x7ED3;&#x675F;"></div></div></form><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn btn-primary btn-sm save">&#x4FDD; &#x5B58;</button><button type="button" class="btn btn-danger btn-sm delete">&#x5220; &#x9664;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h6 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h6><form class="form-horizontal"><div class="form-group"><label for="cb-area-width" class="col-sm-2 control-label">width:</label><div class="col-sm-10"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-width" data-name="width" maxlength="4" placeholder="width"></div></div><div class="form-group"><label for="cb-area-height" class="col-sm-2 control-label">height:</label><div class="col-sm-10"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-height" data-name="height" maxlength="4" placeholder="height"></div></div><div class="form-group"><label for="cb-area-marginleft" class="col-sm-3 control-label">marginleft:</label><div class="col-sm-9"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-marginleft" data-name="left" maxlength="4" placeholder="marginleft"></div></div><div class="form-group"><label for="cb-area-margintop" class="col-sm-3 control-label">margintop:</label><div class="col-sm-9"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-margintop" data-name="top" maxlength="4" placeholder="margintop"></div></div><hr class="cb-article-divider"><h6 class="pw-body-content-header">&#x7C7B;&#x578B;</h6><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><div class="form-group"><label for="cb-area-url" class="col-sm-3 control-label">&#x94FE;&#x63A5;&#x5730;&#x5740;:</label><div class="col-sm-9"><textarea type="text" class="form-control" rows="3" id="cb-area-url" placeholder="&#x94FE;&#x63A5;&#x5730;&#x5740;"></textarea></div></div><div class="form-group"><label for="cb-area-margintop" class="col-sm-3 control-label">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</label><div class="col-sm-9"><label for="open-type1" class="radio-inline"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2" class="radio-inline"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></div></div></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor" class="form-control input-sm"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><div id="cb-area-fontdemo" class="cb-temp cb-area-fontdemo"></div><div class="form-group"><label for="cb-area-margintop" class="col-sm-3 control-label">&#x5B57;&#x4F53;:</label><div class="col-sm-9"><select id="cb-area-fontfamily" class="form-control input-sm"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></div></div><div class="form-group"><label for="cb-area-fontsize" class="col-sm-3 control-label">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</label><div class="col-sm-9"><select id="cb-area-fontsize" class="form-control input-sm"></select></div></div><div class="form-group"><label for="cb-area-fontcolor" class="col-sm-3 control-label">&#x5B57;&#x4F53;&#x989C;&#x8272;:</label><div class="col-sm-9"><input type="text" class="form-control input-sm" id="cb-area-fontcolor" placeholder="&#x5B57;&#x4F53;&#x989C;&#x8272;"></div></div><div class="form-group"><label for="cb-area-startdate" class="col-sm-3 control-label">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</label><div class="col-sm-9"><input type="text" class="form-control input-sm" id="cb-area-startdate" placeholder="&#x5F00;&#x59CB;&#x65F6;&#x95F4;"></div></div><div class="form-group"><label for="cb-area-enddate" class="col-sm-3 control-label">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</label><div class="col-sm-9"><input type="text" class="form-control input-sm" id="cb-area-enddate" placeholder="&#x7ED3;&#x675F;&#x65F6;&#x95F4;"></div></div><div class="form-group"><label for="cb-area-isdayunit" class="col-sm-3 control-label">&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</label><div class="col-sm-9"><div class="checkbox"><label><input type="checkbox" id="cb-area-isdayunit"></label></div></div></div><div class="form-group"><label for="cb-area-enddate" class="col-sm-3 control-label">&#x65F6;&#x95F4;&#x683C;&#x5F0F;:</label><div class="col-sm-9"><select id="cb-area-format" class="form-control input-sm"><option value="cn">&#x65F6;:&#x5206;:&#x79D2;</option><option value="HH:mm:ss">HH:mm:ss</option></select></div></div></div></form></div><hr class="cb-article-divider"><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn btn-primary btn-sm">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn btn-danger btn-sm delete">&#x5220; &#x9664;</button></div></div></div></div><!-- 锚点 --><div class="pw-picture pw-panel" id="pwanchor"><div class="pw-body"><div class="pw-body-content"><form class="form-horizontal"><div class="form-group"><label for="cb-anchor-name" class="col-sm-2 control-label">&#x540D;&#x79F0;:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-anchor-name" placeholder="&#x540D;&#x79F0;:"></div></div></form></div><hr class="cb-article-divider"><div class="pw-body-footer"><button type="button" id="cb-anchor-save" class="btn btn-primary btn-sm save">&#x4FDD; &#x5B58;</button><button type="button" id="cb-anchor-delete" class="btn btn-danger btn-sm delete deleteevent">&#x5220; &#x9664;</button></div></div></div></div>',
+                propertiesWindow: '<!-- 标题面板 --><div id="cb-title-panel"><div class="pw-header"></div><h3 class="cb-pills-title"></h3><hr class="cb-article-divider"></div><div class="cb-propertiesWindow"><div class="cb-pw-openner" id="pwopenner">&#x5C5E;<br>&#x6027;<br>&#x83DC;<br>&#x5355;<br></div><!-- 图片 --><div class="pw-picture pw-panel" id="pwpicture"><div class="pw-body"><div class="pw-body-content"><form class="form-horizontal"><h6 class="pw-body-content-header">&#x5C5E;&#x6027;</h6><div class="form-group"><label for="cb-picture-height" class="col-sm-2 control-label">height:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-height" placeholder="height"></div></div><div class="form-group"><label for="cb-picture-width" class="col-sm-2 control-label">width:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-width" placeholder="width"></div></div><h6 class="pw-body-content-header">&#x663E;&#x793A;&#x65F6;&#x95F4;</h6><div class="form-group"><label for="cb-picture-showdate" class="col-sm-2 control-label">&#x5F00;&#x59CB;:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-showdate" placeholder="&#x5F00;&#x59CB;"></div></div><div class="form-group"><label for="cb-picture-hidedate" class="col-sm-2 control-label">&#x7ED3;&#x675F;:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-picture-hidedate" placeholder="&#x7ED3;&#x675F;"></div></div></form><hr class="cb-article-divider"></div><div class="pw-body-footer"><button type="button" class="btn btn-primary btn-sm save">&#x4FDD; &#x5B58;</button><button type="button" class="btn btn-danger btn-sm delete">&#x5220; &#x9664;</button><button type="button" id="cb-picture-addarea" class="btn btn-primary btn-sm">&#x65B0; &#x5EFA; &#x533A; &#x57DF;</button></div></div></div><!-- 区域 --><div class="pw-area pw-panel" id="pwarea"><div class="pw-body"><div class="pw-body-content"><h6 class="pw-body-content-header">&#x4F4D;&#x7F6E;</h6><form class="form-horizontal"><div class="form-group"><label for="cb-area-width" class="col-sm-2 control-label">width:</label><div class="col-sm-10"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-width" data-name="width" maxlength="4" placeholder="width"></div></div><div class="form-group"><label for="cb-area-height" class="col-sm-2 control-label">height:</label><div class="col-sm-10"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-height" data-name="height" maxlength="4" placeholder="height"></div></div><div class="form-group"><label for="cb-area-marginleft" class="col-sm-3 control-label">marginleft:</label><div class="col-sm-9"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-marginleft" data-name="left" maxlength="4" placeholder="marginleft"></div></div><div class="form-group"><label for="cb-area-margintop" class="col-sm-3 control-label">margintop:</label><div class="col-sm-9"><input type="text" class="form-control cb-area-croppos input-sm" id="cb-area-margintop" data-name="top" maxlength="4" placeholder="margintop"></div></div><hr class="cb-article-divider"><h6 class="pw-body-content-header">&#x7C7B;&#x578B;</h6><div class="pw-body-content-controls"><div id="cb-area-type"><label for="cb-area-type1"><input id="cb-area-type1" data-type="link" type="radio" name="areatype">&#x94FE;&#x63A5;</label><label for="cb-area-type2"><input id="cb-area-type2" data-type="anchor" type="radio" name="areatype">&#x951A;&#x70B9;</label><label for="cb-area-type3"><input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">&#x5012;&#x8BA1;&#x65F6;</label><label for="cb-area-type4"><input id="cb-area-type4" data-type="coupon" type="radio" name="areatype">&#x4F18;&#x60E0;&#x5238;</label></div></div><div class="cb-area-type cb-area-type1 pw-controls-panel"><div class="form-group"><label for="cb-area-url" class="col-sm-3 control-label">&#x94FE;&#x63A5;&#x5730;&#x5740;:</label><div class="col-sm-9"><textarea type="text" class="form-control" rows="3" id="cb-area-url" placeholder="&#x94FE;&#x63A5;&#x5730;&#x5740;"></textarea></div></div><div class="form-group"><label for="cb-area-margintop" class="col-sm-3 control-label">&#x6253;&#x5F00;&#x65B9;&#x5F0F;:</label><div class="col-sm-9"><label for="open-type1" class="radio-inline"><input id="open-type1" data-value="_blank" type="radio" name="opentype" checked="checked">&#x65B0;&#x5EFA;&#x7A97;&#x53E3;</label><label for="open-type2" class="radio-inline"><input id="open-type2" data-value="_self" type="radio" name="opentype">&#x5F53;&#x524D;&#x7A97;&#x53E3;</label></div></div></div><div class="cb-area-type cb-area-type2 pw-controls-panel"><select id="cb-area-anchor" class="form-control input-sm"></select></div><div class="cb-area-type cb-area-type3 pw-controls-panel"><div id="cb-area-fontdemo" class="cb-temp cb-area-fontdemo"></div><div class="form-group"><label for="cb-area-margintop" class="col-sm-3 control-label">&#x5B57;&#x4F53;:</label><div class="col-sm-9"><select id="cb-area-fontfamily" class="form-control input-sm"><option value="&#x5B8B;&#x4F53;">&#x5B8B;&#x4F53;</option><option value="&#x6977;&#x4F53;">&#x6977;&#x4F53;</option><option value="&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;">&#x5FAE;&#x8F6F;&#x96C5;&#x9ED1;</option></select></div></div><div class="form-group"><label for="cb-area-fontsize" class="col-sm-3 control-label">&#x5B57;&#x4F53;&#x5927;&#x5C0F;:</label><div class="col-sm-9"><select id="cb-area-fontsize" class="form-control input-sm"></select></div></div><div class="form-group"><label for="cb-area-fontcolor" class="col-sm-3 control-label">&#x5B57;&#x4F53;&#x989C;&#x8272;:</label><div class="col-sm-9"><input type="text" class="form-control input-sm" id="cb-area-fontcolor" placeholder="&#x5B57;&#x4F53;&#x989C;&#x8272;"></div></div><div class="form-group"><label for="cb-area-startdate" class="col-sm-3 control-label">&#x5F00;&#x59CB;&#x65F6;&#x95F4;:</label><div class="col-sm-9"><input type="text" class="form-control input-sm" id="cb-area-startdate" placeholder="&#x5F00;&#x59CB;&#x65F6;&#x95F4;"></div></div><div class="form-group"><label for="cb-area-enddate" class="col-sm-3 control-label">&#x7ED3;&#x675F;&#x65F6;&#x95F4;:</label><div class="col-sm-9"><input type="text" class="form-control input-sm" id="cb-area-enddate" placeholder="&#x7ED3;&#x675F;&#x65F6;&#x95F4;"></div></div><div class="form-group"><label for="cb-area-isdayunit" class="col-sm-3 control-label">&#x5929;&#x4E3A;&#x5355;&#x4F4D;:</label><div class="col-sm-9"><div class="checkbox"><label><input type="checkbox" id="cb-area-isdayunit"></label></div></div></div><div class="form-group"><label for="cb-area-enddate" class="col-sm-3 control-label">&#x65F6;&#x95F4;&#x683C;&#x5F0F;:</label><div class="col-sm-9"><select id="cb-area-format" class="form-control input-sm"><option value="cn">&#x65F6;:&#x5206;:&#x79D2;</option><option value="HH:mm:ss">HH:mm:ss</option></select></div></div></div><div class="cb-area-type cb-area-type4 pw-controls-panel"><div class="form-group"><label for="cb-area-url" class="col-sm-3 control-label">&#x4F18;&#x60E0;&#x5238;id</label><div class="col-sm-9"><input type="text" class="form-control input-sm" id="cb-area-couponid" placeholder="&#x4F18;&#x60E0;&#x5238;id,&#x53F7;&#x5206;&#x5272;"></div></div></div></form></div><hr class="cb-article-divider"><div class="pw-body-footer"><div class="pw-body-footer"><button type="button" id="cb-area-save" class="btn btn-primary btn-sm">&#x4FDD; &#x5B58;</button><button type="button" id="cb-area-delete" class="btn btn-danger btn-sm delete">&#x5220; &#x9664;</button></div></div></div></div><!-- 锚点 --><div class="pw-picture pw-panel" id="pwanchor"><div class="pw-body"><div class="pw-body-content"><form class="form-horizontal"><div class="form-group"><label for="cb-anchor-name" class="col-sm-2 control-label">&#x540D;&#x79F0;:</label><div class="col-sm-10"><input type="text" class="form-control input-sm" id="cb-anchor-name" placeholder="&#x540D;&#x79F0;:"></div></div></form></div><hr class="cb-article-divider"><div class="pw-body-footer"><button type="button" id="cb-anchor-save" class="btn btn-primary btn-sm save">&#x4FDD; &#x5B58;</button><button type="button" id="cb-anchor-delete" class="btn btn-danger btn-sm delete deleteevent">&#x5220; &#x9664;</button></div></div></div></div>',
                 bodycontentheader: '<h1 class="pw-body-content-header">#value</h1>',
                 hr: '<hr class="cb-article-divider">'
             };
@@ -532,26 +599,34 @@
                 var view = {
                     /* dom缓存 */
                     _domCache: function() {
-                        var str1 = "cb-picture-height,cb-picture-width,cb-picture-showdate,cb-picture-hidedate";
+                        var str1 = "cb-picture-addarea,cb-picture-height,cb-picture-width,cb-picture-showdate,cb-picture-hidedate";
                         view.$pw = $("#pwpicture");
-                        view.$pw.savebtn = view.$pw.find(".pw-body-footer .save");
-                        view.$pw.deletebtn = view.$pw.find(".pw-body-footer .delete");
+                        view.$savebtn = view.$pw.find(".pw-body-footer .save");
+                        view.$deletebtn = view.$pw.find(".pw-body-footer .delete");
                         commons.setObjVariable(view, str1, "cb-picture-");
+                    },
+                    /* 新建区域 */
+                    _addAreaBtnEvent: function() {
+                        view.$addarea.on("click", function() {
+                            commons.jcrop.load($.cbuilder.propertiesWindow.$selectedobj, "create");
+                            $.cbuilder.propertiesWindow.show({
+                                name: "pwarea",
+                                pillstitle: "新建区域"
+                            });
+                        });
                     },
                     /* 保存按钮 */
                     _saveBtnEvent: function() {
-                        view.$pw.savebtn.on("click", function() {
+                        view.$savebtn.on("click", function() {
                             var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                             if (!commons.regex.number.test(view.$height.val())) {
-                                commons.layer.msg("", "请输入正确的数字");
-                                view.$height.focus();
+                                commons.layer.msg("", "请输入正确的数字", view.$height);
                                 return false;
                             } else {
                                 $selectedobj.css("height", view.$height.val());
                             }
                             if (!commons.regex.number.test(view.$width.val())) {
-                                commons.layer.msg("", "请输入正确的数字");
-                                view.$width.focus();
+                                commons.layer.msg("", "请输入正确的数字", view.$width);
                                 return false;
                             } else {
                                 $selectedobj.css("width", view.$width.val());
@@ -578,7 +653,7 @@
                     },
                     /* 删除按钮 */
                     _deleteBtnEvent: function() {
-                        view.$pw.deletebtn.on("click", function() {
+                        view.$deletebtn.on("click", function() {
                             var $selectedobj = $.cbuilder.propertiesWindow.$selectedobj;
                             var tip = "确定删除&lt;" + $selectedobj.prop("tagName") + "&gt;?";
                             layer.confirm(tip, {
@@ -657,7 +732,7 @@
                         });
                     },
                     _bindEvents: function() {
-                        commons.objectCallFunction(view, "_showingEvent", "_saveBtnEvent", "_deleteBtnEvent", "_dateTimeEvent");
+                        commons.objectCallFunction(view, "_showingEvent", "_saveBtnEvent", "_addAreaBtnEvent", "_deleteBtnEvent", "_dateTimeEvent");
                     },
                     _init: function() {
                         var vendors = [ /* 颜色 */
@@ -773,6 +848,10 @@
                                 /* 时间格式 */
                                 view.$format.val($obj.attr("format") || defaults.format);
                                 break;
+
+                              case "coupon":
+                                view.$couponid.val($obj.attr("data-id") || "");
+                                break;
                             }
                             /* 匹配当前id的controls 并显示panel*/
                             view.$pw.find(".pw-controls-panel[class*=" + inputid + "]").show();
@@ -863,7 +942,7 @@
                                 var url = $.trim(view.$url.val()).toString();
                                 var opentype = $('input[name="opentype"]:checked').data("value");
                                 if (!url.match(commons.regex.url)) {
-                                    commons.layer.msg("", "请输入正确的链接地址");
+                                    commons.layer.msg("", "请输入正确的链接地址", view.$url);
                                     return false;
                                 }
                                 areatypehtml += 'target="' + opentype + '"';
@@ -873,8 +952,7 @@
                               case "anchor":
                                 var $anchor = $.cbuilder.active.$element.find(clsContent).find(".cb-anchor");
                                 if ($anchor.length === 0) {
-                                    commons.layer.msg("", "请添加锚点");
-                                    $anchor.focus();
+                                    commons.layer.msg("", "请添加锚点", $anchor);
                                     return false;
                                 }
                                 areatypehtml += 'href="#' + view.$anchor.val() + '"';
@@ -887,16 +965,13 @@
                                 view.format = view.$format.val();
                                 view.isdayunit = view.$isdayunit.prop("checked");
                                 if (view.startdate === "") {
-                                    commons.layer.msg("", "请选择开始时间");
-                                    view.$startdate.focus();
+                                    commons.layer.msg("", "请选择开始时间", view.$startdate);
                                     return false;
                                 } else if (view.enddate === "") {
-                                    commons.layer.msg("", "请选择结束时间");
-                                    view.$enddate.focus();
+                                    commons.layer.msg("", "请选择结束时间", view.$enddate);
                                     return false;
                                 }
-                                successcb = function() {
-                                    var $imgpos = $("#tempimgpos");
+                                successcb = function($imgpos) {
                                     /* 字体,大小,颜色 */
                                     $imgpos.css("font-family", view.$fontfamily.val());
                                     $imgpos.css("font-size", view.$fontsize.val() + "px");
@@ -909,6 +984,26 @@
                                     /* 时间格式 */
                                     $imgpos.attr("format", view.format);
                                 };
+                                break;
+
+                              case "coupon":
+                                var couponid = view.$couponid.val();
+                                if (couponid === "") {
+                                    commons.layer.msg("", "请输入优惠券id", view.$couponid);
+                                    return false;
+                                }
+                                if (couponid.indexOf(",") >= 0) {
+                                    var reg = /^(\d+\,)+\d+$/;
+                                    if (!reg.test(couponid)) {
+                                        commons.layer.msg("", "优惠券id格式不正确,格式[数字,数字] 如:123,456", view.$couponid);
+                                        return false;
+                                    }
+                                }
+                                successcb = function($imgpos) {
+                                    /* 优惠券id */
+                                    $imgpos.attr("data-id", couponid);
+                                };
+                                break;
                             }
                             /* 全部正确保存类型 */
                             areatypehtml += ' linktype="' + type + '"';
@@ -924,7 +1019,8 @@
                             /* 全部正确插入imgpos */
                             $parent.append(imgpos);
                             if (typeof successcb === "function") {
-                                successcb();
+                                var $imgpos = $("#tempimgpos");
+                                successcb($imgpos);
                             }
                             commons.removeImpos();
                             commons.layer.msg("success");
@@ -938,7 +1034,7 @@
                                 icon: 3
                             }, function(index) {
                                 commons.removeImpos();
-                                commons.propertiesWindow.hide();
+                                $.cbuilder.propertiesWindow.hide();
                                 layer.close(index);
                             });
                         });
@@ -1020,7 +1116,7 @@
                         commons.objectCallFunction(view, "_cropPosInputEvent", "_saveBtnEvent", "_deleteBtnEvent", "_typeEvent", "_countDownEvent", "_dateTimeEvent");
                     },
                     _domCache: function() {
-                        var vmain = "cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor,pw-area";
+                        var vmain = "cb-area-couponid,cb-area-format,cb-area-type,cb-area-url,.cb-area-croppos," + "cb-area-width,cb-area-height,cb-area-marginleft," + "cb-area-margintop,cb-area-anchor,pw-area";
                         var vbtn = ",cb-area-save,cb-area-delete";
                         var vtypecountdown = ",cb-area-fontfamily,cb-area-fontsize,cb-area-fontdemo,cb-area-fontcolor,cb-area-startdate,cb-area-enddate,cb-area-isdayunit";
                         vmain += vbtn + vtypecountdown;

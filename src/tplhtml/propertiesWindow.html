@@ -58,6 +58,8 @@
         <div class="pw-body-footer">
             <button type="button" class="btn btn-primary btn-sm save">保 存</button>
             <button type="button" class="btn btn-danger btn-sm delete">删 除</button>
+            <button type="button" id ="cb-picture-addarea" class="btn btn-primary btn-sm">新 建 区 域</button>
+
         </div>
     </div>
 </div>
@@ -106,6 +108,10 @@
                         <label for="cb-area-type3">
                             <input id="cb-area-type3" data-type="countdown" type="radio" name="areatype">
                             倒计时
+                        </label>
+                        <label for="cb-area-type4">
+                            <input id="cb-area-type4" data-type="coupon" type="radio" name="areatype">
+                            优惠券
                         </label>
                     </div>
                 </div>
@@ -192,7 +198,14 @@
                         </div>
                     </div>
                 </div>
-
+                <div class="cb-area-type cb-area-type4 pw-controls-panel">
+                    <div class="form-group">
+                        <label for="cb-area-url" class="col-sm-3 control-label">优惠券id</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control input-sm" id="cb-area-couponid" placeholder="优惠券id,号分割">
+                        </div>
+                    </div>
+                </div>
             </form>
 
         </div>
