@@ -107,7 +107,7 @@
         },
         /* 正则 */
         regex: {
-            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/,
+            url: /[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/,
             number: /^[0-9]*[1-9][0-9]*$/
         },
         /* 格式化 */
@@ -503,8 +503,8 @@
                         }
                     });
                 },
-                deleteEvent: function() {
-                    $(".item-delete").on("click", function() {
+                deleteBtnEvent: function() {
+                    itemtoolsview.$contianer.delegate(".item-delete", "click", function() {
                         var that = $(this);
                         layer.confirm("确定删除该项?", {
                             icon: 3
@@ -516,7 +516,7 @@
                 },
                 bindEvents: function() {
                     itemtoolsview.mouseOverEvent();
-                    itemtoolsview.deleteEvent();
+                    itemtoolsview.deleteBtnEvent();
                 },
                 struc: function() {
                     $(document).ready(function() {
@@ -992,7 +992,7 @@
                                     commons.layer.msg("", "请输入优惠券id", view.$couponid);
                                     return false;
                                 }
-                                if (couponid.indexOf(",") >= 0) {
+                                if (couponid.indexOf(",") >= 0 || !commons.regex.number.test(couponid)) {
                                     var reg = /^(\d+\,)+\d+$/;
                                     if (!reg.test(couponid)) {
                                         commons.layer.msg("", "优惠券id格式不正确,格式[数字,数字] 如:123,456", view.$couponid);
