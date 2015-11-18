@@ -15,13 +15,20 @@
                 },
                 _onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
-                        // dragula([$element.find('.cb-wrap')[0]]);
                         if ($element.find('.cb-tabwrap').length > 0) {
-                            dragula([$element.find('.cb-body')[0], $element.find('.cb-tabwrap')[0]], {
-                                moves: function(el, container, handle) {
-                                    return handle.className === 'item-move';
-                                }
-                            });
+//                            $element.dragula.destroy();
+//                            $element.dragula= dragula([$element.find('.cb-body')[0], $element.find('.cb-tabwrap')[0]], {
+//                                moves: function(el, container, handle) {
+//                                    return handle.className === 'item-move';
+//                                } 
+//                            });
+//                            $element.dragula.on('drag', function (el, source) {
+//                                var $el = $(el);
+//                                if ($el.parent().hasClass('cb-tabwrap')) {
+//                                    console.log(123)
+//                                    $('.gu-mirror').html(1111111111)
+//                                }
+//                            });
                         }
                     });
                     $element.delegate(".cb-tabwrap", "mouseover", function (event) {

@@ -30,6 +30,7 @@
         clsBody = ".cb-body",
         clsContent = '.cb-content',
         clsWrap = '.cb-item',
+        clsTabwrap = '.cb-tabwrap',
         stroriginhtml = 'originhtml',
         strcbuilder = 'cbuilder',
         jsPath, rootPath;
@@ -138,7 +139,7 @@
                         'vendor/layer/skin/layer.css',
 
                         /* 拖拽 */
-                        'vendor/dragula.js/dist/dragula.min.js',
+                        'vendor/dragula.js/dist/dragula.js',
                         'vendor/dragula.js/dist/dragula.min.css',
 
                         /* 日期 */
@@ -241,11 +242,11 @@
 //                        });
 //                    });
                     /* 拖拽 */
-//                    dragula([$cbbody[0]], {
-//                        moves: function (el, container, handle) {
-//                            return handle.className === 'item-move';
-//                        }
-//                    });
+                    that.$element.dragula = dragula($cbbody[0], {
+                        moves: function (el, container, handle) {
+                            return handle.className === 'item-move';
+                        }
+                    });
 
                     $('.pw-body-footer').delegate('.deleteevent', 'click', function (e) {
                         var tip = '确定删除&lt;' + $.cbuilder.propertiesWindow.$selectedobj.prop('tagName') + '&gt;?';

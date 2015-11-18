@@ -22,7 +22,7 @@
             body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
         }
     };
-    var clsContainer = ".cb-container", clsToolbar = ".cb-toolbar", clsBody = ".cb-body", clsContent = ".cb-content", clsWrap = ".cb-item", stroriginhtml = "originhtml", strcbuilder = "cbuilder", jsPath, rootPath;
+    var clsContainer = ".cb-container", clsToolbar = ".cb-toolbar", clsBody = ".cb-body", clsContent = ".cb-content", clsWrap = ".cb-item", clsTabwrap = ".cb-tabwrap", stroriginhtml = "originhtml", strcbuilder = "cbuilder", jsPath, rootPath;
     (function() {
         var scripts = document.querySelectorAll("script[src]");
         var currentScript = scripts[scripts.length - 1].src;
@@ -324,7 +324,7 @@
                     var vendors = [ /* bootstrap */
                     "vendor/bootstrap/dist/css/bootstrap.min.css", "vendor/bootstrap/dist/css/bootstrap-theme.css", /* 弹出层 */
                     "vendor/layer/layer.js", "vendor/layer/skin/layer.css", /* 拖拽 */
-                    "vendor/dragula.js/dist/dragula.min.js", "vendor/dragula.js/dist/dragula.min.css", /* 日期 */
+                    "vendor/dragula.js/dist/dragula.js", "vendor/dragula.js/dist/dragula.min.css", /* 日期 */
                     "vendor/datetimepicker/jquery.datetimepicker.css", "vendor/datetimepicker/jquery.datetimepicker.js" ];
                     commons.loadFile(vendors);
                 },
@@ -419,11 +419,12 @@
                     //                        });
                     //                    });
                     /* 拖拽 */
-                    //                    dragula([$cbbody[0]], {
-                    //                        moves: function (el, container, handle) {
-                    //                            return handle.className === 'item-move';
-                    //                        }
-                    //                    });
+                    that.$element.dragula = dragula($cbbody[0], {
+                        moves: function(el, container, handle) {
+                            debugger;
+                            return handle.className === "item-move";
+                        }
+                    });
                     $(".pw-body-footer").delegate(".deleteevent", "click", function(e) {
                         var tip = "确定删除&lt;" + $.cbuilder.propertiesWindow.$selectedobj.prop("tagName") + "&gt;?";
                         layer.confirm(tip, {
@@ -461,7 +462,7 @@
         itemtools: function() {
             (function() {
                 var templates = {
-                    itemtools: '<div class="cb-itemtools"><i class="item-move" href="javascript:;"></i><i class="item-delete" href="javascript:;"></i></div>'
+                    itemtools: '<div class="cb-itemtools" id="cb-itemtools"><i class="item-move" href="javascript:;"></i><i class="item-delete" href="javascript:;"></i></div>'
                 };
                 var view = {
                     clsitemtools: ".cb-itemtools",
@@ -469,7 +470,7 @@
                         var $body = $("body");
                         $body.append(templates.itemtools);
                         /* 全局 */
-                        $.cbuilder.$itemtools = view.$itemtools = $body.find(view.clsitemtools);
+                        $.cbuilder.$itemtools = view.$itemtools = $("#cb-itemtools");
                         view.$contianer = $(".cb-container");
                         view.$itemdelete = $(".item-delete");
                     },
@@ -486,24 +487,25 @@
                                 var $content = $target.parents(clsContent);
                                 if ($content.length > 0 || $target.hasClass("cb-content")) {
                                     view.append($content);
-                                }
-                                /* parent tabwrap */
-                                var $parenttab = $target.parents(".cb-tabwrap");
-                                if ($parenttab.length > 0) {
-                                    view.append($parenttab);
-                                }
-                                /* cb-tabwrap */
-                                if ($target.hasClass("cb-tabwrap")) {
-                                    view.append($target);
+                                } else {
+                                    var $parenttab = $target.parents(clsTabwrap);
+                                    /* parent tabwrap */
+                                    if ($parenttab.length > 0) {
+                                        view.append($parenttab);
+                                    } else {
+                                        /* cb-tabwrap */
+                                        if ($target.hasClass("cb-tabwrap")) {
+                                            view.append($target);
+                                        }
+                                    }
                                 }
                             }
-                            console.log($target);
                         });
                         view.$contianer.mouseout(function(e) {
                             var $target = $(e.target);
                             var $content = $target.parents(clsContent);
                             var $tabwrap = $target.parent(".cb-tabwrap");
-                            if ($content.length === 0) {
+                            if ($content.length === 0 || $tabwrap.length === 0) {
                                 $.cbuilder.$itemtools.hide();
                             }
                         });
@@ -515,15 +517,18 @@
                                 icon: 3
                             }, function(index) {
                                 layer.close(index);
-                                that.parents(clsContent).detach();
+                                var $parenttab = that.parents(clsTabwrap);
+                                if ($parenttab.length > 0) {
+                                    $parenttab.remove();
+                                } else {
+                                    that.parents(clsWrap).detach();
+                                }
                             });
                         });
                     },
                     append: function($obj) {
-                        if ($obj.find(view.clsitemtools).length === 0) {
-                            $obj.append(templates.itemtools);
-                        }
-                        $obj.find(view.clsitemtools).show();
+                        $obj.append($.cbuilder.$itemtools);
+                        $.cbuilder.$itemtools.show();
                     },
                     bindEvents: function() {
                         view.mouseEvent();

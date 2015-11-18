@@ -1,1 +1,1 @@
-var templates={itemtools:'<div class="cb-itemtools"><i class="item-move" href="javascript:;"></i><i class="item-delete" href="javascript:;"></i></div>'};
+var templates={itemtools:'<div class="cb-itemtools" id="cb-itemtools"><i class="item-move" href="javascript:;"></i><i class="item-delete" href="javascript:;"></i></div>'};

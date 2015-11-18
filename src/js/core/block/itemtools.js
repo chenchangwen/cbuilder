@@ -6,7 +6,7 @@
             var $body = $("body");
             $body.append(templates.itemtools);
             /* 全局 */
-            $.cbuilder.$itemtools = view.$itemtools = $body.find(view.clsitemtools);
+            $.cbuilder.$itemtools = view.$itemtools = $('#cb-itemtools');
             view.$contianer = $(".cb-container");
             view.$itemdelete = $(".item-delete");
         },
@@ -23,24 +23,25 @@
                     var $content = $target.parents(clsContent);
                     if ($content.length > 0 || $target.hasClass('cb-content')) {
                         view.append($content);
-                    }
-                    /* parent tabwrap */
-                    var $parenttab = $target.parents('.cb-tabwrap');
-                    if ($parenttab.length > 0) {
-                        view.append($parenttab);
-                    }
-                    /* cb-tabwrap */
-                    if ($target.hasClass('cb-tabwrap')) {
-                        view.append($target);
+                    } else {
+                        var $parenttab = $target.parents(clsTabwrap);
+                        /* parent tabwrap */
+                        if ($parenttab.length > 0) {
+                            view.append($parenttab);
+                        } else {
+                            /* cb-tabwrap */
+                            if ($target.hasClass('cb-tabwrap')) {
+                                view.append($target);
+                            }
+                        }
                     }
                 }
-                console.log($target);
             });
             view.$contianer.mouseout(function (e) {
                 var $target = $(e.target);
                 var $content = $target.parents(clsContent);
                 var $tabwrap = $target.parent('.cb-tabwrap');
-                if ($content.length === 0) {
+                if ($content.length === 0 || $tabwrap.length ===0 ) {
                     $.cbuilder.$itemtools.hide();
                 }
             });
@@ -50,15 +51,18 @@
                 var that = $(this);
                 layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
                     layer.close(index);
-                    that.parents(clsContent).detach();
+                    var $parenttab = that.parents(clsTabwrap);
+                    if ($parenttab.length > 0) {
+                        $parenttab.remove();
+                    } else {
+                        that.parents(clsWrap).detach();
+                    }
                 });
             });
         },
         append: function ($obj) {
-            if ($obj.find(view.clsitemtools).length === 0) {
-                $obj.append(templates.itemtools);
-            }
-            $obj.find(view.clsitemtools).show();
+            $obj.append($.cbuilder.$itemtools);
+            $.cbuilder.$itemtools.show();
         },
         bindEvents: function () {
             view.mouseEvent();
