@@ -28,19 +28,12 @@
   color: #262626;
   text-decoration: none;
 }
-.cb-item .cb-content {
-  border: 1px solid #d9d9d9;
+.cb-tabwrap {
+  margin: 20px;
   position: relative;
-}
-.cb-item .cb-content .cb-textarea {
-  width: 98%;
-  height: 200px;
-}
-.cb-item .cb-content .cb-anchor {
-  background-image: url('../images/anchor.gif');
-  width: 20px;
-  height: 20px;
-  display: block;
+  height: 300px;
+  width: 100%;
+  border: 1px solid #d9d9d9;
 }
 /*.primary {
     color: #fff;
@@ -73,10 +66,6 @@
     border: 1px solid transparent;
     border-radius: 4px;
 }*/
-.cb-hover {
-  box-shadow: 0 0 13px #c3c3c3;
-  border: 1px solid #d9d9d9;
-}
 .cb-toolbar {
   border-bottom: 1px solid #88b9e3;
 }
@@ -114,19 +103,12 @@
   color: #262626;
   text-decoration: none;
 }
-.cb-item .cb-content {
-  border: 1px solid #d9d9d9;
+.cb-tabwrap {
+  margin: 20px;
   position: relative;
-}
-.cb-item .cb-content .cb-textarea {
-  width: 98%;
-  height: 200px;
-}
-.cb-item .cb-content .cb-anchor {
-  background-image: url('../images/anchor.gif');
-  width: 20px;
-  height: 20px;
-  display: block;
+  height: 300px;
+  width: 100%;
+  border: 1px solid #d9d9d9;
 }
 .cb-propertiesWindow {
   font-size: 12px;
@@ -381,6 +363,24 @@
   border: 0;
   border-top: 1px solid #e5e5e5;
 }
+.cb-content {
+  border: 1px solid #d9d9d9;
+  position: relative;
+}
+.cb-content .cb-textarea {
+  width: 98%;
+  height: 200px;
+}
+.cb-content .cb-anchor {
+  background-image: url('../images/anchor.gif');
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.cb-hover {
+  box-shadow: 0 0 13px #c3c3c3;
+  border: 1px solid #d9d9d9;
+}
 /*
 YUI 3.18.1 (build f7e7bcb)
 Copyright 2014 Yahoo! Inc. All rights reserved.
@@ -513,10 +513,6 @@ legend {
     border: 1px solid transparent;
     border-radius: 4px;
 }*/
-.cb-hover {
-  box-shadow: 0 0 13px #c3c3c3;
-  border: 1px solid #d9d9d9;
-}
 .cb-itemtools {
   display: none;
   position: absolute;

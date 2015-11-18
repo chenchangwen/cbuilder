@@ -13,7 +13,7 @@
     var defaults = {
         height: "100%",
         width: "99%",
-        toolbar: [ "upload", "mupload", "test", "clean", "anchor", "preview", "picture", "sourcecode" ],
+        toolbar: [ "test", "clean", "tab", "anchor", "preview", "picture", "sourcecode" ],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn btn-primary btn-sm {clsname}'>{name}</button></div>",
@@ -257,13 +257,16 @@
             root: rootPath,
             js: jsPath
         },
-        append: function(html) {
-            if (html !== "") {
-                var html2 = '<div class="cb-item"><div class="cb-content">' + html + "</div></div>";
-                $.cbuilder.active.$element.find(clsBody).append(html2);
-                $.cbuilder.active._trigger("cbuilder:onWrapContent");
-                $.cbuilder.active._trigger("cbuilder:onContentReady");
+        append: function(html, clstype) {
+            var html2 = "";
+            if (clstype === "tab") {
+                html2 = '<div class="cb-tabwrap">' + html + "</div>";
+            } else {
+                html2 = '<div class="cb-item"><div class="cb-content">' + html + "</div></div>";
             }
+            $.cbuilder.active.$element.find(clsBody).append(html2);
+            $.cbuilder.active._trigger("cbuilder:onWrapContent");
+            $.cbuilder.active._trigger("cbuilder:onContentReady");
         },
         item: {
             tools: {
@@ -406,28 +409,20 @@
                 bindEvents: function() {
                     var $cbbody = that.$element.find(clsBody);
                     /* cbuilder:onWrapContent 事件 */
-                    that.$element.on("cbuilder:onWrapContent", function(e) {
-                        /* 构建基本元素 */
-                        $cbbody.children(":not(" + clsWrap + ")").each(function() {
-                            var $this = $(this);
-                            /* 增加 cb-item div */
-                            $this.wrap(that.options.tpl.body_item);
-                            $.cbuilder.active = that;
-                        });
-                    });
-                    /* 拖拽 */
-                    dragula($cbbody[0], {
-                        moves: function(el, container, handle) {
-                            return handle.className === "item-move";
-                        }
-                    });
-                    /* 内容加载完毕 */
-                    //                    that.$element.on('cbuilder:onContentReady', function (e) {
-                    //                        alert(123123)
-                    //                        $('.cb-item').delegate('*', 'dblclick', function (e) {
-                    //                            $.cbuilder.propertiesWindow.$selectedobj = $(this);
-                    //                            console.log($(this).prop('tagName'));
+                    //                    that.$element.on('cbuilder:onWrapContent', function (e) {
+                    //                        /* 构建基本元素 */
+                    //                        $cbbody.children(":not(" + clsWrap + ")").each(function () {
+                    //                            var $this = $(this);
+                    //                            /* 增加 cb-item div */
+                    //                            $this.wrap(that.options.tpl.body_item);
+                    //                            $.cbuilder.active = that;
                     //                        });
+                    //                    });
+                    /* 拖拽 */
+                    //                    dragula([$cbbody[0]], {
+                    //                        moves: function (el, container, handle) {
+                    //                            return handle.className === 'item-move';
+                    //                        }
                     //                    });
                     $(".pw-body-footer").delegate(".deleteevent", "click", function(e) {
                         var tip = "确定删除&lt;" + $.cbuilder.propertiesWindow.$selectedobj.prop("tagName") + "&gt;?";
@@ -464,68 +459,85 @@
     var onceView = {
         /* 工具 */
         itemtools: function() {
-            var templates = {
-                itemtools: '<div class="cb-itemtools"><i class="item-move" href="javascript:;"></i><i class="item-delete" href="javascript:;"></i></div>'
-            };
-            var itemtoolsview = {
-                domCache: function() {
-                    var $element = $("body");
-                    $element.append(templates.itemtools);
-                    /* 全局 */
-                    $.cbuilder.$itemtools = itemtoolsview.$itemtools = $element.find(".cb-itemtools");
-                    itemtoolsview.$contianer = $(".cb-container");
-                    itemtoolsview.$itemdelete = $(".item-delete");
-                },
-                mouseOverEvent: function() {
-                    itemtoolsview.$contianer.mouseover(function(e) {
-                        var $target = $(e.target);
-                        var $content = $target.parents(clsContent);
-                        if ($(".cb-itemtools").length === 0) {
-                            $("body").append(templates.itemtools);
-                        }
-                        /* jcrop 不存在时才作显示 */
-                        if ($(".jcrop-holder").length === 0) {
-                            if ($content.length > 0) {
-                                $content.append($.cbuilder.$itemtools);
-                                $.cbuilder.$itemtools.show();
+            (function() {
+                var templates = {
+                    itemtools: '<div class="cb-itemtools"><i class="item-move" href="javascript:;"></i><i class="item-delete" href="javascript:;"></i></div>'
+                };
+                var view = {
+                    clsitemtools: ".cb-itemtools",
+                    domCache: function() {
+                        var $body = $("body");
+                        $body.append(templates.itemtools);
+                        /* 全局 */
+                        $.cbuilder.$itemtools = view.$itemtools = $body.find(view.clsitemtools);
+                        view.$contianer = $(".cb-container");
+                        view.$itemdelete = $(".item-delete");
+                    },
+                    mouseEvent: function() {
+                        view.$contianer.mouseover(function(e) {
+                            var $target = $(e.target);
+                            /* 没添加过则添加itemtools */
+                            if ($(view.clsitemtools).length === 0) {
+                                $("body").append(templates.itemtools);
                             }
-                            if ($target.hasClass("cb-content")) {
-                                $target.append($.cbuilder.$itemtools);
-                                $.cbuilder.$itemtools.show();
+                            /* jcrop 不存在时才作显示 */
+                            if ($(".jcrop-holder").length === 0) {
+                                /* cb-item */
+                                var $content = $target.parents(clsContent);
+                                if ($content.length > 0 || $target.hasClass("cb-content")) {
+                                    view.append($content);
+                                }
+                                /* parent tabwrap */
+                                var $parenttab = $target.parents(".cb-tabwrap");
+                                if ($parenttab.length > 0) {
+                                    view.append($parenttab);
+                                }
+                                /* cb-tabwrap */
+                                if ($target.hasClass("cb-tabwrap")) {
+                                    view.append($target);
+                                }
                             }
-                        }
-                    });
-                    itemtoolsview.$contianer.mouseout(function(e) {
-                        var $target = $(e.target);
-                        var $content = $target.parents(clsContent);
-                        if ($content.length === 0) {
-                            $.cbuilder.$itemtools.hide();
-                        }
-                    });
-                },
-                deleteBtnEvent: function() {
-                    itemtoolsview.$contianer.delegate(".item-delete", "click", function() {
-                        var that = $(this);
-                        layer.confirm("确定删除该项?", {
-                            icon: 3
-                        }, function(index) {
-                            layer.close(index);
-                            that.parents(clsContent).detach();
+                            console.log($target);
                         });
-                    });
-                },
-                bindEvents: function() {
-                    itemtoolsview.mouseOverEvent();
-                    itemtoolsview.deleteBtnEvent();
-                },
-                struc: function() {
-                    $(document).ready(function() {
-                        itemtoolsview.domCache();
-                        itemtoolsview.bindEvents();
-                    });
-                }
-            };
-            itemtoolsview.struc();
+                        view.$contianer.mouseout(function(e) {
+                            var $target = $(e.target);
+                            var $content = $target.parents(clsContent);
+                            var $tabwrap = $target.parent(".cb-tabwrap");
+                            if ($content.length === 0) {
+                                $.cbuilder.$itemtools.hide();
+                            }
+                        });
+                    },
+                    deleteBtnEvent: function() {
+                        view.$contianer.delegate(".item-delete", "click", function() {
+                            var that = $(this);
+                            layer.confirm("确定删除该项?", {
+                                icon: 3
+                            }, function(index) {
+                                layer.close(index);
+                                that.parents(clsContent).detach();
+                            });
+                        });
+                    },
+                    append: function($obj) {
+                        if ($obj.find(view.clsitemtools).length === 0) {
+                            $obj.append(templates.itemtools);
+                        }
+                        $obj.find(view.clsitemtools).show();
+                    },
+                    bindEvents: function() {
+                        view.mouseEvent();
+                        view.deleteBtnEvent();
+                    },
+                    struc: function() {
+                        $(document).ready(function() {
+                            view.domCache();
+                            view.bindEvents();
+                        });
+                    }
+                };
+                view.struc();
+            })();
         },
         /* 属性窗口 */
         propertiesWindow: function() {
