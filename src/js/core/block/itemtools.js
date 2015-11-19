@@ -9,6 +9,7 @@
             $.cbuilder.$itemtools = view.$itemtools = $('#cb-itemtools');
             view.$contianer = $(".cb-container");
             view.$itemdelete = $(".item-delete");
+        
         },
         mouseEvent: function () {
             view.$contianer.mouseover(function (e) {
@@ -45,20 +46,26 @@
                     $.cbuilder.$itemtools.hide();
                 }
             });
+
+            
         },
         deleteBtnEvent: function () {
             view.$contianer.delegate(".item-delete", 'click', function () {
                 var that = $(this);
                 layer.confirm('确定删除该项?', { icon: 3 }, function (index) {
                     layer.close(index);
-                    var $parenttab = that.parents(clsTabwrap);
-                    if ($parenttab.length > 0) {
-                        $parenttab.remove();
-                    } else {
-                        that.parents(clsWrap).detach();
+                    var $parent = that.parents(clsWrap);
+                    if ($parent.length > 0) {
+                        $parent.remove();
+                        return true;
+                    }
+                    $parent = that.parents(clsTabwrap);
+                    if ($parent.length > 0) {
+                        $parent.remove();
                     }
                 });
             });
+          
         },
         append: function ($obj) {
             $obj.append($.cbuilder.$itemtools);
@@ -67,6 +74,7 @@
         bindEvents: function () {
             view.mouseEvent();
             view.deleteBtnEvent();
+           
         },
         struc: function () {
             $(document).ready(function () {

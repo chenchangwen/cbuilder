@@ -242,11 +242,14 @@
 //                        });
 //                    });
                     /* 拖拽 */
-//                    dragula($cbbody[0], {
-//                        moves: function (el, container, handle) {
-//                            return handle.className === 'item-move';
-//                        }
-//                    });
+
+                    that.$element.dragula = dragula([$cbbody[0]], {
+                        moves: function (el, container, handle) {
+                            return handle.className === 'item-move';
+                        }
+                    });
+
+          
 
                     $('.pw-body-footer').delegate('.deleteevent', 'click', function (e) {
                         var tip = '确定删除&lt;' + $.cbuilder.propertiesWindow.$selectedobj.prop('tagName') + '&gt;?';
