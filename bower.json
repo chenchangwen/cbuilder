@@ -19,7 +19,7 @@
     "bootstrap": "~3.3.5",
     "codemirror": "~5.8.0",
     "datetimepicker": "~2.4.5",
-    "dragula.js": "~3.5.4",
+    "dragula.js": "3.5.3",
     "dropzone": "~4.0.1",
     "jcrop": "~0.9.12",
     "jquery": "1.11.3",

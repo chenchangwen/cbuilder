@@ -16,12 +16,12 @@
                 _onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
                         if ($element.find('.cb-tabwrap').length > 0) {
-//                            $element.dragula.destroy();
-//                            $element.dragula= dragula([$element.find('.cb-body')[0], $element.find('.cb-tabwrap')[0]], {
-//                                moves: function(el, container, handle) {
-//                                    return handle.className === 'item-move';
-//                                } 
-//                            });
+                            //$element.dragula.destroy();
+                            var drake =  $element.dragula = dragula([$element.find('.cb-body')[0], $element.find('.cb-tabwrap')[0]], {
+                                moves: function(el, container, handle) {
+                                    return handle.className === 'item-move';
+                                }
+                            });
 //                            $element.dragula.on('drag', function (el, source) {
 //                                var $el = $(el);
 //                                if ($el.parent().hasClass('cb-tabwrap')) {
