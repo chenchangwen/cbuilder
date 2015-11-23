@@ -14,7 +14,7 @@
     var defaults = {
         height: "100%",
         width:"99%",
-        toolbar: ["upload", 'mupload', 'test','clean', 'anchor', 'preview', 'picture','sourcecode', 'picker'],
+        toolbar: ["upload", 'mupload', 'test','clean', 'anchor', 'preview', 'picture','sourcecode', 'picker', 'unslider', 'SuperSlide'],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn btn-primary btn-sm {clsname}'>{name}</button></div>",

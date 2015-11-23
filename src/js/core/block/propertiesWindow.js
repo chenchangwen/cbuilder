@@ -55,7 +55,8 @@ $.cbuilder.propertiesWindow = {
 };
 ~~include('../block/propertiesWindow/picture.js')
 ~~include('../block/propertiesWindow/area.js')
-
+~~include('../block/propertiesWindow/unslider.js')
+~~include('../block/propertiesWindow/SuperSlide.js')
 
  
 

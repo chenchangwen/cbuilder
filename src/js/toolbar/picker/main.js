@@ -26,7 +26,7 @@ function init(element, basePath, commons) {
                     $picker = $('<div class="modal fade" id="Picker"></div>');
                     $(document.body).append($picker);
                 }
-                $picker.picker('single_picture', {
+                $picker = $picker.picker('single_picture', {
                     title: '图片选择',
                     confirm_text: '确定',
                     cancel_text: '取消',
@@ -36,9 +36,11 @@ function init(element, basePath, commons) {
                     image_url: '/service/image/getImages',
                     rows: 10,
                     onComplete: function(selected) {
-                        alert('You select: ' + JSON.stringify(selected));
+                        $.cbuilder.append('<img src="'+ selected.src +'" />');
+                        $picker.modal('hide');
                     }
-                }).modal('show');
+                });
+                $picker.modal('show');
             }
         }
     }
