@@ -1,4 +1,4 @@
-﻿function init(element, basePath) {
+﻿function init() {
     var exports = {
         toolbar: {
             name: "clean",
