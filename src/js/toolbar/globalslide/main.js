@@ -2,7 +2,13 @@ function init(element, basePath, commons) {
     var exports = {
         onLoaded: function() {
             var view = {
-                init: function() {
+                loadPicker: function() {
+                    var vendors = [
+                        'lib/Picker/jquery.picker.min.js'
+                    ];
+                    commons.loadFile(vendors);
+                },
+                loadSlide: function() {
                     var vendors = [
                         'lib/SuperSlide/SuperSlide.css',
                         'lib/SuperSlide/jquery.SuperSlide.2.1.1.js'
@@ -10,16 +16,19 @@ function init(element, basePath, commons) {
                     commons.loadFile(vendors);
                 },
                 struc: function() {
+                    if (typeof $.fn.picker === "undefined") {
+                        this.loadPicker();
+                    }
                     if (typeof $.fn.slide === "undefined") {
-                        this.init();
+                        this.loadSlide();
                     }
                 }
             }
             view.struc();
         },
         toolbar: {
-            name: "SuperSlide",
-            text: "SuperSlide插件",
+            name: "globalslide",
+            text: "全屏轮播插件",
             onClick: function() {
                 var uid = 'SuperSlide' + new Date().getTime();
                 $.cbuilder.append(

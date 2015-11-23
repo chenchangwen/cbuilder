@@ -5,7 +5,7 @@ function init(element, basePath, commons) {
                 init: function() {
                     var vendors = [
                         //'vendor/jcrop/js/jquery.Jcrop.min.js',
-                        'lib/Picker/libs/jquery.picker.min.js'
+                        'lib/Picker/jquery.picker.min.js'
                     ];
                     commons.loadFile(vendors);
                 },

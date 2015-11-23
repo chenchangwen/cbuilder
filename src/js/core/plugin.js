@@ -14,7 +14,7 @@
     var defaults = {
         height: "100%",
         width:"99%",
-        toolbar: ["upload", 'mupload', 'test','clean', 'anchor', 'preview', 'picture','sourcecode', 'picker', 'unslider', 'SuperSlide'],
+        toolbar: ['test','clean', 'tab', 'globalslide', 'anchor', 'preview', 'picture','sourcecode'],
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn btn-primary btn-sm {clsname}'>{name}</button></div>",
@@ -30,6 +30,7 @@
         clsBody = ".cb-body",
         clsContent = '.cb-content',
         clsWrap = '.cb-item',
+        clsTabwrap = '.cb-tabwrap',
         stroriginhtml = 'originhtml',
         strcbuilder = 'cbuilder',
         jsPath, rootPath;
@@ -60,13 +61,16 @@
             root: rootPath,
             js: jsPath
         },
-        append: function (html) {
-            if (html !== '') {
-                var html2 = '<div class="cb-item"><div class="cb-content">' +html + '</div></div>';
-                $.cbuilder.active.$element.find(clsBody).append(html2);
-                $.cbuilder.active._trigger('cbuilder:onWrapContent');
-                $.cbuilder.active._trigger('cbuilder:onContentReady');
+        append: function (html,clstype) {
+            var html2 = '';
+            if (clstype === 'tab') {
+                html2 = '<div class="cb-tabwrap">' + html + '</div>';
+            } else {
+                html2 = '<div class="cb-item"><div class="cb-content">' + html + '</div></div>';
             }
+            $.cbuilder.active.$element.find(clsBody).append(html2);
+            $.cbuilder.active._trigger('cbuilder:onWrapContent');
+            $.cbuilder.active._trigger('cbuilder:onContentReady');
         },
         item: {
             tools: {
@@ -135,7 +139,7 @@
                         'vendor/layer/skin/layer.css',
 
                         /* 拖拽 */
-                        'vendor/dragula.js/dist/dragula.min.js',
+                        'vendor/dragula.js/dist/dragula.js',
                         'vendor/dragula.js/dist/dragula.min.css',
 
                         /* 日期 */
@@ -228,29 +232,24 @@
                 bindEvents: function () {
                     var $cbbody = that.$element.find(clsBody);
                     /* cbuilder:onWrapContent 事件 */
-                    that.$element.on('cbuilder:onWrapContent', function (e) {
-                        /* 构建基本元素 */
-                        $cbbody.children(":not(" + clsWrap + ")").each(function () {
-                            var $this = $(this);
-                            /* 增加 cb-item div */
-                            $this.wrap(that.options.tpl.body_item);
-                            $.cbuilder.active = that;
-                        });
-                    });
+//                    that.$element.on('cbuilder:onWrapContent', function (e) {
+//                        /* 构建基本元素 */
+//                        $cbbody.children(":not(" + clsWrap + ")").each(function () {
+//                            var $this = $(this);
+//                            /* 增加 cb-item div */
+//                            $this.wrap(that.options.tpl.body_item);
+//                            $.cbuilder.active = that;
+//                        });
+//                    });
                     /* 拖拽 */
-                    dragula($cbbody[0], {
+
+                    that.$element.dragula = dragula([$cbbody[0]], {
                         moves: function (el, container, handle) {
                             return handle.className === 'item-move';
                         }
                     });
-                    /* 内容加载完毕 */
-//                    that.$element.on('cbuilder:onContentReady', function (e) {
-//                        alert(123123)
-//                        $('.cb-item').delegate('*', 'dblclick', function (e) {
-//                            $.cbuilder.propertiesWindow.$selectedobj = $(this);
-//                            console.log($(this).prop('tagName'));
-//                        });
-//                    });
+
+          
 
                     $('.pw-body-footer').delegate('.deleteevent', 'click', function (e) {
                         var tip = '确定删除&lt;' + $.cbuilder.propertiesWindow.$selectedobj.prop('tagName') + '&gt;?';
