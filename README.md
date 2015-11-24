@@ -5,21 +5,20 @@
 * 项目结构
 * 安装插件
 * 使用
-* 方法
-* 事件
-* 开发独立功能
+* API
+* 开发独立组件
 
 #项目结构
-![Alt text](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
+![项目结构图](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
 
 #安装插件
 初始化npm
 ```
-npm i
+npm install
 ```
 初始化bower
 ```
-bower i 
+bower install 
 ```
 安装完,可以直接运行cbuilder.html查看示例.
 
@@ -57,7 +56,7 @@ cbuilder_parse.min.js会解析你的html
 
 
 
-#方法
+#API
 ##$(selector).cbuilder(options)
 初始化cbuilder
 ###selector
@@ -67,24 +66,66 @@ cbuilder_parse.min.js会解析你的html
 * optoins.width *String* 高度,默认"100%"
 * optoins.toolbar *Array* 工具条,默认[ "clean", "anchor", "preview", "picture"],每个数组索引对应每个独立功能(工具条项目)的文件夹名
 
-#事件
-###cbuilder
+### $.cbuilder
+```javascript
+ $.cbuilder = {
+        /* 路径 */
+        path: {
+            /* 当前根目录路径 */
+            root: rootPath,
+            /* 当前js目录路径 */
+            js: jsPath
+        },
+        /**
+         * 添加内容
+         * @html {String} 
+         * @clstype {String} tab|item  tab:容器元素,item:一般元素
+         */
+        append: function (html,clstype) {
+        },
+        /* 获取内容 */
+        getContent: function () {
+        },
+        /**
+         * 设置内容
+         * @html {String}
+         */
+        setContent: function (html) {
+        },
+        /* 当前激活的cbuilder */
+        active,
+        /* 工具项 */
+        $itemtools:{
+            /* 显示工具项 */
+            show:function(){
+            },
+            /* 隐藏工具项 */
+            hide:function(){
+            }
+        },
+        /* 属性窗口 */
+        propertiesWindow:{
+            /* 当前选择的对象 */
+            $selectedobj,
+            /**
+             * 显示属性窗口
+             * @obj {Object}
+             * obj.name          名称
+             * obj.pillstitle    标题
+             */
+            show:function(obj){
+            }
+        }
+    }
+```
 
-| 名称        |说明 |
+### 事件
+| 事件        |说明 |
 | --------   | -----:  |
 | cbuilder:onWrapContent     | 当cbuilder要包住新建的内容时   |
 | cbuilder:onContentReady        |  当cbuilder内容已经准备好时   |
 | cbuilder:onGetContentBefore        |    当cbuilder获取内容之前   |
-
-
-###propertiesWindow(属性窗口)
-
-
-| 名称        |说明   |
-| --------   | -----:  |
-| propertiesWindow:Showing  |     属性窗口显示时执行,需要显示,需重写该方法   |
-
-
+| propertiesWindow:Showing  |     属性窗口显示时执行   |
 
 
 #开发独立组件
@@ -141,8 +182,8 @@ function init(element, basePath,commons) {
 ```
 
 ###2. 修改你的propertiesWindow
-路径:cbuilder/src/tplhtml/propertiesWindow.html
-html遵循bootstrap规范,pw为propertiesWindow的缩写,根div的id为以后调用所写的,**id必填**.
+路径:cbuilder/src/tplhtml/propertiesWindow.html    
+html遵循bootstrap规范,pw为propertiesWindow的缩写,根div的id为以后调用所写的,**id必填**.    
 基本结构如下
 
 ```html
