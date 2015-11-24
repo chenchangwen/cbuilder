@@ -9,8 +9,6 @@
 * 方法
 * 开发单独功能
 * 元素的主要规范
-* 样式
-* 主要参数
 
 
 #安装插件
@@ -19,13 +17,23 @@
 bower i 
 npm i
 ```
+安装完,可以直接运行cbuilder.html查看示例.
 
 #使用
 
-###javascript
-```javascript
+###html
+```html
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="src/js/jquery.cbuilder.js"></script>
+<link href="src/css/cbuilder.css" rel="stylesheet"/>
+<div id="test1">
+</div>
+<div id="test2">
+</div>
+```
+
+###javascript
+```javascript
 <script type="text/javascript">
         $(document).ready(function () {
             var options = {
@@ -36,13 +44,6 @@ npm i
 </script>
 ```
 
-###html
-```html
-<div id="test1">
-</div>
-<div id="test2">
-</div>
-```
 
 #事件
 ###cbuilder
@@ -237,15 +238,3 @@ function init($element, basePath, commons) {
     return exports;
 }
 ```
-
-#样式
-| 名称        |说明 |
-| --------   | -----:  |
-| body     | 主体   |
-| cbuilder.less        |  cbuilder   |
-| cssreset.less        |   重置   |
-| global.less        |    全局   |
-| itemtools.less        |    项目工具   |
-| propertiesWindow.less        |    属性窗口   |
-| toobar.less        |    工具条   |
-
