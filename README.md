@@ -1,14 +1,12 @@
 #cbuilder
 ####快速简单的构建你的html页面
 
-
-## 目录
+#目录
 * 安装插件
 * 使用
 * 事件
 * 方法
-* 开发单独功能
-* 元素的主要规范
+* 开发独立功能
 
 
 #安装插件
@@ -78,32 +76,11 @@ npm i
 * optoins.toolbar *Array* 工具条,默认[ "clean", "anchor", "preview", "picture"],每个数组索引对应每个独立功能(工具条项目)的文件夹名
 
 
-#开发单独功能
-**一般情况是基于toolbar(工具条),即点击工具条任意一个按钮产生相关功能,以下是示例.**
-
-1. toolbar下建立preview文件夹
-2. preview文件夹下建立main.js
-3. plugin.js下引用preview
-4. 撰写端解析该工具条的js
-
-##plugin.js 示例
-**plugin.js是插件的基础核心文件,只有一个,最终合并为jquery.cbuilder.js**
-```javascript
-var defaults = {
-        height: "100%",
-        width:"99%",
-        toolbar: ['anchor', 'preview', 'picture'], //引用处
-        tpl: {
-            toolbar: "<div class='cb-toolbar'></div>",
-            toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
-            body: "<div class='cb-body'></div>",
-            body_item: "<div class='cb-item'><div class='cb-content'></div></div>",
-            body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
-        }
-    };
-```
-
-##main.js 示例
+#开发独立功能
+**一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法**
+###1. cbuilder根目录运行gulp命令.
+###2. 创建你的main.js
+路径:cbuilder/src/js/toolbar/priview/main.js,它会被cbuilder初始化时执行(被引用时).
 ```javascript
 /**
  * 初始化插件 所有main.js文件只有这个方法会被cbuilder调用
@@ -148,21 +125,40 @@ function init(element, basePath,commons) {
     return exports;
 }
 ```
-**main.js只有init()会被cbuilder调用**
-
-##前端解析JS(此文件还没建立,应名为cbuilder.js)
-
-**后端解析和前端解析可能有点点不一样,可使用cbuilder:onGetContentBefore方法进行处理**
-
+###3. 引用你的main.js
+路径:cbuilder/src/js/core/plugin.js
+**plugin.js是插件的基础核心文件,只有一个,最终合并为jquery.cbuilder.js**
 ```javascript
-    var cbuilder={
-        something:function(){
-        },
-        struc:function(){
+var defaults = {
+        height: "100%",
+        width:"99%",
+        toolbar: ['anchor', 'preview', 'picture'], //引用处
+        tpl: {
+            toolbar: "<div class='cb-toolbar'></div>",
+            toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
+            body: "<div class='cb-body'></div>",
+            body_item: "<div class='cb-item'><div class='cb-content'></div></div>",
+            body_item_tool: "<div class='cb-tools'><div class='btn-wrap'></div></div>"
         }
-    }
-    cbuilder.struc();
+    };
 ```
+###4. 撰写解析的main.js
+路径:cbuilder/src/js/parser/main.js
+```
+...
+/* 我的组件 */
+myComponent:function(){
+    //....
+},
+/* 解析组件 */
+_parseComponents: function () {
+    commons.objectCallFunction(view, 'myComponent');
+},
+...
+```
+在_parseComponents方法里,调用"myComponent"
+
+
 
 #元素的主要规范
 **其他就不在赘述,由于独立对象较多重点描述一下以下**
