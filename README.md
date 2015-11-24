@@ -73,7 +73,7 @@
 ###options
 * optoins.height *String*  高度,默认"100%"
 * optoins.width *String* 高度,默认"100%"
-* optoins.toolbar *Array* 工具条,默认[ "upload", "mupload", "test", "countdown", "clean", "anchor", "preview", "picture" ],每个数组索引对应每个独立功能(工具条项目)的文件夹名
+* optoins.toolbar *Array* 工具条,默认[ "clean", "anchor", "preview", "picture"],每个数组索引对应每个独立功能(工具条项目)的文件夹名
 
 
 #5.开发单独功能
