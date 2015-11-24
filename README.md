@@ -126,7 +126,7 @@ function init(element, basePath,commons) {
 }
 ```
 ###3. 引用你的main.js
-路径:cbuilder/src/js/core/plugin.js
+路径:cbuilder/src/js/core/plugin.js   
 **plugin.js是插件的基础核心文件,只有一个,最终合并为jquery.cbuilder.js**
 ```javascript
 var defaults = {
@@ -142,8 +142,9 @@ var defaults = {
         }
     };
 ```
-###4. 撰写解析的main.js
-路径:cbuilder/src/js/parser/main.js
+###4. 撰写解析的/parser/main.js
+路径:cbuilder/src/js/parser/main.js    
+**parser/main.js是前端解析cbuilder的文件,只有一个,最终合并为/dist/cbuilder_parser.min.js**
 ```
 ...
 /* 我的组件 */
