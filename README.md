@@ -19,9 +19,8 @@ npm i
 
 #使用
 
-编辑内容时
+编辑html时
 ```html
-<script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="src/js/jquery.cbuilder.js"></script>
 <link href="src/css/cbuilder.css" rel="stylesheet"/>
 <body>
@@ -39,11 +38,15 @@ npm i
     });
 </script>
 ```
+jquery.cbuilder.js会构建你的html
 
 
-
-前端展示时
-
+展示html时
+```html
+<script src="/cbuilder/dist/cbuilder_parser.min.js"></script>
+<script src="/cbuilder/dist/cbuilder_parser.min.css"></script>
+```
+cbuilder_parse.min.js会解析你的html
 
 #事件
 ###cbuilder
