@@ -1,28 +1,31 @@
 #cbuilder
-####快速简单的构建你的html页面
+####快速简单的构建你的html
 
 #目录
-* 目录结构
+* 项目结构
 * 安装插件
 * 使用
-* 事件
 * 方法
+* 事件
 * 开发独立功能
 
-#目录结构
+#项目结构
 ![Alt text](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
 
 #安装插件
-
+初始化npm
+```
+npm i
+```
+初始化bower
 ```
 bower i 
-npm i
 ```
 安装完,可以直接运行cbuilder.html查看示例.
 
 #使用
 
-##编辑html时
+###编辑html
 ```html
 <script src="src/js/jquery.cbuilder.js"></script>
 <link href="src/css/cbuilder.css" rel="stylesheet"/>
@@ -44,33 +47,13 @@ npm i
 jquery.cbuilder.js会构建你的html
 
 
-##展示html时
+###展示html
 ```html
 <script src="/cbuilder/dist/cbuilder_parser.min.js"></script>
 <script src="/cbuilder/dist/cbuilder_parser.min.css"></script>
 ```
 cbuilder_parse.min.js会解析你的html
 
-
-
-#事件
-###cbuilder
-
-| 名称        |说明 |
-| --------   | -----:  |
-| cbuilder:onWrapContent     | 当cbuilder要包住新建的内容时   |
-| cbuilder:onContentReady        |  当cbuilder内容已经准备好时   |
-| cbuilder:onToolsReady        |   当工具条准备好时   |
-| cbuilder:onGetContentBefore        |    当cbuilder获取内容之前   |
-
-
-###propertiesWindow(属性窗口)
-
-
-| 名称        |说明   |
-| --------   | -----:  |
-| propertiesWindow:show     | 显示属性窗口   |
-| propertiesWindow:editShowing  |     属性窗口编辑页显示时    |
 
 
 
@@ -84,12 +67,34 @@ cbuilder_parse.min.js会解析你的html
 * optoins.width *String* 高度,默认"100%"
 * optoins.toolbar *Array* 工具条,默认[ "clean", "anchor", "preview", "picture"],每个数组索引对应每个独立功能(工具条项目)的文件夹名
 
+#事件
+###cbuilder
 
-#开发独立功能
-**一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法**
-###1. cbuilder根目录运行gulp命令.
-###2. 创建你的main.js
-路径:cbuilder/src/js/toolbar/priview/main.js,它会被cbuilder初始化时执行(被引用时).
+| 名称        |说明 |
+| --------   | -----:  |
+| cbuilder:onWrapContent     | 当cbuilder要包住新建的内容时   |
+| cbuilder:onContentReady        |  当cbuilder内容已经准备好时   |
+| cbuilder:onGetContentBefore        |    当cbuilder获取内容之前   |
+
+
+###propertiesWindow(属性窗口)
+
+
+| 名称        |说明   |
+| --------   | -----:  |
+| propertiesWindow:Showing  |     属性窗口显示时执行,需要显示,需重写该方法   |
+
+
+
+
+#开发独立组件
+**一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法 以下主要以 anchor/main.js 作为示例**
+###开发时,cbuilder根目录运行gulp命令.
+```
+gulp
+```
+###1. 创建你的组件
+路径:cbuilder/src/js/toolbar/**/main.js,它会被cbuilder初始化时执行(被引用时).
 ```javascript
 /**
  * 初始化插件 所有main.js文件只有这个方法会被cbuilder调用
@@ -134,8 +139,67 @@ function init(element, basePath,commons) {
     return exports;
 }
 ```
-###3. 引用你的main.js
-路径:cbuilder/src/js/core/plugin.js   
+
+###2. 修改你的propertiesWindow
+路径:cbuilder/src/tplhtml/propertiesWindow.html
+html遵循bootstrap规范,pw为propertiesWindow的缩写,根div的id为以后调用所写的,**id必填**.
+基本结构如下
+
+```html
+<div class="pw-anchor pw-panel" id="pwanchor">
+    <div class="pw-body">
+        <div class="pw-body-content">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="cb-anchor-name" class="col-sm-2 control-label">名称:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control input-sm" id="cb-anchor-name" placeholder="名称:">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr class="cb-article-divider">
+        <div class="pw-body-footer">
+            <button type="button" id="cb-anchor-save" class="btn btn-primary btn-sm save">保 存</button>
+            <button type="button" id="cb-anchor-delete" class="btn btn-danger btn-sm delete deleteevent">删 除</button>
+        </div>
+    </div>
+</div>
+```
+
+###3. 定义propertiesWindow事件
+路径:cbuilder/src/js/toolbar/anchor/main.js
+```
+$element.on('cbuilder:onContentReady', function (e) {
+    /* 双击时显示属性窗口 */
+    $('.cb-content').on('dblclick', function () {
+        var $this = $(this);
+        var $anchor = $this.find('.cb-anchor');
+        if ($anchor.length === 1) {
+            $.cbuilder.propertiesWindow.$selectedobj = $anchor;
+            $.cbuilder.propertiesWindow.show({
+                /* 这个pwanchor 就是刚第二步创建html所定义的 */
+                name: 'pwanchor',
+                pillstitle: '编辑锚点'
+            });
+        }
+        return false;
+    });
+});
+```
+
+```javascript
+_showingEvent: function () {
+    /* 显示属性窗口时要做的事情 */
+    view.$pw.on("propertiesWindow:Showing", function (event) {
+        var id = $.cbuilder.propertiesWindow.$selectedobj.attr('id');
+        view.$name.val(id || '');
+    });
+},
+```
+ 
+###4. 引用你的组件    
+路径:cbuilder/src/js/core/plugin.js     
 **plugin.js是插件的基础核心文件,只有一个,最终合并为jquery.cbuilder.js**
 ```javascript
 var defaults = {
@@ -151,7 +215,9 @@ var defaults = {
         }
     };
 ```
-###4. 撰写你的解析方法
+
+
+###5. 撰写你的解析方法
 路径:cbuilder/src/js/parser/main.js    
 **parser/main.js是前端解析cbuilder的文件,只有一个,最终合并为/dist/cbuilder_parser.min.js**
 ```
