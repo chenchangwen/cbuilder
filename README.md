@@ -2,13 +2,13 @@
 ####快速简单的构建你的html
 
 #目录
-* 项目结构
+* 结构
 * 安装插件
 * 使用
 * API
 * 开发独立组件
 
-#项目结构
+#结构
 ![项目结构图](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
 
 **蓝色箭头为目录生成方向**
