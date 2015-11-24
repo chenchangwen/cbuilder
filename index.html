@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Cbuilder by chenchangwen</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Cbuilder</h1>
+      <h2 class="project-tagline">html内容生产插件</h2>
+      <a href="https://github.com/chenchangwen/cbuilder" class="btn">View on GitHub</a>
+      <a href="https://github.com/chenchangwen/cbuilder/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/chenchangwen/cbuilder/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="cbuilder" class="anchor" href="#cbuilder" aria-hidden="true"><span class="octicon octicon-link"></span></a>cbuilder</h1>
+
+<h4>
+<a id="快速简单的构建你的html" class="anchor" href="#%E5%BF%AB%E9%80%9F%E7%AE%80%E5%8D%95%E7%9A%84%E6%9E%84%E5%BB%BA%E4%BD%A0%E7%9A%84html" aria-hidden="true"><span class="octicon octicon-link"></span></a>快速简单的构建你的html</h4>
+
+<h1>
+<a id="目录" class="anchor" href="#%E7%9B%AE%E5%BD%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>目录</h1>
+
+<ul>
+<li>项目结构</li>
+<li>安装插件</li>
+<li>使用</li>
+<li>API</li>
+<li>开发独立组件</li>
+</ul>
+
+<h1>
+<a id="项目结构" class="anchor" href="#%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84" aria-hidden="true"><span class="octicon octicon-link"></span></a>项目结构</h1>
+
+<p><img src="https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg" alt="项目结构图"></p>
+
+<p><strong>蓝色箭头为目录生成方向</strong></p>
+
+<h1>
+<a id="安装插件" class="anchor" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>安装插件</h1>
+
+<p>初始化npm</p>
+
+<pre><code>npm install
+</code></pre>
+
+<p>初始化bower</p>
+
+<pre><code>bower install 
+</code></pre>
+
+<p>安装完,可以直接运行cbuilder.html查看示例.</p>
+
+<h1>
+<a id="使用" class="anchor" href="#%E4%BD%BF%E7%94%A8" aria-hidden="true"><span class="octicon octicon-link"></span></a>使用</h1>
+
+<h3>
+<a id="编辑html" class="anchor" href="#%E7%BC%96%E8%BE%91html" aria-hidden="true"><span class="octicon octicon-link"></span></a>编辑html</h3>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>src/js/jquery.cbuilder.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">link</span> <span class="pl-e">href</span>=<span class="pl-s"><span class="pl-pds">"</span>src/css/cbuilder.css<span class="pl-pds">"</span></span> <span class="pl-e">rel</span>=<span class="pl-s"><span class="pl-pds">"</span>stylesheet<span class="pl-pds">"</span></span>/&gt;
+&lt;<span class="pl-ent">body</span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>test1<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">div</span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>test2<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">body</span>&gt;</pre></div>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">&lt;</span>script type<span class="pl-k">=</span><span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span><span class="pl-k">&gt;</span>
+    $(<span class="pl-c1">document</span>).<span class="pl-en">ready</span>(<span class="pl-k">function</span> () {
+        <span class="pl-k">var</span> options <span class="pl-k">=</span> {
+            height<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>800px<span class="pl-pds">'</span></span>
+        };
+        $(<span class="pl-s"><span class="pl-pds">'</span>#test1,#test2<span class="pl-pds">'</span></span>).<span class="pl-en">cbuilder</span>(options);
+    });
+<span class="pl-k">&lt;</span><span class="pl-k">/</span>script<span class="pl-k">&gt;</span></pre></div>
+
+<p>jquery.cbuilder.js会构建你的html</p>
+
+<h3>
+<a id="展示html" class="anchor" href="#%E5%B1%95%E7%A4%BAhtml" aria-hidden="true"><span class="octicon octicon-link"></span></a>展示html</h3>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>/cbuilder/dist/cbuilder_parser.min.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">script</span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>/cbuilder/dist/cbuilder_parser.min.css<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+
+<p>cbuilder_parse.min.js会解析你的html</p>
+
+<h1>
+<a id="api" class="anchor" href="#api" aria-hidden="true"><span class="octicon octicon-link"></span></a>API</h1>
+
+<h2>
+<a id="selectorcbuilderoptions" class="anchor" href="#selectorcbuilderoptions" aria-hidden="true"><span class="octicon octicon-link"></span></a>$(selector).cbuilder(options)</h2>
+
+<p>初始化cbuilder</p>
+
+<h3>
+<a id="selector" class="anchor" href="#selector" aria-hidden="true"><span class="octicon octicon-link"></span></a>selector</h3>
+
+<p>用于筛选的选择器</p>
+
+<h3>
+<a id="options" class="anchor" href="#options" aria-hidden="true"><span class="octicon octicon-link"></span></a>options</h3>
+
+<ul>
+<li>optoins.height <em>String</em>  高度,默认"100%"</li>
+<li>optoins.width <em>String</em> 高度,默认"100%"</li>
+<li>optoins.toolbar <em>Array</em> 工具条,默认[ "clean", "anchor", "preview", "picture"],每个数组索引对应每个独立功能(工具条项目)的文件夹名</li>
+</ul>
+
+<h3>
+<a id="cbuilder-1" class="anchor" href="#cbuilder-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>$.cbuilder</h3>
+
+<div class="highlight highlight-source-js"><pre> $.<span class="pl-smi">cbuilder</span> <span class="pl-k">=</span> {
+        <span class="pl-c">/* 路径 */</span>
+        path<span class="pl-k">:</span> {
+            <span class="pl-c">/* 当前根目录路径 */</span>
+            root<span class="pl-k">:</span> rootPath,
+            <span class="pl-c">/* 当前js目录路径 */</span>
+            js<span class="pl-k">:</span> jsPath
+        },
+        <span class="pl-c">/**</span>
+<span class="pl-c">         * 添加内容</span>
+<span class="pl-c">         * @html {String} </span>
+<span class="pl-c">         * @clstype {String} tab|item  tab:容器元素,item:一般元素</span>
+<span class="pl-c">         */</span>
+        <span class="pl-en">append</span><span class="pl-k">:</span> <span class="pl-k">function</span> (<span class="pl-smi">html</span>,<span class="pl-smi">clstype</span>) {
+        },
+        <span class="pl-c">/* 获取内容 */</span>
+        <span class="pl-en">getContent</span><span class="pl-k">:</span> <span class="pl-k">function</span> () {
+        },
+        <span class="pl-c">/**</span>
+<span class="pl-c">         * 设置内容</span>
+<span class="pl-c">         * @html {String}</span>
+<span class="pl-c">         */</span>
+        <span class="pl-en">setContent</span><span class="pl-k">:</span> <span class="pl-k">function</span> (<span class="pl-smi">html</span>) {
+        },
+        <span class="pl-c">/* 当前激活的cbuilder */</span>
+        active,
+        <span class="pl-c">/* 工具项 */</span>
+        $itemtools<span class="pl-k">:</span>{
+            <span class="pl-c">/* 显示工具项 */</span>
+            <span class="pl-en">show</span><span class="pl-k">:</span><span class="pl-k">function</span>(){
+            },
+            <span class="pl-c">/* 隐藏工具项 */</span>
+            <span class="pl-en">hide</span><span class="pl-k">:</span><span class="pl-k">function</span>(){
+            }
+        },
+        <span class="pl-c">/* 属性窗口 */</span>
+        propertiesWindow<span class="pl-k">:</span>{
+            <span class="pl-c">/* 当前选择的对象 */</span>
+            $selectedobj,
+            <span class="pl-c">/**</span>
+<span class="pl-c">             * 显示属性窗口</span>
+<span class="pl-c">             * @obj {Object}</span>
+<span class="pl-c">             * obj.name          名称</span>
+<span class="pl-c">             * obj.pillstitle    标题</span>
+<span class="pl-c">             */</span>
+            <span class="pl-en">show</span><span class="pl-k">:</span><span class="pl-k">function</span>(<span class="pl-smi">obj</span>){
+            }
+        }
+    }</pre></div>
+
+<h3>
+<a id="事件" class="anchor" href="#%E4%BA%8B%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>事件</h3>
+
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th align="right">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cbuilder:onWrapContent</td>
+<td align="right">当cbuilder要包住新建的内容时</td>
+</tr>
+<tr>
+<td>cbuilder:onContentReady</td>
+<td align="right">当cbuilder内容已经准备好时</td>
+</tr>
+<tr>
+<td>cbuilder:onGetContentBefore</td>
+<td align="right">当cbuilder获取内容之前</td>
+</tr>
+<tr>
+<td>propertiesWindow:Showing</td>
+<td align="right">属性窗口显示时执行</td>
+</tr>
+</tbody>
+</table>
+
+<h1>
+<a id="开发独立组件" class="anchor" href="#%E5%BC%80%E5%8F%91%E7%8B%AC%E7%AB%8B%E7%BB%84%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>开发独立组件</h1>
+
+<p><strong>一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法 以下主要以anchor/main.js 作为示例</strong></p>
+
+<h3>
+<a id="开发时cbuilder根目录运行gulp命令" class="anchor" href="#%E5%BC%80%E5%8F%91%E6%97%B6cbuilder%E6%A0%B9%E7%9B%AE%E5%BD%95%E8%BF%90%E8%A1%8Cgulp%E5%91%BD%E4%BB%A4" aria-hidden="true"><span class="octicon octicon-link"></span></a>开发时,cbuilder根目录运行gulp命令.</h3>
+
+<pre><code>gulp
+</code></pre>
+
+<h3>
+<a id="1-创建你的组件" class="anchor" href="#1-%E5%88%9B%E5%BB%BA%E4%BD%A0%E7%9A%84%E7%BB%84%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. 创建你的组件</h3>
+
+<p>路径:cbuilder/src/js/toolbar/**/main.js,它会被cbuilder初始化时执行(被引用时).</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c">/**</span>
+<span class="pl-c"> * 初始化插件 所有main.js文件只有这个方法会被cbuilder调用</span>
+<span class="pl-c"> * @element {Object} 当前cbuilder的元素,也可以说当前的容器</span>
+<span class="pl-c"> * @basePath {String} 当前工具条路径</span>
+<span class="pl-c"> * @commons {Object} 通用对象 详细请看/core/block/commons.js</span>
+<span class="pl-c"> * <span class="pl-k">@exports</span> {Object} 返回当前工具条配置</span>
+<span class="pl-c"> */</span>
+<span class="pl-k">function</span> <span class="pl-en">init</span>(<span class="pl-smi">element</span>, <span class="pl-smi">basePath</span>,<span class="pl-smi">commons</span>) {
+    <span class="pl-c">/*导出对象*/</span>
+    <span class="pl-k">var</span> <span class="pl-c1">exports</span> <span class="pl-k">=</span> {
+        <span class="pl-c">/*</span>
+<span class="pl-c">         *是否一个工具条 </span>
+<span class="pl-c">         *如果为true则其余属性不会被执行</span>
+<span class="pl-c">         *默认不填写该属性</span>
+<span class="pl-c">         *该属性主要为了处理加载文件做的事情并不是一个按钮的情况</span>
+<span class="pl-c">         */</span>
+        isToolbar<span class="pl-k">:</span> <span class="pl-c1">false</span>,
+        <span class="pl-c">/*</span>
+<span class="pl-c">         *当此文件加载完毕</span>
+<span class="pl-c">         *只有当isToolbar: false 才有效</span>
+<span class="pl-c">         */</span>
+        <span class="pl-en">onLoaded</span><span class="pl-k">:</span><span class="pl-k">function</span>(){
+        },
+        <span class="pl-c">/*工具条*/</span>
+        toolbar<span class="pl-k">:</span> {
+            <span class="pl-c">/*名字 应该和文件夹名一致*/</span>
+            name<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>preview<span class="pl-pds">"</span></span>,
+            <span class="pl-c">/*文本*/</span>
+            text<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>预览<span class="pl-pds">'</span></span>
+            <span class="pl-c">/*点击事件 */</span>
+            <span class="pl-en">onClick</span><span class="pl-k">:</span> <span class="pl-k">function</span> () {
+            }
+        },
+        <span class="pl-c">/*</span>
+<span class="pl-c">         *类型 </span>
+<span class="pl-c">         *类型为iframe则执行layer弹窗,</span>
+<span class="pl-c">         *默认不填该属性</span>
+<span class="pl-c">         */</span>
+        type<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>iframe<span class="pl-pds">'</span></span>
+    }
+    <span class="pl-k">return</span> <span class="pl-c1">exports</span>;
+}</pre></div>
+
+<h3>
+<a id="2-修改你的propertieswindow" class="anchor" href="#2-%E4%BF%AE%E6%94%B9%E4%BD%A0%E7%9A%84propertieswindow" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. 修改你的propertiesWindow</h3>
+
+<p>路径:cbuilder/src/tplhtml/propertiesWindow.html<br>
+html遵循bootstrap规范,pw为propertiesWindow的缩写,根div的id为以后调用所写的,<strong>id必填</strong>.<br>
+基本结构如下</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>pw-anchor pw-panel<span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>pwanchor<span class="pl-pds">"</span></span>&gt;
+    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>pw-body<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>pw-body-content<span class="pl-pds">"</span></span>&gt;
+            &lt;<span class="pl-ent">form</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-horizontal<span class="pl-pds">"</span></span>&gt;
+                &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-group<span class="pl-pds">"</span></span>&gt;
+                    &lt;<span class="pl-ent">label</span> <span class="pl-e">for</span>=<span class="pl-s"><span class="pl-pds">"</span>cb-anchor-name<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-sm-2 control-label<span class="pl-pds">"</span></span>&gt;名称:&lt;/<span class="pl-ent">label</span>&gt;
+                    &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>col-sm-10<span class="pl-pds">"</span></span>&gt;
+                        &lt;<span class="pl-ent">input</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>form-control input-sm<span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>cb-anchor-name<span class="pl-pds">"</span></span> <span class="pl-e">placeholder</span>=<span class="pl-s"><span class="pl-pds">"</span>名称:<span class="pl-pds">"</span></span>&gt;
+                    &lt;/<span class="pl-ent">div</span>&gt;
+                &lt;/<span class="pl-ent">div</span>&gt;
+            &lt;/<span class="pl-ent">form</span>&gt;
+        &lt;/<span class="pl-ent">div</span>&gt;
+        &lt;<span class="pl-ent">hr</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>cb-article-divider<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">div</span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>pw-body-footer<span class="pl-pds">"</span></span>&gt;
+            &lt;<span class="pl-ent">button</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>button<span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>cb-anchor-save<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>btn btn-primary btn-sm save<span class="pl-pds">"</span></span>&gt;保 存&lt;/<span class="pl-ent">button</span>&gt;
+            &lt;<span class="pl-ent">button</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>button<span class="pl-pds">"</span></span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>cb-anchor-delete<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>btn btn-danger btn-sm delete deleteevent<span class="pl-pds">"</span></span>&gt;删 除&lt;/<span class="pl-ent">button</span>&gt;
+        &lt;/<span class="pl-ent">div</span>&gt;
+    &lt;/<span class="pl-ent">div</span>&gt;
+&lt;/<span class="pl-ent">div</span>&gt;</pre></div>
+
+<h3>
+<a id="3-定义propertieswindow事件" class="anchor" href="#3-%E5%AE%9A%E4%B9%89propertieswindow%E4%BA%8B%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. 定义propertiesWindow事件</h3>
+
+<p>路径:cbuilder/src/js/toolbar/anchor/main.js</p>
+
+<pre><code>$element.on('cbuilder:onContentReady', function (e) {
+    /* 双击时显示属性窗口 */
+    $('.cb-content').on('dblclick', function () {
+        var $this = $(this);
+        var $anchor = $this.find('.cb-anchor');
+        if ($anchor.length === 1) {
+            $.cbuilder.propertiesWindow.$selectedobj = $anchor;
+            $.cbuilder.propertiesWindow.show({
+                /* 这个pwanchor 就是刚第二步创建html所定义的 */
+                name: 'pwanchor',
+                pillstitle: '编辑锚点'
+            });
+        }
+        return false;
+    });
+});
+</code></pre>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-en">_showingEvent</span><span class="pl-k">:</span> <span class="pl-k">function</span> () {
+    <span class="pl-c">/* 显示属性窗口时要做的事情 */</span>
+    <span class="pl-smi">view</span>.$<span class="pl-smi">pw</span>.<span class="pl-en">on</span>(<span class="pl-s"><span class="pl-pds">"</span>propertiesWindow:Showing<span class="pl-pds">"</span></span>, <span class="pl-k">function</span> (<span class="pl-smi">event</span>) {
+        <span class="pl-k">var</span> id <span class="pl-k">=</span> $.<span class="pl-smi">cbuilder</span>.<span class="pl-smi">propertiesWindow</span>.$<span class="pl-smi">selectedobj</span>.<span class="pl-en">attr</span>(<span class="pl-s"><span class="pl-pds">'</span>id<span class="pl-pds">'</span></span>);
+        <span class="pl-smi">view</span>.$<span class="pl-smi">name</span>.<span class="pl-en">val</span>(id <span class="pl-k">||</span> <span class="pl-s"><span class="pl-pds">'</span><span class="pl-pds">'</span></span>);
+    });
+},</pre></div>
+
+<h3>
+<a id="4-引用你的组件" class="anchor" href="#4-%E5%BC%95%E7%94%A8%E4%BD%A0%E7%9A%84%E7%BB%84%E4%BB%B6" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. 引用你的组件</h3>
+
+<p>路径:cbuilder/src/js/core/plugin.js<br>
+<strong>plugin.js是插件的基础核心文件,只有一个,最终合并为jquery.cbuilder.js</strong></p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> defaults <span class="pl-k">=</span> {
+        height<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>100%<span class="pl-pds">"</span></span>,
+        width<span class="pl-k">:</span><span class="pl-s"><span class="pl-pds">"</span>99%<span class="pl-pds">"</span></span>,
+        toolbar<span class="pl-k">:</span> [<span class="pl-s"><span class="pl-pds">'</span>anchor<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>preview<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>picture<span class="pl-pds">'</span></span>], <span class="pl-c">//引用处</span>
+        tpl<span class="pl-k">:</span> {
+            toolbar<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;div class='cb-toolbar'&gt;&lt;/div&gt;<span class="pl-pds">"</span></span>,
+            toolbar_button<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;div class='btn-wrap'&gt;&lt;button class='btn primary {clsname}'&gt;{name}&lt;/button&gt;&lt;/div&gt;<span class="pl-pds">"</span></span>,
+            body<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;div class='cb-body'&gt;&lt;/div&gt;<span class="pl-pds">"</span></span>,
+            body_item<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;div class='cb-item'&gt;&lt;div class='cb-content'&gt;&lt;/div&gt;&lt;/div&gt;<span class="pl-pds">"</span></span>,
+            body_item_tool<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;div class='cb-tools'&gt;&lt;div class='btn-wrap'&gt;&lt;/div&gt;&lt;/div&gt;<span class="pl-pds">"</span></span>
+        }
+    };</pre></div>
+
+<h3>
+<a id="5-撰写你的解析方法" class="anchor" href="#5-%E6%92%B0%E5%86%99%E4%BD%A0%E7%9A%84%E8%A7%A3%E6%9E%90%E6%96%B9%E6%B3%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. 撰写你的解析方法</h3>
+
+<p>路径:cbuilder/src/js/parser/main.js<br>
+<strong>parser/main.js是前端解析cbuilder的文件,只有一个,最终合并为/dist/cbuilder_parser.min.js</strong></p>
+
+<pre><code>...
+/* 我的组件 */
+myComponent:function(){
+    //....
+},
+/* 解析组件 */
+_parseComponents: function () {
+    commons.objectCallFunction(view, 'myComponent');
+},
+...
+</code></pre>
+
+<p>在_parseComponents方法里,调用"myComponent"</p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/chenchangwen/cbuilder">Cbuilder</a> is maintained by <a href="https://github.com/chenchangwen">chenchangwen</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
