@@ -11,6 +11,7 @@
 #项目结构
 ![项目结构图](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
 
+**蓝色箭头为目录生成方向**
 #安装插件
 初始化npm
 ```
@@ -129,7 +130,7 @@ cbuilder_parse.min.js会解析你的html
 
 
 #开发独立组件
-**一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法 以下主要以 anchor/main.js 作为示例**
+**一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法 以下主要以anchor/main.js 作为示例**
 ###开发时,cbuilder根目录运行gulp命令.
 ```
 gulp
