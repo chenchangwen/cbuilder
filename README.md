@@ -3,23 +3,24 @@
 
 
 ## 目录
-1. 结构图
-2. 使用
-3. 事件
-4. 方法
-5. 开发单独功能
-6. 元素的主要规范
-7. 样式
-8. 主要参数
+* 安装插件
+* 使用
+* 事件
+* 方法
+* 开发单独功能
+* 元素的主要规范
+* 样式
+* 主要参数
 
 
-#1.结构图
+#安装插件
 
-###工程目录
+```
+bower i 
+npm i
+```
 
-###主界面
-
-#2.使用
+#使用
 
 ###javascript
 ```javascript
@@ -43,7 +44,7 @@
 </div>
 ```
 
-#3.事件
+#事件
 ###cbuilder
 
 | 名称        |说明 |
@@ -65,7 +66,7 @@
 
 
 
-#4.方法
+#方法
 ##$(selector).cbuilder(options)
 初始化cbuilder
 ###selector
@@ -76,7 +77,7 @@
 * optoins.toolbar *Array* 工具条,默认[ "clean", "anchor", "preview", "picture"],每个数组索引对应每个独立功能(工具条项目)的文件夹名
 
 
-#5.开发单独功能
+#开发单独功能
 **一般情况是基于toolbar(工具条),即点击工具条任意一个按钮产生相关功能,以下是示例.**
 
 1. toolbar下建立preview文件夹
@@ -162,7 +163,7 @@ function init(element, basePath,commons) {
     cbuilder.struc();
 ```
 
-#6.元素的主要规范
+#元素的主要规范
 **其他就不在赘述,由于独立对象较多重点描述一下以下**
 
 ##main.js picture工具条规范编码示例
@@ -237,8 +238,7 @@ function init($element, basePath, commons) {
 }
 ```
 
-#7.样式
-**/less目录下建立相关模块文件**
+#样式
 | 名称        |说明 |
 | --------   | -----:  |
 | body     | 主体   |
@@ -249,8 +249,3 @@ function init($element, basePath, commons) {
 | propertiesWindow.less        |    属性窗口   |
 | toobar.less        |    工具条   |
 
-#8.主要参数
-
-  [1]: https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/pic.png
-  [2]: https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/ui.png
-  
