@@ -2,12 +2,15 @@
 ####快速简单的构建你的html页面
 
 #目录
+* 目录结构
 * 安装插件
 * 使用
 * 事件
 * 方法
 * 开发独立功能
 
+#目录结构
+![Alt text](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
 
 #安装插件
 
@@ -19,7 +22,7 @@ npm i
 
 #使用
 
-编辑html时
+##编辑html时
 ```html
 <script src="src/js/jquery.cbuilder.js"></script>
 <link href="src/css/cbuilder.css" rel="stylesheet"/>
@@ -41,12 +44,14 @@ npm i
 jquery.cbuilder.js会构建你的html
 
 
-展示html时
+##展示html时
 ```html
 <script src="/cbuilder/dist/cbuilder_parser.min.js"></script>
 <script src="/cbuilder/dist/cbuilder_parser.min.css"></script>
 ```
 cbuilder_parse.min.js会解析你的html
+
+
 
 #事件
 ###cbuilder
