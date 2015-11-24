@@ -79,10 +79,10 @@
 #5.开发单独功能
 **一般情况是基于toolbar(工具条),即点击工具条任意一个按钮产生相关功能,以下是示例.**
 
->1.toolbar下建立preview文件夹
->2.preview文件夹下建立main.js
->3.plugin.js下引用preview
->4.撰写端解析该工具条的js
+1. toolbar下建立preview文件夹
+2. preview文件夹下建立main.js
+3. plugin.js下引用preview
+4. 撰写端解析该工具条的js
 
 ##plugin.js 示例
 **plugin.js是插件的基础核心文件,只有一个,最终合并为jquery.cbuilder.js**
