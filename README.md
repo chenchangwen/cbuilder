@@ -1,7 +1,7 @@
 #cbuilder
 ####快速简单的构建你的html页面
 
----
+
 ## 目录
 1. 结构图
 2. 使用
@@ -46,7 +46,7 @@
 
 #3.事件
 
----
+***
 
 ###cbuilder
 
@@ -70,7 +70,7 @@
 
 
 #4.方法
----
+***
 ##$(selector).cbuilder(options)
 初始化cbuilder
 ###selector
@@ -82,7 +82,7 @@
 
 
 #5.开发单独功能
----
+***
 **一般情况是基于toolbar(工具条),即点击工具条任意一个按钮产生相关功能,以下是示例.**
 
 >1.toolbar下建立preview文件夹
@@ -169,7 +169,7 @@ function init(element, basePath,commons) {
 ```
 
 #6.元素的主要规范
----
+***
 **其他就不在赘述,由于独立对象较多重点描述一下以下**
 
 ##main.js picture工具条规范编码示例
@@ -245,6 +245,7 @@ function init($element, basePath, commons) {
 ```
 
 #7.样式
+***
 **/less目录下建立相关模块文件**
 | 名称        |说明 |
 | --------   | -----:  |
@@ -257,7 +258,7 @@ function init($element, basePath, commons) {
 | toobar.less        |    工具条   |
 
 #8.主要参数
-
+***
 
   [1]: https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/pic.png
   [2]: https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/ui.png
