@@ -51,8 +51,13 @@
             }
         },
         /* 
-     * 设置变量 
-     * 将指定options转换为obj.$xxx的变量
+     * 设置变量 将指定options转换为obj.$xxx的变量
+     * --------通常转换为固定的元素id或一系列的类
+     * @param1 {Object} Javascript简单对象
+     * @param2 {String} 转换的字符串,号分割  如"a,b,c,d"
+     * @param3 {String} 过滤字符串 
+                        如:$("#mybutton1") 如果该参数为"my"
+                        则:obj.$button1为转换的变量,否则为obj.$mybutton1
      */
         setObjVariable: function(obj, options, filter) {
             if (options != undefined) {
