@@ -1,13 +1,30 @@
 #cbuilder
-####快速简单的构建你的html
+####快速简单构建你的单页面
 
 #目录
+* 组件功能
 * 结构
 * 安装插件
 * 使用
 * API
 * 开发独立组件
 
+
+#组件功能
+#####图片区域(toolbar/picture)
+   给图片插入矩阵区域并附上功能    
+   目前包括:超链接,锚点,倒计时,优惠券
+#####锚点(toolbar/anchor)
+   插入锚点
+#####预览(toolbar/preview)
+   预览html内容
+#####源代码(toolbar/sourcecode)
+   编辑html源代码,支持格式化
+#####tab容器(toolbar/tab)(开发中)
+   插入tab容器    
+   容纳同级元素
+#####清空(toolbar/clean)
+   清空html内容
 #结构
 ![项目结构图](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
 
