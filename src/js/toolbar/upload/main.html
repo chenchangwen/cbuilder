@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link href="../../../../vendor/uikit/css/uikit.gradient.min.css" rel="stylesheet"/>
+    <link href="../../../../vendor/uikit/css/components/notify.gradient.min.css" rel="stylesheet" />
+    <script data-main="upload.js" src="../../../../vendor/requirejs/require.js"></script>
+    <style type="text/css">
+        .uk-placeholder {
+            background: none repeat scroll 0 0 #fafafa;
+            border: 1px dashed #ddd;
+            color: #444;
+            margin-bottom: 15px;
+            padding: 20px;
+        }
+
+        .uk-form-file input[type="file"] {
+            cursor: pointer;
+            font-size: 40px;
+            left: 0;
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="uk-container uk-container-center" style="margin-top: 10px">
+    <ul data-uk-tab="{connect:'#tab-content'}" class="uk-tab">
+        <li class="uk-active"><a href="#">电脑上的图片</a></li>
+        <li><a href="#">网络上的图片</a></li>
+    </ul>
+    <ul class="uk-switcher uk-margin" id="tab-content">
+        <li class="uk-active">
+            <div class="uk-placeholder uk-text-center" id="upload-drop">
+                <i class="uk-icon-cloud-upload uk-icon-medium uk-text-muted uk-margin-small-right"></i><a class="uk-form-file">
+                    点击上传
+                    <input type="file" id="upload-select">
+                </a>
+            </div>
+            <div class="uk-progress uk-hidden" id="progressbar">
+                <div style="width: 100%;" class="uk-progress-bar">100%</div>
+            </div>
+        </li>
+        <li class="">
+            <form class="uk-form uk-form-horizontal">
+                <div class="uk-form-row">
+                    <label for="url" class="uk-form-label">地址</label>
+                    <div class="uk-form-controls">
+                        <input type="text" placeholder="url" style="width: 400px" id="url">
+                    </div>
+                </div>
+                <div class="uk-form-row">
+                    <label for="width" class="uk-form-label">宽高</label>
+                    <div class="uk-form-controls">
+                        <input type="text" placeholder="宽度" id="width" style="width: 100px" maxlength="4">
+                        <label>x</label>
+                        <input type="text" placeholder="高度" id="height" style="width: 100px" maxlength="4">
+                    </div>
+                </div>
+                <div class="uk-form-row">
+                    <button class="uk-button uk-button-primary" type="button" id="save">保存</button>
+                </div>
+            </form>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

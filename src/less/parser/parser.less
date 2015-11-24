@@ -1,0 +1,30 @@
+﻿
+.cb-cropwrap {
+    position: relative;
+    > img{
+        z-index: 1;
+        display: block;
+    }
+
+    a,div{
+        text-decoration: none;
+        outline:none;
+        border: 0 none !important; 
+        background:url(#);
+        &.imgpos{
+            z-index: 10;
+            border: 0;
+        }
+    }
+
+    .imgpos {
+        border:0px;
+        position: absolute;
+    }
+
+    /* IE样式 */
+    a,a:active, a:focus{
+       outline: none;
+       noFocusLine: ~"expression(this.hideFocus=true) \9";
+    }
+}

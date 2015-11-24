@@ -1,0 +1,33 @@
+{
+  "name": "cbuilder",
+  "version": "1.0",
+  "homepage": "https://github.com/chenchangwen/cbuilder",
+  "authors": [
+    "chenchangwen <21108589@qq.com>"
+  ],
+  "description": "cbuilder",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "codemirror": "~5.8.0",
+    "datetimepicker": "~2.4.5",
+    "dragula.js": "3.5.3",
+    "dropzone": "~4.0.1",
+    "jcrop": "~0.9.12",
+    "jquery": "1.11.3",
+    "js-beautify": "~1.5.10",
+    "layer": "*",
+    "requirejs": "~2.1.17",
+    "spectrum": "~1.6.2",
+    "tangram": "*",
+    "uikit": "~2.18.0"
+  }
+}

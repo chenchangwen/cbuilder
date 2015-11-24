@@ -1,0 +1,65 @@
+﻿.cb-container {
+    background: #fff;
+    font-family: Arial,"Microsoft YaHei",FreeSans,Arimo,"Droid Sans","wenquanyi micro hei","Hiragino Sans GB","Hiragino Sans GB W3",FontAwesome,sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #333;
+    .vborder(1px);
+    overflow-y: auto;
+    border-radius: 3px;
+    hr{
+        box-sizing: content-box;
+        height: 0;
+        margin: 10px 0;
+        border: 0;
+        border-top: 1px solid #e5e5e5;
+    }
+
+    .cb-cropwrap {
+        position: relative;
+        a{
+            position:absolute;
+            &:hover{
+                cursor: default;
+            }
+        }
+        .imgpos{
+            border:2px solid #000000;
+            position:absolute;
+            &:hover{
+               border:2px solid #cd0200;
+            }
+        }
+        .imgpos-active{
+            border:2px dashed red;
+        }
+    }
+}
+.cb-article-divider{
+    box-sizing: content-box;
+    height: 0;
+    margin: 10px 0;
+    border: 0;
+    border-top: 1px solid #e5e5e5;
+}
+
+.cb-content {
+    border: 1px solid #d9d9d9;
+    position:relative;
+    .cb-textarea {
+        width: 98%;
+        height: 200px;
+    }
+    .cb-anchor {
+        background-image: url('../images/anchor.gif');
+        width: 20px;
+        height: 20px;
+        display: block;
+    }
+    
+}
+
+.cb-hover{
+    box-shadow: 0 0 13px #c3c3c3;
+    border: 1px solid #d9d9d9;
+}

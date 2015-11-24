@@ -1,0 +1,49 @@
+{
+  "name": "tangram",
+  "description": "WebGL for OpenStreetMap",
+  "version": "0.2.0",
+  "homepage": "http://mapzen.com/tangram",
+  "keywords": [
+    "maps",
+    "graphics",
+    "rendering",
+    "visualization",
+    "WebGL",
+    "OpenStreetMap"
+  ],
+  "authors": [
+    {
+      "name": "Brett Camper",
+      "email": "bcamper@alum.mit.edu"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tangrams/tangram.git"
+  },
+  "main": "dist/tangram.min.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "demos",
+    "src",
+    "build*.*",
+    "karma*.*",
+    "index.html",
+    "watch.sh",
+    "makefile"
+  ],
+  "_release": "0.2.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.0",
+    "commit": "13a1f80a834e09a49d47ffb0f3231ab2c5c081a3"
+  },
+  "_source": "git://github.com/tangrams/tangram.git",
+  "_target": "*",
+  "_originalSource": "tangram"
+}
