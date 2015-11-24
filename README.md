@@ -19,28 +19,30 @@ npm i
 
 #使用
 
-###html
+编辑内容时
 ```html
 <script src="vendor/jquery/dist/jquery.min.js"></script>
 <script src="src/js/jquery.cbuilder.js"></script>
 <link href="src/css/cbuilder.css" rel="stylesheet"/>
-<div id="test1">
-</div>
-<div id="test2">
-</div>
+<body>
+    <div id="test1"></div>
+    <div id="test2"></div>
+</body>
 ```
-
-###javascript
 ```javascript
 <script type="text/javascript">
-        $(document).ready(function () {
-            var options = {
-                height: '800px'
-            };
-            $('#test1,#test2').cbuilder(options);
-        });
+    $(document).ready(function () {
+        var options = {
+            height: '800px'
+        };
+        $('#test1,#test2').cbuilder(options);
+    });
 </script>
 ```
+
+
+
+前端展示时
 
 
 #事件
@@ -61,7 +63,6 @@ npm i
 | --------   | -----:  |
 | propertiesWindow:show     | 显示属性窗口   |
 | propertiesWindow:editShowing  |     属性窗口编辑页显示时    |
-| propertiesWindow:editShowEd    |    属性窗口编辑页显示完时   |
 
 
 
@@ -142,7 +143,7 @@ var defaults = {
         }
     };
 ```
-###4. 撰写解析的/parser/main.js
+###4. 撰写你的解析方法
 路径:cbuilder/src/js/parser/main.js    
 **parser/main.js是前端解析cbuilder的文件,只有一个,最终合并为/dist/cbuilder_parser.min.js**
 ```
@@ -158,80 +159,3 @@ _parseComponents: function () {
 ...
 ```
 在_parseComponents方法里,调用"myComponent"
-
-
-
-#元素的主要规范
-**其他就不在赘述,由于独立对象较多重点描述一下以下**
-
-##main.js picture工具条规范编码示例
-
-```javascript
-function init($element, basePath, commons) {
-    var exports = {
-        isToolbar: false,
-        onLoaded: function () {
-            /*
-             *view对象 
-             *如果某个对象/某系类需要做的事情比较多,建议定义一个view对象,非分散定义各种function
-            */
-            var view = {
-                /*初始化*/
-                init: function() {
-                },
-                /*
-                 *事件
-                 *cbuilder内容准备完事件
-                 *建议后缀都为Event
-                 */
-                onContentReadyEvent: function() {
-                    $element.on('cbuilder:onContentReady', function (e) {
-                       
-                    });
-                },
-                /*
-                 *方法
-                 *载入图像裁剪 
-                 *动宾结构当前上下文直接写在view里,通用的写在/core/block/commons.js里
-                 */
-                loadJcrop: function (obj, type) {
-                    
-                },
-                onGetContentBeforeEvent: function() {
-                    $element.on('cbuilder:onGetContentBefore', function () {
-                       
-                    });
-                },
-                /*
-                 *自定义事件
-                 *直接写自定义事件的简写
-                 */
-                pwEditShowing: function () {
-                    $.cbuilder.$pw.on('propertiesWindow:editShowing', function (event, opobj) {
-                        
-                    });
-                },
-                /* 保存裁剪位置 */
-                saveJcropPosition: function () {
-                   
-                },
-                bindEvents: function () {
-                    /* 调用各种事件 */
-                    this.onContentReadyEvent();
-                    this.onGetContentBeforeEvent();
-                },
-                /* 构造 */
-                struc: function () {
-                    if (typeof $.Jcrop === "undefined") {
-                        this.init();
-                        this.pwEditShowing();
-                    }
-                    this.bindEvents();
-                }
-            };
-            view.struc();
-        }
-    }
-    return exports;
-}
-```
