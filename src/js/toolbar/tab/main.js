@@ -10,12 +10,14 @@
         },
         onLoaded: function () {
             var view = {
+                _clstab:'.cb-tabwrap',
                 _domCache: function () {
+                    view.$pw = $('#pwtab');
                     commons.setObjVariable(view, 'cb-tab');
                 },
                 /* 初始化dragula */
                 _initDragula: function() {
-                    if ($element.find('.cb-tabwrap').length > 0) {
+                    if ($element.find(view._clstab).length > 0) {
                         /* 销毁所有dragula */
                         if (typeof drake !== "undefined") {
                             drake.destroy();
@@ -40,23 +42,23 @@
                             }
                         });
                         /* 增加容器 */
-                        var $cbtabwrap = $element.find('.cb-tabwrap');
+                        var $cbtabwrap = $element.find(view._clstab);
                         for (var i = 0; i < $cbtabwrap.length; i++) {
-                            drake.containers.push($element.find('.cb-tabwrap')[i]);
+                            drake.containers.push($element.find(view._clstab)[i]);
                         }
 
                         /* drop事件 */
                         drake.on('drop', function (el, target, source, sibling) {
                             if (!$(el).parent().hasClass('cb-tabwrap') && $(el).hasClass('cb-item')) {
                                 /* 还原一般dragula */
-                                view._commonDrag();
+                                view._buildCommonDrag();
                             }
                         });
-                        view._commonDrag();
+                        view._buildCommonDrag();
                     }
                 },
-                /* 通用拖拽 */
-                _commonDrag: function () {
+                /* 建立通用拖拽 */
+                _buildCommonDrag: function () {
                     if (typeof dark !== "undefined") {
                         dark.destory();
                     }
@@ -66,11 +68,28 @@
                         }
                     });
                 },
+                _showingEvent: function() {
+                    view.$pw.on("propertiesWindow:Showing", function (event) {
+                        var id = $.cbuilder.propertiesWindow.$selectedobj.attr('id');
+                        view.$name.val(id || '');
+                    });
+                },
                 _onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
                         view._initDragula();
+
+                        $(view._clstab).on('dblclick', function () {
+                            var $this = $(this);
+                            $.cbuilder.propertiesWindow.$selectedobj = $this;
+                            $.cbuilder.propertiesWindow.show({
+                                name: 'pwtab',
+                                pillstitle: '编辑tab容器'
+                            });
+                            return false;
+                        });
                     });
-                    $element.delegate(".cb-tabwrap", "mouseover", function (event) {
+
+                    $element.delegate(view._clstab, "mouseover", function (event) {
                         $(this).addClass('cb-hover');
                     });
 
@@ -79,7 +98,7 @@
                     });
                 },
                 struc: function () {
-                    commons.objectCallFunction(view, '_domCache', '_onContentReadyEvent');
+                    commons.objectCallFunction(view, '_domCache', '_onContentReadyEvent', '_showingEvent');
                 }
             };
             view.struc();
