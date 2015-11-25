@@ -1,4 +1,4 @@
-﻿function init($element, basePath, commons) {
+﻿function init($element, commons) {
     var exports = {
         isToolbar: false,
         onLoaded: function () {
@@ -15,25 +15,27 @@
                         /* 图片双击事件 */
                         $('.cb-content').undelegate('dblclick').delegate('.imgpos,img', 'dblclick', function (e) {
                             var $this = $(this);
-                            var tagName = $this.prop('tagName');
-                            $.cbuilder.propertiesWindow.$selectedobj = $this;
-                            /* 初始化并没激活,所以必须再次设定激活状态 */
-                            $.cbuilder.active = $this.parents('.cb-container').data('cbuilder');
-                            e.stopPropagation();
-                            /* 移除全选范围(避免chrome双击会全选) */
-                            window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
-                            if (tagName === 'IMG') {
-                                $.cbuilder.propertiesWindow.show({
-                                    name:'pwpicture',
-                                    pillstitle:'编辑元素'
-                                });
-                            } else {
-                                commons.jcrop.load($(this).parent().find('img'), 'edit');
-                                //$.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
-                                $.cbuilder.propertiesWindow.show({
-                                    name: 'pwarea',
-                                    pillstitle: '编辑区域'
-                                });
+                            if ($this.parent().hasClass('cb-cropwrap')) {
+                                var tagName = $this.prop('tagName');
+                                $.cbuilder.propertiesWindow.$selectedobj = $this;
+                                /* 初始化并没激活,所以必须再次设定激活状态 */
+                                $.cbuilder.active = $this.parents('.cb-container').data('cbuilder');
+                                e.stopPropagation();
+                                /* 移除全选范围(避免chrome双击会全选) */
+                                window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
+                                if (tagName === 'IMG') {
+                                    $.cbuilder.propertiesWindow.show({
+                                        name: 'pwpicture',
+                                        pillstitle: '编辑元素'
+                                    });
+                                } else {
+                                    commons.jcrop.load($(this).parent().find('img'), 'edit');
+                                    //$.cbuilder.propertiesWindow.$self.trigger('propertiesWindow:editShowEd', ['编辑区域', 'area']);
+                                    $.cbuilder.propertiesWindow.show({
+                                        name: 'pwarea',
+                                        pillstitle: '编辑区域'
+                                    });
+                                }
                             }
                         });
                         /* 阻止A点击跳转 */

@@ -169,7 +169,7 @@
                             url: src,
                             success: function () {
                                 /* 执行动态函数,并获取module对象 */
-                                var module = init(that.$element, $.cbuilder.path.root, commons);
+                                var module = init(that.$element,commons);
                                 if (module.isToolbar === false) {
                                     module.onLoaded();
                                     return false;

@@ -426,9 +426,6 @@ var cbuilder = {};
             };
             Area.init();
         },
-        _ComponentsCustomEvent: function () {
-            
-        },
         /* 解析组件 */
         _parseComponents: function () {
             commons.objectCallFunction(view, '_domCache', '_AreaComponent');

@@ -158,11 +158,10 @@ gulp
 /**
  * 初始化插件 所有main.js文件只有这个方法会被cbuilder调用
  * @element {Object} 当前cbuilder的元素,也可以说当前的容器
- * @basePath {String} 当前工具条路径
  * @commons {Object} 通用对象 详细请看/core/block/commons.js
  * @exports {Object} 返回当前工具条配置
  */
-function init(element, basePath,commons) {
+function init(element,commons) {
     /*导出对象*/
     var exports = {
         /*

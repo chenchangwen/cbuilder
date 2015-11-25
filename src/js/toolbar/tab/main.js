@@ -1,4 +1,4 @@
-﻿function init($element, basePath, commons) {
+﻿function init($element,commons) {
     var exports = {
         toolbar: {
             name: "tab",
@@ -93,7 +93,7 @@
                         $(this).addClass('cb-hover');
                     });
 
-                    $element.delegate(".cb-tabwrap", "mouseout", function (event) {
+                    $element.delegate(view._clstab, "mouseout", function (event) {
                         $(this).removeClass('cb-hover');
                     });
                 },
