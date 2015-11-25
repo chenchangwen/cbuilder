@@ -55,6 +55,23 @@
         this.$element = $(element);
         this.strucView();
     };
+    /* 核心块 */
+    var coreBlock = {
+        /* 工具 */
+        itemtools: function () {
+            ~~include('./block/itemtools.js')
+        },
+        /* 属性窗口 */
+        propertiesWindow: function () {
+            ~~include('./block/propertiesWindow.js')
+        },
+        struc: function () {
+            $(document).ready(function () {
+                commons.objectCallFunction(coreBlock, 'propertiesWindow', 'itemtools');
+            });
+        }
+    }
+    coreBlock.struc();
 
     $.cbuilder = {
         path: {
@@ -284,24 +301,6 @@
             }
         }
     };
-
-    /* 执行一次 */
-    var onceView = {
-        /* 工具 */
-        itemtools: function() {
-            ~~include('./block/itemtools.js')
-        },
-        /* 属性窗口 */
-        propertiesWindow: function () {
-            ~~include('./block/propertiesWindow.js')
-        },
-        struc: function () {
-            $(document).ready(function() {
-                commons.objectCallFunction(onceView, 'propertiesWindow', 'itemtools');
-            });
-        }
-    }
-    onceView.struc();
 
     $.fn.cbuilder = function(option) {
         var args = arguments;
