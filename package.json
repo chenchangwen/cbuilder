@@ -9,6 +9,7 @@
     "gulp-concat": "^2.4.2",
     "gulp-file": "^0.2.0",
     "gulp-file-include": "^0.13.7",
+    "gulp-filter": "^3.0.1",
     "gulp-html-js-template": "^0.1.6",
     "gulp-imagemin": "^2.0.0",
     "gulp-jshint": "^1.9.0",
