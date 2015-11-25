@@ -6,9 +6,15 @@
     <link href="../../../../dist/cbuilder_parser.min.css" rel="stylesheet" />
     <script src="../../../../vendor/jquery/dist/jquery.min.js"></script>
     <script src="../../jquery.cbuilder.parser.js"></script>
+    <style tyle="text/css">
+        body {
+            width: 1200px;
+            margin: 20px auto;
+        }
+    </style>
     <script type="text/javascript">
-        $(document).ready(function () {
-            var html = parent.$.cbuilder.getContent();
+        $(document).ready(function() {
+            var html = window.opener.$.cbuilder.getContent();
             $('body').append(html);
             $('body').find('.cb-itemtools').remove();
             cbuilder.parse();

@@ -187,8 +187,8 @@
                         var $obj = $.cbuilder.propertiesWindow.$selectedobj;
                         var left = $obj.position().left;
                         var top = $obj.position().top;
-                        var w = $obj.width() + 6;
-                        var h = $obj.height() + 6;
+                        var w = $obj.width() + 4;
+                        var h = $obj.height() + 4;
                         $obj.addClass('imgpos-active');
                         jcrop_api.setSelect([left, top, left + w, top + h]);
                     } else {

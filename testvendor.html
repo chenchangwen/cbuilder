@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="vendor/jquery/dist/jquery.min.js"></script>
+    <link href="vendor/datetimepicker/jquery.datetimepicker.css" rel="stylesheet" />
+    <script src="vendor/datetimepicker/jquery.datetimepicker.js"></script>
+    <title>jquery.cbuilder demo</title>
+    <script type="text/javascript">
+        function formatDate(date, format) {
+            if (!date) return;
+            if (!format) format = "yyyy-MM-dd";
+            switch (typeof date) {
+                case "string":
+                    date = new Date(date.replace(/-/, "/"));
+                    break;
+                case "number":
+                    date = new Date(date);
+                    break;
+            }
+            if (!date instanceof Date) return;
+            var dict = {
+                "yyyy": date.getFullYear(),
+                "M": date.getMonth() + 1,
+                "d": date.getDate(),
+                "H": date.getHours(),
+                "m": date.getMinutes(),
+                "s": date.getSeconds(),
+                "MM": ("" + (date.getMonth() + 101)).substr(1),
+                "dd": ("" + (date.getDate() + 100)).substr(1),
+                "HH": ("" + (date.getHours() + 100)).substr(1),
+                "mm": ("" + (date.getMinutes() + 100)).substr(1),
+                "ss": ("" + (date.getSeconds() + 100)).substr(1)
+            };
+            return format.replace(/(yyyy|MM?|dd?|HH?|ss?|mm?)/g, function () {
+                return dict[arguments[0]];
+            });
+        }
+
+        $(document).ready(function () {
+            jQuery('#input1').datetimepicker({
+                mask: '9999/19/39 29:59',
+                lang: 'ch',
+                format: 'Y-m-d H:i',
+                onShow: function (ct) {
+                    this.setOptions({
+                        maxDate: jQuery('#input2').val() ? jQuery('#input2').val() : false
+                    });
+                }
+            });
+
+            jQuery('#input2').datetimepicker({
+                mask: '9999/19/39 29:59',
+                lang: 'ch',
+                format: 'Y-m-d H:i',
+                onShow: function (ct) {
+                    var date = jQuery('#input1').val() ? jQuery('#input1').val() : false;
+                    if (date !== false) {
+                        date=formatDate(date, 'yyyy/mm/dd');
+                        console.log(date);
+                    }
+                    this.setOptions({
+                        minDate: jQuery('#input1').val() ? jQuery('#input1').val() : false
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<input type="text" id="input1"/>
+<input type="text" id="input2" />
+
+</body>
+</html>

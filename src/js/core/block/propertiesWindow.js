@@ -53,8 +53,6 @@ $.cbuilder.propertiesWindow = {
         this.$temp.hide();
     }
 };
-~~include('../block/propertiesWindow/picture.js')
-~~include('../block/propertiesWindow/area.js')
 
 
  

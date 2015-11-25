@@ -1,14 +1,34 @@
 #cbuilder
-####快速简单的构建你的html
+###快速构建你的页面
+每个页面都是由不同的元素组合而成,cbuilder基础集成一些比较常用的组件,而组件是生成不同的元素的功能,在交互及录入数据环节,大大节省许多人工操作.
+如:一个独立的商品列表页面,陈列着许多商品,每个商品有独立的超链接.甚至有动画效果.由cbuilder的基础"图片"组件均可快速构建超链接,倒计时等功能.
+随着你的组件越来丰富,处理的功能也越丰富.没错,它就是可以快速构建你的页面.
 
 #目录
-* 项目结构
+* 组件功能
+* 结构
 * 安装插件
 * 使用
 * API
 * 开发独立组件
 
-#项目结构
+
+#组件功能
+#####图片区域(toolbar/picture)
+   给图片插入矩阵区域并附上功能    
+   目前包括:超链接,锚点,倒计时,优惠券
+#####锚点(toolbar/anchor)
+   插入锚点
+#####预览(toolbar/preview)
+   打开一个新页面 预览html内容
+#####源代码(toolbar/sourcecode)
+   编辑html源代码,支持格式化
+#####tab容器(toolbar/tab)(开发中)
+   插入tab容器    
+   容纳同级元素
+#####清空(toolbar/clean)
+   清空html内容
+#结构
 ![项目结构图](https://raw.githubusercontent.com/chenchangwen/cbuilder/master/screenshots/structure.jpg)
 
 **蓝色箭头为目录生成方向**
@@ -141,11 +161,10 @@ gulp
 /**
  * 初始化插件 所有main.js文件只有这个方法会被cbuilder调用
  * @element {Object} 当前cbuilder的元素,也可以说当前的容器
- * @basePath {String} 当前工具条路径
  * @commons {Object} 通用对象 详细请看/core/block/commons.js
  * @exports {Object} 返回当前工具条配置
  */
-function init(element, basePath,commons) {
+function init(element,commons) {
     /*导出对象*/
     var exports = {
         /*

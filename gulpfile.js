@@ -15,13 +15,16 @@ var gulp = require("gulp"),
     fileinclude = require("gulp-file-include"),
     prettify = require("gulp-prettify"),
     plumber = require('gulp-plumber'),
-    html2js = require('gulp-html-js-template');
+    html2js = require('gulp-html-js-template'),
+    filter = require('gulp-filter');
+
 
 var path = {
     dev: {
         js: ["src/js/core/**/*.js"],
         js_plugin: ["src/js/core/plugin.js"],
-        js_parser: ["src/js/parser/**.js"],
+        js_parser: ["src/js/parser/*.js"],
+        js_parser_component: ["!src/js/parser/component/all.js", "src/js/parser/component/*.js"],
         less: ["src/less/*.less"],
         less_parser: ["src/less/parser/**.less"],
         tplhtml: ["src/tplhtml/*.html"]
@@ -33,13 +36,14 @@ var path = {
         css:'src/css/'
     },
     dist: {
+        normal:'./dist',
         css_parser: './dist/',
         js_parser: './dist/'
     }
 };
 
 gulp.task("default", function() {
-   gulp.start("template","js", "less","less_parser","js_parser", "watch");
+    gulp.start("template", "js", "less", "less_parser", "js_parser_component", "js_parser", "watch");
 });
 
 
@@ -52,8 +56,12 @@ gulp.task("watch", function () {
         console.log("js文件变更: " + event.path + " was " + event.type);
     });
 
-    gulp.watch([path.dev.js_parser],["js_parser"]).on("change", function (event) {
+    gulp.watch([path.dev.js_parser], ["js_parser"]).on("change", function (event) {
         console.log("js_parser文件变更: " + event.path + " was " + event.type);
+    });
+
+    gulp.watch([path.dev.js_parser_component], ["js_parser_component"]).on("change", function (event) {
+        console.log("js_parser_component文件变更: " + event.path + " was " + event.type);
     });
 
     gulp.watch([path.dev.less], ["less"]).on("change", function(event) {
@@ -86,14 +94,26 @@ gulp.task('template', function () {
 gulp.task("js_parser", function () {
     gulp.src(path.dev.js_parser)
         .pipe(plumber())
+        .pipe(fileinclude({
+            prefix: "~~",
+            basedev: "~file"
+            }))
         .pipe(concat("jquery.cbuilder.parser.js"))
         .pipe(gulp.dest(path.src.js))
         .pipe(uglify())
         .pipe(concat("cbuilder_parser.js"))
         .pipe(rename({
             suffix: ".min"
-        }))
-        .pipe(gulp.dest(path.dist.js_parser));
+         }))
+        .pipe(gulp.dest(path.dist.normal));
+});
+
+/* js_parser_component */
+gulp.task("js_parser_component",["js_parser"], function () {
+    gulp.src(path.dev.js_parser_component)
+        .pipe(plumber())
+        .pipe(concat("all.js"))
+        .pipe(gulp.dest(path.src.js + '/parser/component'));
 });
 
 /* js */
@@ -126,7 +146,7 @@ gulp.task("less_parser", function () {
             suffix: ".min"
         }))
         .pipe(minifycss())
-        .pipe(gulp.dest(path.dist.css_parser));
+        .pipe(gulp.dest(path.dist.normal));
 });
 
 /* less */

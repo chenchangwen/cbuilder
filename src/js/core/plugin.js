@@ -55,6 +55,23 @@
         this.$element = $(element);
         this.strucView();
     };
+    /* 核心块 */
+    var coreBlock = {
+        /* 工具 */
+        itemtools: function () {
+            ~~include('./block/itemtools.js')
+        },
+        /* 属性窗口 */
+        propertiesWindow: function () {
+            ~~include('./block/propertiesWindow.js')
+        },
+        struc: function () {
+            $(document).ready(function () {
+                commons.objectCallFunction(coreBlock, 'propertiesWindow', 'itemtools');
+            });
+        }
+    }
+    coreBlock.struc();
 
     $.cbuilder = {
         path: {
@@ -169,7 +186,7 @@
                             url: src,
                             success: function () {
                                 /* 执行动态函数,并获取module对象 */
-                                var module = init(that.$element, $.cbuilder.path.root, commons);
+                                var module = init(that.$element,commons);
                                 if (module.isToolbar === false) {
                                     module.onLoaded();
                                     return false;
@@ -284,24 +301,6 @@
             }
         }
     };
-
-    /* 执行一次 */
-    var onceView = {
-        /* 工具 */
-        itemtools: function() {
-            ~~include('./block/itemtools.js')
-        },
-        /* 属性窗口 */
-        propertiesWindow: function () {
-            ~~include('./block/propertiesWindow.js')
-        },
-        struc: function () {
-            $(document).ready(function() {
-                commons.objectCallFunction(onceView, 'propertiesWindow', 'itemtools');
-            });
-        }
-    }
-    onceView.struc();
 
     $.fn.cbuilder = function(option) {
         var args = arguments;
