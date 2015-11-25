@@ -41,7 +41,7 @@
   font-weight: 400;
   line-height: 1.6;
   color: #333;
-  border: 1px #cccccc dashed;
+  border: 1px #ccc dashed;
   overflow-y: auto;
   border-radius: 3px;
 }
@@ -271,9 +271,9 @@ body .xdsoft_datetimepicker {
   border-top-right-radius: 0;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 0;
-  -moz-box-shadow: -2px 0 5px #999999;
-  -webkit-box-shadow: -2px 0 5px #999999;
-  box-shadow: -2px 0 5px #999999;
+  -moz-box-shadow: -2px 0 5px #999;
+  -webkit-box-shadow: -2px 0 5px #999;
+  box-shadow: -2px 0 5px #999;
   cursor: pointer;
   font-family: 'trebuchet MS', verdana, sans-serif;
 }
