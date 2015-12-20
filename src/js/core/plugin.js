@@ -86,7 +86,6 @@
                 html2 = '<div class="cb-item"><div class="cb-content">' + html + '</div></div>';
             }
             $.cbuilder.active.$element.find(clsBody).append(html2);
-            $.cbuilder.active._trigger('cbuilder:onWrapContent');
             $.cbuilder.active._trigger('cbuilder:onContentReady');
         },
         item: {
@@ -115,7 +114,6 @@
         },
         setContent: function (html) {
             $.cbuilder.active.$element.find('.cb-body').html(html);
-            $.cbuilder.active._trigger('cbuilder:onWrapContent');
             $.cbuilder.active._trigger('cbuilder:onContentReady');
         },
         _getItemsObject: function() {
@@ -241,32 +239,18 @@
                 /* 触发事件 */
                 triggerCustomEvent: function() {
                     $(document).ready(function () {
-                        that._trigger('cbuilder:onWrapContent');
                         that._trigger('cbuilder:onContentReady');
                     });
                 },
                 /* 事件 */
                 bindEvents: function () {
                     var $cbbody = that.$element.find(clsBody);
-                    /* cbuilder:onWrapContent 事件 */
-//                    that.$element.on('cbuilder:onWrapContent', function (e) {
-//                        /* 构建基本元素 */
-//                        $cbbody.children(":not(" + clsWrap + ")").each(function () {
-//                            var $this = $(this);
-//                            /* 增加 cb-item div */
-//                            $this.wrap(that.options.tpl.body_item);
-//                            $.cbuilder.active = that;
-//                        });
-//                    });
                     /* 拖拽 */
-
                     that.$element.dragula = dragula([$cbbody[0]], {
                         moves: function (el, container, handle) {
                             return handle.className === 'item-move';
                         }
                     });
-
-          
 
                     $('.pw-body-footer').delegate('.deleteevent', 'click', function (e) {
                         var tip = '确定删除&lt;' + $.cbuilder.propertiesWindow.$selectedobj.prop('tagName') + '&gt;?';
@@ -277,6 +261,10 @@
                         });
                     });
 
+                    that.$element.on('dblclick', '.cb-content', function (e) {
+                        var obj = e.srcElement || e.target;
+                        that._trigger('cbuilder:onContentDblclick', '', obj);
+                    });
               
                     that.$element.delegate(".cb-content", "mouseover", function (event) {
                         $(this).addClass('cb-hover');

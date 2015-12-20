@@ -252,7 +252,6 @@ cbuilder['picture'] = function () {
                                         $(".imgpos").each(function () {
                                             var $this = $(this);
                                             var href = $this.attr("href");
-                                            /* add by yy 临时保存匹配结果 */
                                             var match = '';
                                             if (href) {
                                                 for (var j = 0; j < patterns.length; j++) {
