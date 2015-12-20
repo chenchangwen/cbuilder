@@ -230,8 +230,8 @@ html基于bootstrap,pw为propertiesWindow的缩写,根div的id为以后调用所
 ```
 
 ###3. 创建你的双击事件
-路径:cbuilder/src/js/toolbar/anchor/main.js
-**根据你的需求显示**
+路径:cbuilder/src/js/toolbar/anchor/main.js    
+**根据你的需求显示**    
 代码片段
 ```
 _onContentDblclick: function () {
