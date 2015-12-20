@@ -11,20 +11,11 @@ function init($element, commons) {
                     ];
                     commons.loadFile(vendors);
                 },
-<<<<<<< HEAD
-                onContentReadyEvent: function() {
-                    $element.on('cbuilder:onContentReady', function (e) {
-                        /* 图片双击事件 */
-                        $('.cb-cropwrap').undelegate('dblclick').delegate('.imgpos,img', 'dblclick', function (e) {
-                            var $this = $(this);
-                            var tagName = $this.prop('tagName');
-=======
                 onContentDblclick: function () {
                     $element.on('cbuilder:onContentDblclick', function (e,obj) {
                         var $this = $(obj);
                         var tagName = $this.prop('tagName');
                         if ($this.hasClass('imgpos') || tagName === 'IMG') {
->>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
                             $.cbuilder.propertiesWindow.$selectedobj = $this;
                             /* 初始化并没激活,所以必须再次设定激活状态 */
                             $.cbuilder.active = $this.parents('.cb-container').data('cbuilder');
@@ -37,23 +28,12 @@ function init($element, commons) {
                                     pillstitle: '编辑元素'
                                 });
                             } else {
-<<<<<<< HEAD
-                                commons.jcrop.load($(this).parent().find('img'), 'edit');
-=======
                                 commons.jcrop.load($this.parent().find('img'), 'edit');
->>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
                                 $.cbuilder.propertiesWindow.show({
                                     name: 'pwarea',
                                     pillstitle: '编辑区域'
                                 });
                             }
-<<<<<<< HEAD
-                        });
-                        /* 阻止A点击跳转 */
-                        $('.cb-cropwrap').undelegate('click').delegate('a', 'click', function () {
-                            return false;
-                        });
-=======
                         }
                     });
                 },
@@ -61,15 +41,11 @@ function init($element, commons) {
                     /* 阻止A点击跳转 */
                     $('.cb-cropwrap').undelegate('click').delegate('a', 'click', function () {
                         return false;
->>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
                     });
                 },
                 bindEvents: function () {
                     this.onContentReadyEvent();
-<<<<<<< HEAD
-=======
                     this.onContentDblclick();
->>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
                 },
                 struc: function () {
                     if (typeof $.Jcrop === "undefined") {
