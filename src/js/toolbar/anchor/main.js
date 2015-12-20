@@ -19,6 +19,7 @@
                     view.$pw = $('#pwanchor');
                     commons.setObjVariable(view, 'cb-anchor-name,cb-anchor-save,cb-anchor-delete', 'cb-anchor-');
                 },
+<<<<<<< HEAD
                 _onContentReadyEvent: function() {
                     $element.on('cbuilder:onContentReady', function (e) {
                         $('.cb-content').on('dblclick', function () {
@@ -33,6 +34,20 @@
                             }
                             return false;
                         });
+=======
+                _onContentDblclick: function () {
+                    $element.on('cbuilder:onContentDblclick', function (e, obj) {
+                        var $this = $(obj);
+                        var $anchor = $this.find('.cb-anchor');
+                        if ($anchor.length === 1 || $this.hasClass('cb-anchor')) {
+                            $.cbuilder.propertiesWindow.$selectedobj = $anchor;
+                            $.cbuilder.propertiesWindow.show({
+                                name: 'pwanchor',
+                                pillstitle: '编辑锚点'
+                            });
+                        }
+                        return false;
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
                     });
                 },
                 _saveBtnEvent: function() {
@@ -63,7 +78,11 @@
                     });
                 },
                 struc: function () {
+<<<<<<< HEAD
                     commons.objectCallFunction(view, '_domCache', '_onContentReadyEvent', '_saveBtnEvent', '_showingEvent');
+=======
+                    commons.objectCallFunction(view, '_domCache', '_onContentDblclick', '_saveBtnEvent', '_showingEvent');
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
                 }
             };
             view.struc();

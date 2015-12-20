@@ -143,14 +143,24 @@ cbuilder_parse.min.js会解析你的html
 ### 事件
 | 事件        |说明 |
 | --------   | -----:  |
+<<<<<<< HEAD
 | cbuilder:onWrapContent     | 当cbuilder要包住新建的内容时   |
 | cbuilder:onContentReady        |  当cbuilder内容已经准备好时   |
 | cbuilder:onGetContentBefore        |    当cbuilder获取内容之前   |
+=======
+| cbuilder:onContentReady        |  内容已经准备好时   |
+| cbuilder:onContentDblclick        |  内容双击时   |
+| cbuilder:onGetContentBefore        |    获取内容之前   |
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
 | propertiesWindow:Showing  |     属性窗口显示时执行   |
 
 
 #开发独立组件
+<<<<<<< HEAD
 **一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法 以下主要以anchor/main.js 作为示例**
+=======
+**一般情况是基于toolbar(工具条),即点击工具条任意一个按钮执行相关方法 以下主要以anchor/main.js(锚点) 作为示例**
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
 ###开发时,cbuilder根目录运行gulp命令.
 ```
 gulp
@@ -201,11 +211,20 @@ function init(element,commons) {
 }
 ```
 
+<<<<<<< HEAD
 ###2. 修改你的propertiesWindow
 路径:cbuilder/src/tplhtml/propertiesWindow.html    
 html遵循bootstrap规范,pw为propertiesWindow的缩写,根div的id为以后调用所写的,**id必填**.    
 基本结构如下
 
+=======
+###2. 创建你的属性窗口内容
+路径:cbuilder/src/tplhtml/propertiesWindow.html    
+html基于bootstrap,pw为propertiesWindow的缩写,根div的id为以后调用所写的,**id必填**.  
+**所有组件的属性窗口的html都是该文件**
+
+代码片段
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
 ```html
 <div class="pw-anchor pw-panel" id="pwanchor">
     <div class="pw-body">
@@ -228,6 +247,7 @@ html遵循bootstrap规范,pw为propertiesWindow的缩写,根div的id为以后调
 </div>
 ```
 
+<<<<<<< HEAD
 ###3. 定义propertiesWindow事件
 路径:cbuilder/src/js/toolbar/anchor/main.js
 ```
@@ -240,13 +260,31 @@ $element.on('cbuilder:onContentReady', function (e) {
             $.cbuilder.propertiesWindow.$selectedobj = $anchor;
             $.cbuilder.propertiesWindow.show({
                 /* 这个pwanchor 就是刚第二步创建html所定义的 */
+=======
+###3. 创建你的双击事件
+路径:cbuilder/src/js/toolbar/anchor/main.js    
+**根据你的需求显示**    
+代码片段
+```
+_onContentDblclick: function () {
+    $element.on('cbuilder:onContentDblclick', function (e, obj) {
+        var $this = $(obj);
+        var $anchor = $this.find('.cb-anchor');
+        if ($anchor.length === 1 || $this.hasClass('cb-anchor')) {
+            $.cbuilder.propertiesWindow.$selectedobj = $anchor;
+            $.cbuilder.propertiesWindow.show({
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
                 name: 'pwanchor',
                 pillstitle: '编辑锚点'
             });
         }
         return false;
     });
+<<<<<<< HEAD
 });
+=======
+},
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
 ```
 
 ```javascript
@@ -266,7 +304,11 @@ _showingEvent: function () {
 var defaults = {
         height: "100%",
         width:"99%",
+<<<<<<< HEAD
         toolbar: ['anchor', 'preview', 'picture'], //引用处
+=======
+        toolbar: ['anchor'], //引用处
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
         tpl: {
             toolbar: "<div class='cb-toolbar'></div>",
             toolbar_button: "<div class='btn-wrap'><button class='btn primary {clsname}'>{name}</button></div>",
@@ -278,6 +320,7 @@ var defaults = {
 ```
 
 
+<<<<<<< HEAD
 ###5. 撰写你的解析方法
 路径:cbuilder/src/js/parser/main.js    
 **parser/main.js是前端解析cbuilder的文件,只有一个,最终合并为/dist/cbuilder_parser.min.js**
@@ -294,3 +337,15 @@ _parseComponents: function () {
 ...
 ```
 在_parseComponents方法里,调用"myComponent"
+=======
+###5. 创建你的解析文件
+路径:cbuilder/src/js/parser/****.js    
+**最终合并为/dist/cbuilder_parser.min.js**
+```
+/* 你的组件 */
+cbuilder['xxxx'] = function () {
+}
+
+```
+cbuilder['xxxx']定义你的挂载在cbuilder下的方法
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d

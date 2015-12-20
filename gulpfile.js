@@ -48,6 +48,7 @@ gulp.task("default", function() {
 
 
 gulp.task("watch", function () {
+<<<<<<< HEAD
     gulp.watch([path.dev.tplhtml], ["js"]).on("change", function (event) {
         console.log("tpl文件变更: " + event.path + " was " + event.type);
     });
@@ -68,6 +69,29 @@ gulp.task("watch", function () {
         console.log("less文件变更: " + event.path + " was " + event.type);
     });
     gulp.watch([path.dev.less_parser], ["less_parser"]).on("change", function (event) {
+=======
+    gulp.watch([path.dev.tplhtml], ["js"], function (event) {
+        console.log("tpl文件变更: " + event.path + " was " + event.type);
+    });
+
+    gulp.watch([path.dev.js, path.dev.js_plugin], ["js"], function (event) {
+        console.log("js文件变更: " + event.path + " was " + event.type);
+    });
+
+    gulp.watch([path.dev.js_parser], ["js_parser"], function (event) {
+        console.log("js_parser文件变更: " + event.path + " was " + event.type);
+    });
+
+    gulp.watch([path.dev.js_parser_component], ["js_parser_component"], function(event) {
+        console.log("js_parser_component文件变更: " + event.path + " was " + event.type);
+    });
+
+    gulp.watch([path.dev.less], ["less"], function (event) {
+        console.log("less文件变更: " + event.path + " was " + event.type);
+    });
+
+    gulp.watch([path.dev.less_parser], ["less_parser"], function (event) {
+>>>>>>> ec37fa8b935fc54bde973fdbfd82bffc48bb881d
         console.log("less_parser文件变更: " + event.path + " was " + event.type);
     });
 });
